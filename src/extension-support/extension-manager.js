@@ -13,6 +13,14 @@ const urlParams = new URLSearchParams(location.search);
 const IsLocal = String(window.location.href).startsWith(`http://localhost:`);
 const IsLiveTests = urlParams.has('livetests');
 
+// thhank yoh random stack droverflwo person
+async function sha256(source) {
+    const sourceBytes = new TextEncoder().encode(source);
+    const digest = await crypto.subtle.digest("SHA-256", sourceBytes);
+    const resultBytes = [...new Uint8Array(digest)];
+    return resultBytes.map(x => x.toString(16).padStart(2, '0')).join("");
+}
+
 // These extensions are currently built into the VM repository but should not be loaded at startup.
 // TODO: move these out into a separate repository?
 // TODO: change extension spec so that library info, including extension ID, can be collected through static methods
@@ -409,10 +417,11 @@ class ExtensionManager {
     /**
      * Load an extension by URL or internal extension ID
      * @param {string} normalURL - the URL for the extension to load OR the ID of an internal extension
+     * @param {string|null} oldHash - included when loading, contains the known hash that is from the loaded file so it can be compared with the one gotten over the url
      * @returns {Promise} resolved once the extension is loaded and initialized or rejected on failure
      */
-    async loadExtensionURL(extensionURL) {
-        if (this.isBuiltinExtension(extensionURL, oldHash)) {
+    async loadExtensionURL(extensionURL, oldHash = '') {
+        if (this.isBuiltinExtension(extensionURL)) {
             this.loadExtensionIdSync(extensionURL);
             return [extensionURL];
         }
