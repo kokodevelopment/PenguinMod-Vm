@@ -408,7 +408,7 @@ class ExtensionManager {
     async loadExtensionURL(extensionURL) {
         if (this.isBuiltinExtension(extensionURL)) {
             this.loadExtensionIdSync(extensionURL);
-            return extensionURL;
+            return [extensionURL];
         }
 
         if (this.isExtensionURLLoaded(extensionURL)) {
@@ -466,7 +466,12 @@ class ExtensionManager {
         /* eslint-enable max-len */
 
         return new Promise((resolve, reject) => {
-            this.pendingExtensions.push({ extensionURL: rewritten, resolve, reject });
+            this.pendingExtensions.push({ extensionURL: rewritten, resolve: resId => {
+                // i dooo not trust that this function will alway return one or he other
+                // so just ensure that we do always return one or the other
+                if (!Array.isArray(resId)) return resolve([resId]);
+                resolve(resId);
+            }, reject });
             dispatch.addWorker(new ExtensionWorker());
         }).catch(error => this._failedLoadingExtensionScript(error));
     }
@@ -525,6 +530,16 @@ class ExtensionManager {
         return Promise.all(allPromises);
     }
 
+    prepareSwap(id) {
+        const serviceName = this._loadedExtensions.get(id);
+        dispatch.call(serviceName, 'dispose');
+        delete dispatch.services[serviceName];
+        delete this.runtime[`ext_${id}`];
+
+        this._loadedExtensions.delete(id);
+        const workerId = +serviceName.split('.')[1];
+        delete this.workerURLs[workerId];
+    }
     removeExtension(id) {
         const serviceName = this._loadedExtensions.get(id);
         dispatch.call(serviceName, 'dispose');
