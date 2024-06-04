@@ -452,7 +452,7 @@ class ExtensionManager {
             const reader = new FileReader()
             reader.onload = async ({ target: { result } }) => {
                 console.log(result)
-                this.extUrlCodes[url] = result
+                this.extUrlCodes[extensionURL] = result
                 resolve(await sha256(result))
             }
             reader.onerror = err => {
