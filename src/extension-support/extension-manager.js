@@ -458,7 +458,7 @@ class ExtensionManager {
             reader.onerror = err => {
                 console.error('couldnt read the contents of url', url, err)
             }
-            read.readAsText(blob)
+            reader.readAsText(blob)
         })
         this.extensionHashes[extensionURL] = newHash
         if (oldHash && oldHash !== newHash && this.securityManager.shouldUseLocal(extensionURL)) return Promise.reject('useLocal') 
