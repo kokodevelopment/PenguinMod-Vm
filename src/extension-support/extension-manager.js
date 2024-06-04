@@ -320,6 +320,12 @@ class ExtensionManager {
         preload.forEach(value => {
             this.loadExtensionURL(value);
         });
+
+        this.extUrlCodes = {};
+        // extensions that the user has stated (when they where loaded) that they do not wnat updated
+        this.keepOlder = [];
+        // map of all new shas so we know when a new code update has happened and so ask the user about it
+        this.extensionHashes = {};
     }
 
     getCoreExtensionList() {
@@ -406,14 +412,14 @@ class ExtensionManager {
      * @returns {Promise} resolved once the extension is loaded and initialized or rejected on failure
      */
     async loadExtensionURL(extensionURL) {
-        if (this.isBuiltinExtension(extensionURL)) {
+        if (this.isBuiltinExtension(extensionURL, oldHash)) {
             this.loadExtensionIdSync(extensionURL);
             return [extensionURL];
         }
 
         if (this.isExtensionURLLoaded(extensionURL)) {
             // Extension is already loaded.
-            return;
+            return [];
         }
 
         if (!this._isValidExtensionURL(extensionURL)) {
@@ -431,10 +437,26 @@ class ExtensionManager {
 
         const sandboxMode = await this.securityManager.getSandboxMode(normalURL);
         const rewritten = await this.securityManager.rewriteExtensionURL(normalURL);
+        const blob = (await fetch(rewritten).then(req => req.blob()))
+        const blobUrl = URL.createObjectURL(blob)
+        const newHash = await new Promise(resolve => {
+            const reader = new FileReader()
+            reader.onload = async ({ target: { result } }) => {
+                console.log(result)
+                this.extUrlCodes[url] = result
+                resolve(await sha256(result))
+            }
+            reader.onerror = err => {
+                console.error('couldnt read the contents of url', url, err)
+            }
+            read.readAsText(blob)
+        })
+        this.extensionHashes[extensionURL] = newHash
+        if (oldHash && oldHash !== newHash && this.securityManager.shouldUseLocal(extensionURL)) return Promise.reject('useLocal') 
 
         if (sandboxMode === 'unsandboxed') {
             const { load } = require('./tw-unsandboxed-extension-runner');
-            const extensionObjects = await load(rewritten, this.vm)
+            const extensionObjects = await load(blobUrl, this.vm)
                 .catch(error => this._failedLoadingExtensionScript(error));
             const fakeWorkerId = this.nextExtensionWorker++;
             const returnedIDs = [];
@@ -466,12 +488,7 @@ class ExtensionManager {
         /* eslint-enable max-len */
 
         return new Promise((resolve, reject) => {
-            this.pendingExtensions.push({ extensionURL: rewritten, resolve: resId => {
-                // i dooo not trust that this function will alway return one or he other
-                // so just ensure that we do always return one or the other
-                if (!Array.isArray(resId)) return resolve([resId]);
-                resolve(resId);
-            }, reject });
+            this.pendingExtensions.push({ extensionURL: blobUrl, resolve, reject });
             dispatch.addWorker(new ExtensionWorker());
         }).catch(error => this._failedLoadingExtensionScript(error));
     }
