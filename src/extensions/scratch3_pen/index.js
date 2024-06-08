@@ -1094,7 +1094,10 @@ class Scratch3PenBlocks {
         const image = this.preloadedImages[URI] ?? await new Promise((resolve, reject) => {
             const image = new Image();
             image.onload = () => resolve(image);
-            image.onerror = err => reject(err);
+            image.onerror = (err) => {
+                console.error('failed to load', URI, err);
+                reject('Image failed to load');
+            };
             image.src = URI;
         });
 
@@ -1105,7 +1108,7 @@ class Scratch3PenBlocks {
         
         const ctx = this._getBitmapCanvas();
         // an error that really should never happen, but also shouldnt ever get to the user through here
-        if (ctx.canvas.width <= 0 && ctx.canvas.height <= 0) return
+        if (ctx.canvas.width <= 0 && ctx.canvas.height <= 0) return;
         
         ctx.rotate(MathUtil.degToRad(ROTATE - 90));
 
@@ -1206,7 +1209,7 @@ class Scratch3PenBlocks {
 
         ctx.clearRect(0, 0, width, height);
         ctx.translate(width / 2, height / 2);
-        console.log(penSkin.renderQuality, this.bitmapCanvas.width, this.bitmapCanvas.height);
+        // console.log(penSkin.renderQuality, this.bitmapCanvas.width, this.bitmapCanvas.height);
         ctx.scale(penSkin.renderQuality, penSkin.renderQuality);
         return ctx;
     }

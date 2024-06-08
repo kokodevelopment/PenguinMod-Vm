@@ -483,7 +483,7 @@ class Scratch3TextBlocks {
                 arguments: {
                     ATTRIBUTE: {
                         type: ArgumentType.STRING,
-                        menu: "attribute"
+                        menu: "twAnimate"
                     }
                 },
                 disableMonitor: true,
