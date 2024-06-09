@@ -42,7 +42,7 @@ class AudioSource {
         this._pauseTimeOffset = null;
         this.parent = parent;
 
-        this._audioContext = audioContext == null ? new AudioContext() : audioContext;
+        this._audioContext = audioContext;
         this._audioNode = null;
         this._audioGroup = audioGroup;
         this._audioPanner = this._audioContext.createPanner();
@@ -158,16 +158,13 @@ class AudioExtensionHelper {
         */
         this.runtime = runtime;
         this.audioGroups = {};
-        this.audioContext = null;
-        this.audioGlobalVolumeNode = null;
+        this.audioContext = new AudioContext();
+        this.audioGlobalVolumeNode = this.audioContext.createGain();
+
+        this.audioGlobalVolumeNode.gain.value = 1;
+        this.audioGlobalVolumeNode.connect(this.audioContext.destination);
     }
-    /**
-        * Sets a new runtime that the helper will use for all functions.
-        * @type {runtime}
-    */
-    SetRuntime(runtime) {
-        this.runtime = runtime;
-    }
+    
     /**
         * Creates a new AudioGroup.
         * @type {string} AudioGroup name
@@ -229,12 +226,6 @@ class AudioExtensionHelper {
     AppendAudioSource(parent, name, src, settings) {
         const group = typeof parent == "string" ? this.GetAudioGroup(parent) : parent;
         if (!group) return;
-        if (!this.audioContext) this.audioContext = new AudioContext();
-        if (!this.audioGlobalVolumeNode) {
-            this.audioGlobalVolumeNode = this.audioContext.createGain();
-            this.audioGlobalVolumeNode.gain.value = 1;
-            this.audioGlobalVolumeNode.connect(this.audioContext.destination);
-        }
         group.sources[name] = new AudioSource(this.audioContext, group, src, settings, this);
         return group.sources[name];
     }

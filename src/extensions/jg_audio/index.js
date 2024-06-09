@@ -17,10 +17,12 @@ class AudioExtension {
          */
         this.runtime = runtime;
         this.helper = Helper;
-        Helper.SetRuntime(runtime);
+
         this.runtime.on('PROJECT_STOP_ALL', () => {
             Helper.KillAllProcesses();
         });
+
+        this.runtime.registerExtensionAudioContext("jgExtendedAudio", this.helper.audioContext, this.helper.audioGlobalVolumeNode);
     }
 
     deserialize(data) {

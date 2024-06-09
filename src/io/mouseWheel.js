@@ -5,8 +5,12 @@ class MouseWheel {
          * @type{!Runtime}
          */
         this.runtime = runtime;
+
         // pm: track scroll deltaY
         this.scrollDelta = 0;
+        this.runtime.on("RUNTIME_STEP_END", () => {
+            this.scrollDelta = 0;
+        });
     }
 
     _addToScrollingDistanceBlock (amount) {
@@ -24,16 +28,8 @@ class MouseWheel {
         this.scrollDelta = data.deltaY;
         // add to scrolling distance
         this._addToScrollingDistanceBlock(0 - data.deltaY);
-        // wait 2 ticks then set back to zero since we dont get a post for scroll stop
-        this.runtime.once("RUNTIME_STEP_START", () => {
-            this.runtime.once("RUNTIME_STEP_START", () => {
-                this.scrollDelta = 0;
-            })
-        })
 
         const matchFields = {};
-        // pm: we need to track scrolling seperately for another block
-        // we cant reuse matchFields as we need to give a different name
         const scrollFields = {};
         if (data.deltaY < 0) {
             matchFields.KEY_OPTION = 'up arrow';

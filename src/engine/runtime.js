@@ -582,9 +582,6 @@ class Runtime extends EventEmitter {
             }
         };
 
-        // it back
-//        this.on('RUNTIME_STEP_START', () => this.emit('BEFORE_EXECUTE'));
-
         // list of variable types declared by extensions
         this._extensionVariables = {};
         // lists all custom serializers
@@ -1020,6 +1017,14 @@ class Runtime extends EventEmitter {
      */
     static get RUNTIME_STEP_START () {
         return 'RUNTIME_STEP_START';
+    }
+
+    /**
+     * Event name when _step() has finished all processing within the function.
+     * @const {string}
+     */
+    static get RUNTIME_STEP_END () {
+        return 'RUNTIME_STEP_END';
     }
 
     /**
@@ -2730,33 +2735,6 @@ class Runtime extends EventEmitter {
         this.startHats('event_whenflagclicked');
     }
 
-    _accountForExtendedSoundsAudioContexts() {
-        // extended audio
-        if ("ext_jgExtendedAudio" in this) {
-            const extension = this.ext_jgExtendedAudio;
-            const helper = extension.helper;
-            // audio context might not be created, make it for him
-            if (!helper.audioContext) helper.audioContext = new AudioContext();
-            // gain node for volume slidor might not be created, make it for him
-            if (!helper.audioGlobalVolumeNode) {
-                helper.audioGlobalVolumeNode = helper.audioContext.createGain();
-                helper.audioGlobalVolumeNode.gain.value = 1;
-                helper.audioGlobalVolumeNode.connect(helper.audioContext.destination);
-                if (this.audioEngine) {
-                    helper.audioGlobalVolumeNode.gain.value = this.audioEngine.inputNode.gain.value;
-                }
-            }
-        }
-    }
-    _getExtendedSoundsAudioContext() {
-        // extended audio
-        if ("ext_jgExtendedAudio" in this) {
-            const extension = this.ext_jgExtendedAudio;
-            const helper = extension.helper;
-            return helper.audioContext;
-        }
-    }
-
     /**
      * Pause running scripts
      */
@@ -2764,14 +2742,8 @@ class Runtime extends EventEmitter {
         if (this.paused) return;
         this.emit(Runtime.RUNTIME_PRE_PAUSED);
         this.paused = true;
-        // pause all audio contexts (that includes you, extended audio)
-        // yea extended audio gets extra permissions :3
+        // pause all audio contexts (that includes exts with their own AC or gain node)
         this.audioEngine.audioContext.suspend();
-        this._accountForExtendedSoundsAudioContexts();
-        const extAudioAC = this._getExtendedSoundsAudioContext();
-        if (extAudioAC) {
-            extAudioAC.suspend();
-        }
         for (const audioData of this._extensionAudioObjects.values()) {
             if (audioData.audioContext) {
                 audioData.audioContext.suspend();
@@ -2791,13 +2763,8 @@ class Runtime extends EventEmitter {
     play() {
         if (!this.paused) return;
         this.paused = false;
-        // resume all audio contexts (that includes you, extended audio)
+        // resume all audio contexts (that includes exts with their own AC or gain node)
         this.audioEngine.audioContext.resume();
-        this._accountForExtendedSoundsAudioContexts();
-        const extAudioAC = this._getExtendedSoundsAudioContext();
-        if (extAudioAC) {
-            extAudioAC.resume();
-        }
         for (const audioData of this._extensionAudioObjects.values()) {
             if (audioData.audioContext) {
                 audioData.audioContext.resume();
@@ -2868,7 +2835,9 @@ class Runtime extends EventEmitter {
      * inactive threads after each iteration.
      */
     _step () {
-        // pm: emit this event because i want it
+        // pm: RUNTIME_STEP_START runs before BEFORE_EXECUTE
+        // this runs before any processing of this new step
+        this.frameLoop._stepCounter++;
         this.emit(Runtime.RUNTIME_STEP_START);
 
         if (this.interpolationEnabled) {
@@ -2954,6 +2923,9 @@ class Runtime extends EventEmitter {
         if (this.interpolationEnabled) {
             this._lastStepTime = Date.now();
         }
+        
+        // pm: RUNTIME_STEP_END runs after AFTER_EXECUTE
+        this.emit(Runtime.RUNTIME_STEP_END);
     }
 
     /**

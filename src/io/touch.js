@@ -11,17 +11,28 @@ class Touch {
                 _scratchX: 0,
                 _scratchY: 0,
                 _isDown: false,
+
                 // pm: keep track of taps
                 _isTapped: false,
-                _tapId: 0
+                _tapOnStep: -1
             }
-        })
+        });
+
         /**
          * Reference to the owning Runtime.
          * Can be used, for example, to activate hats.
          * @type{!Runtime}
          */
         this.runtime = runtime;
+        
+        // after processing all blocks, we can check if this step is after the one we tapped on
+        this.runtime.on("RUNTIME_STEP_END", () => {
+            for (const finger of this.fingers) {
+                if (this.runtime.frameLoop._stepCounter > finger._tapOnStep) {
+                    finger._isTapped = false;
+                }
+            }
+        });
     }
 
     /**
@@ -31,7 +42,6 @@ class Touch {
     postData (data) {
         data.changedTouches.forEach(touch => {
             const finger = this.fingers[touch.identifier];
-            console.log(touch, finger);
             if (!finger) return;
             if (typeof touch.x === 'number') {
                 finger._clientX = touch.x;
@@ -54,21 +64,8 @@ class Touch {
             }
             if (data.isDown === true) {
                 finger._isTapped = true;
-                // increment tap id
-                finger._tapId++;
-                if (finger._tapId > 16777216) {
-                    finger._tapId = 0;
-                }
+                finger._tapOnStep = this.runtime.frameLoop._stepCounter;
             }
-            const thisTapId = finger._tapId;
-            // reset after 2 ticks
-            this.runtime.once("RUNTIME_STEP_START", () => {
-                this.runtime.once("RUNTIME_STEP_START", () => {
-                    // check if tap id is equal (otherwise we tapped this frame too)
-                    if (thisTapId !== finger._tapId) return;
-                    finger._isTapped = false;
-                })
-            })
         })
     }
 

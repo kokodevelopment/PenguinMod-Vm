@@ -9,21 +9,30 @@ class Mouse {
         this._clientY = 0;
         this._scratchX = 0;
         this._scratchY = 0;
-        this._scrollDeltaY = 0;
+
         this._buttons = new Set();
-        this.usesRightClickDown = false;
         this._isDown = false;
+        
+        this.usesRightClickDown = false;
+
         // pm: keep track of clicks
         this._isClicked = false;
-        this._clickId = 0;
+        this._clickOnStep = -1;
 
-        this.cameraBound = null;
         /**
          * Reference to the owning Runtime.
          * Can be used, for example, to activate hats.
          * @type{!Runtime}
          */
         this.runtime = runtime;
+        this.cameraBound = null;
+
+        // after processing all blocks, we can check if this step is after the one we clicked on
+        this.runtime.on("RUNTIME_STEP_END", () => {
+            if (this.runtime.frameLoop._stepCounter > this._clickOnStep) {
+                this._isClicked = false;
+            }
+        });
     }
 
     bindToCamera(screen) {
@@ -82,7 +91,6 @@ class Mouse {
      * @param  {object} data Data from DOM event.
      */
     postData (data) {
-        this._scrollDeltaY = data.deltaY;
         if (typeof data.x === 'number') {
             this._clientX = data.x;
             this._scratchX = MathUtil.clamp(
@@ -112,21 +120,8 @@ class Mouse {
             this._isDown = data.isDown;
             if (data.isDown) {
                 this._isClicked = true;
-                // increment click id
-                this._clickId++;
-                if (this._clickId > 16777216) {
-                    this._clickId = 0;
-                }
+                this._clickOnStep = this.runtime.frameLoop._stepCounter;
             }
-            const thisClickId = this._clickId;
-            // reset after 2 ticks
-            this.runtime.once("RUNTIME_STEP_START", () => {
-                this.runtime.once("RUNTIME_STEP_START", () => {
-                    // check if click id is equal (otherwise we clicked this frame too)
-                    if (thisClickId !== this._clickId) return;
-                    this._isClicked = false;
-                });
-            });
 
             // Do not trigger if down state has not changed
             if (previousDownState === this._isDown) return;
@@ -220,17 +215,10 @@ class Mouse {
      * @return {boolean} Is the mouse button down?
      */
     getButtonIsDown (button) {
-        if (button === 69) {
-            return this._scrollDeltaY;
-        }
         if (button === 2) {
             this.usesRightClickDown = true;
         }
         return this._buttons.has(button);
-    }
-
-    getScrollDeltaY () {
-        return this._scrollDeltaY;
     }
 }
 

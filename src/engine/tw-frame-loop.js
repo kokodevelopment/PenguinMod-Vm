@@ -35,6 +35,7 @@ class FrameLoop {
         this._stepInterval = null;
         this._interpolationAnimation = null;
         this._stepAnimation = null;
+        this._stepCounter = 0;
     }
 
     setFramerate (fps) {
