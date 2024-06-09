@@ -8,8 +8,6 @@ const blockSeparator = '<sep gap="36"/>'; // At default scale, about 28px
 const pathToMedia = 'static/blocks-media'; // ScratchBlocks.mainWorkspace.options.pathToMedia
 
 const blocks = `
-<!-- this one dont work right -->
-<!--<block type="control_new_script"></block>-->
 <block type="control_repeatForSeconds">
     <value name="TIMES">
         <shadow type="math_number">
@@ -30,9 +28,12 @@ const blocks = `
         </block>
     </value>
 </block>
-%block2>
 <block type="control_waittick"/>
 %block3>
+${blockSeparator}
+%block2>
+%block4>
+%block5>
 ${blockSeparator}
 <block type="control_get_counter"/>
 <block type="control_incr_counter"/>
@@ -148,7 +149,37 @@ class pmControlsExpansion {
                             dataURI: `${pathToMedia}/repeat.svg`
                         }
                     }
-                }
+                },
+                {
+                    opcode: 'asNewBroadcastArgs',
+                    text: [
+                        'new thread with data [DATA]',
+                        '[ICON]'
+                    ],
+                    branchCount: 1,
+                    blockType: BlockType.CONDITIONAL,
+                    alignments: [
+                        null, // text
+                        null, // SUBSTACK
+                        ArgumentAlignment.RIGHT // ICON
+                    ],
+                    arguments: {
+                        DATA: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "abc",
+                        },
+                        ICON: {
+                            type: ArgumentType.IMAGE,
+                            dataURI: AsyncIcon
+                        }
+                    }
+                },
+                {
+                    opcode: 'asNewBroadcastArgBlock',
+                    text: 'thread data',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true
+                },
             ]
         };
     }
@@ -227,9 +258,13 @@ class pmControlsExpansion {
             util.startBranch(3, false);
         }
     }
+    
+    restartFromTheTop() {
+        return; // doesnt work in compat mode
+    }
 
+    // CubesterYT code probably
     asNewBroadcast(_, util) {
-        // CubesterYT probably
         if (util.thread.target.blocks.getBranch(util.thread.peekStack(), 0)) {
             util.sequencer.runtime._pushThread(
                 util.thread.target.blocks.getBranch(util.thread.peekStack(), 0),
@@ -238,8 +273,20 @@ class pmControlsExpansion {
             );
         }
     }
-    restartFromTheTop() {
-        return; // doesnt work in compat
+    asNewBroadcastArgs(args, util) {
+        const data = Cast.toString(args.DATA);
+        if (util.thread.target.blocks.getBranch(util.thread.peekStack(), 0)) {
+            const thread = util.sequencer.runtime._pushThread(
+                util.thread.target.blocks.getBranch(util.thread.peekStack(), 0),
+                util.target,
+                {}
+            );
+
+            thread.__controlx_asNewBroadcastArgs_data = data;
+        }
+    }
+    asNewBroadcastArgBlock(_, util) {
+        return util.thread.__controlx_asNewBroadcastArgs_data;
     }
 }
 
