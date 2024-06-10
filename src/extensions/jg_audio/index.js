@@ -266,6 +266,7 @@ class AudioExtension {
                         { text: "start position", value: "start position" },
                         { text: "sound length", value: "sound length" },
                         { text: "origin sound", value: "origin sound" },
+                        { text: "output volume", value: "output volume" },
                     ]
                 }
             }
@@ -321,17 +322,17 @@ class AudioExtension {
         const audioGroup = Helper.GetAudioGroup(args.AUDIOGROUP);
         switch (args.VSPP) {
             case "volume":
-                audioGroup.globalVolume = Helper.Clamp(Helper.SafeNumberConvert(args.VALUE) / 100, 0, 1);
+                audioGroup.globalVolume = Helper.Clamp(Cast.toNumber(args.VALUE) / 100, 0, 1);
                 break;
             case "speed":
-                audioGroup.globalSpeed = Helper.Clamp(Helper.SafeNumberConvert(args.VALUE) / 100, 0, Infinity);
+                audioGroup.globalSpeed = Helper.Clamp(Cast.toNumber(args.VALUE) / 100, 0, Infinity);
                 break;
             case "detune":
             case "pitch":
-                audioGroup.globalPitch = Helper.SafeNumberConvert(args.VALUE);
+                audioGroup.globalPitch = Cast.toNumber(args.VALUE);
                 break;
             case "pan":
-                audioGroup.globalPan = Helper.Clamp(Helper.SafeNumberConvert(args.VALUE), -100, 100) / 100;
+                audioGroup.globalPan = Helper.Clamp(Cast.toNumber(args.VALUE), -100, 100) / 100;
                 break;
         }
         Helper.UpdateAudioGroupSources(audioGroup);
@@ -383,7 +384,7 @@ class AudioExtension {
             let canUse = true;
             try {
                 // eslint-disable-next-line no-unused-vars
-                let abc = util.target.sprite.soundBank.getSoundPlayer(sound.soundId).buffer;
+                util.target.sprite.soundBank.getSoundPlayer(sound.soundId).buffer;
             } catch {
                 canUse = false;
             }
@@ -416,7 +417,7 @@ class AudioExtension {
                     let canUse = true;
                     try {
                         // eslint-disable-next-line no-unused-vars
-                        let abc = util.target.sprite.soundBank.getSoundPlayer(sound.soundId).buffer;
+                        util.target.sprite.soundBank.getSoundPlayer(sound.soundId).buffer;
                     } catch {
                         canUse = false;
                     }
@@ -454,7 +455,7 @@ class AudioExtension {
         if (!audioGroup) return;
         const audioSource = Helper.GrabAudioSource(audioGroup, args.NAME);
         if (!audioSource) return;
-        audioSource.timePosition = Helper.SafeNumberConvert(args.TIME);
+        audioSource.timePosition = Cast.toNumber(args.TIME);
     }
     audioSourceSetVolumeSpeedPitchPan(args) {
         const audioGroup = Helper.GetAudioGroup(args.AUDIOGROUP);
@@ -463,17 +464,17 @@ class AudioExtension {
         if (!audioSource) return;
         switch (args.VSPP) {
             case "volume":
-                audioSource.volume = Helper.Clamp(Helper.SafeNumberConvert(args.VALUE) / 100, 0, 1);
+                audioSource.volume = Helper.Clamp(Cast.toNumber(args.VALUE) / 100, 0, 1);
                 break;
             case "speed":
-                audioSource.speed = Helper.Clamp(Helper.SafeNumberConvert(args.VALUE) / 100, 0, Infinity);
+                audioSource.speed = Helper.Clamp(Cast.toNumber(args.VALUE) / 100, 0, Infinity);
                 break;
             case "detune":
             case "pitch":
-                audioSource.pitch = Helper.SafeNumberConvert(args.VALUE);
+                audioSource.pitch = Cast.toNumber(args.VALUE);
                 break;
             case "pan":
-                audioSource.pan = Helper.Clamp(Helper.SafeNumberConvert(args.VALUE), -100, 100) / 100;
+                audioSource.pan = Helper.Clamp(Cast.toNumber(args.VALUE), -100, 100) / 100;
                 break;
         }
         Helper.UpdateAudioGroupSources(audioGroup);
@@ -532,6 +533,8 @@ class AudioExtension {
                 return audioSource.duration;
             case "origin sound":
                 return audioSource.originAudioName;
+            case "output volume":
+                return audioSource.getVolume() * 100;
             default:
                 return "";
         }

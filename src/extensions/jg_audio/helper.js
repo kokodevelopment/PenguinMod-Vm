@@ -1,3 +1,5 @@
+const Cast = require("../../util/cast");
+
 function MathOver(number, max) {
     let num = number;
     while (num > max) {
@@ -6,15 +8,7 @@ function MathOver(number, max) {
     return num;
 }
 function Clamp(number, min, max) {
-    if (number < min) return min;
-    if (number > max) return max;
-    return number;
-}
-function SafeNumberConvert(tonumber) {
-    const n = Number(tonumber);
-    if (n == null || n == undefined) return 0;
-    if (isNaN(n)) return 0;
-    return n;
+    return Math.min(Math.max(number, min), max);
 }
 
 const AudioNodeStorage = [];
@@ -42,15 +36,20 @@ class AudioSource {
         this._pauseTimeOffset = null;
         this.parent = parent;
 
-        this._audioContext = audioContext;
         this._audioNode = null;
+        this._audioContext = audioContext;
         this._audioGroup = audioGroup;
+
         this._audioPanner = this._audioContext.createPanner();
-        this._audioPanner.panningModel = 'equalpower';
-        this._audioPanner.connect(parent.audioGlobalVolumeNode);
         this._audioGainNode = this._audioContext.createGain();
+        this._audioAnalyzerNode = this._audioContext.createAnalyser();
+        
+        this._audioPanner.panningModel = 'equalpower';
         this._audioGainNode.gain.value = 1;
+
         this._audioGainNode.connect(this._audioPanner);
+        this._audioPanner.connect(this._audioAnalyzerNode);
+        this._audioAnalyzerNode.connect(parent.audioGlobalVolumeNode);
 
         this.duration = source.duration;
 
@@ -130,7 +129,7 @@ class AudioSource {
         audioNode.playbackRate.value *= audioGroup.globalSpeed;
         audioGainNode.gain.value *= audioGroup.globalVolume;
 
-        const position = this.calculatePannerPosition(Clamp(SafeNumberConvert(this.pan / audioGroup.globalPan), -1, 1));
+        const position = this.calculatePannerPosition(Clamp(this.pan + audioGroup.globalPan, -1, 1));
         audioPanner.setPosition(position.x, position.y, position.z);
     }
     clone() {
@@ -138,6 +137,21 @@ class AudioSource {
         return newSource;
     }
 
+    getVolume() {
+        const analyserNode = this._audioAnalyzerNode;
+
+        const bufferLength = analyserNode.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        analyserNode.getByteTimeDomainData(dataArray);
+
+        let sumSquares = 0.0;
+        for (let i = 0; i < bufferLength; i++) {
+          const sample = (dataArray[i] / 128.0) - 1.0;
+          sumSquares += sample * sample;
+        }
+        const volume = Math.sqrt(sumSquares / bufferLength);
+        return volume;
+    }
     calculateTimePosition() {
         if (this._endingTime != null) return (this._endingTime - this._startingTime) * this.speed;
         return MathOver((Date.now() - this._startingTime) * this.speed, this.duration * 1000);
@@ -285,22 +299,11 @@ class AudioExtensionHelper {
         return null;
     }
     /**
-        * Safely converts things to numbers.
-    */
-    SafeNumberConvert(tonumber) {
-        const n = Number(tonumber);
-        if (n == null || n == undefined) return 0;
-        if (isNaN(n)) return 0;
-        return n;
-    }
-    /**
         * Clamps numbers to stay inbetween 2 values.
         * @type {number}
     */
     Clamp(number, min, max) {
-        if (number < min) return min;
-        if (number > max) return max;
-        return number;
+        return Math.min(Math.max(number, min), max);
     }
 
     /**
