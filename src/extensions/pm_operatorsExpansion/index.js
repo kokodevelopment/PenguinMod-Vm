@@ -371,8 +371,9 @@ class pmOperatorsExpansion {
                 },
                 {
                     opcode: 'orIfFalsey',
-                    text: '[ONE] or if falsey [TWO]',
-                    blockType: BlockType.BOOLEAN,
+                    text: '[ONE] or else [TWO]',
+                    blockType: BlockType.REPORTER,
+                    allowDropAnywhere: true,
                     disableMonitor: true,
                     arguments: {
                         ONE: {
@@ -387,8 +388,9 @@ class pmOperatorsExpansion {
                 },
                 {
                     opcode: 'ifIsTruthy',
-                    text: 'if [ONE] true then [TWO]',
-                    blockType: BlockType.BOOLEAN,
+                    text: 'if [ONE] is true then [TWO]',
+                    blockType: BlockType.REPORTER,
+                    allowDropAnywhere: true,
                     disableMonitor: true,
                     arguments: {
                         ONE: {
