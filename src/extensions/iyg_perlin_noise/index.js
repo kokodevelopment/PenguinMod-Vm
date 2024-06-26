@@ -12,7 +12,6 @@ const { createNoise3D } = require('simplex-noise');
 
 class iygPerlin {
     constructor(runtime) {
-        console.log("nosie ext");
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -414,7 +413,7 @@ class iygPerlin {
         let y = args.Y + .5;
         let z = args.Z + .5;
 
-        return this.generatePerlin(seed, perlin_octaves, this.dumbSeedRandom(), x, y, z);
+        return this.generatePerlin(seed, perlin_octaves, this.dumbSeedRandom, x, y, z);
     }
 
     // ----- V2 -----
@@ -425,7 +424,7 @@ class iygPerlin {
         let y = args.Y + .5;
         let z = args.Z + .5;
 
-        return this.generatePerlin(seed, perlin_octaves, this.goodSeedRandom(), x, y, z);
+        return this.generatePerlin(seed, perlin_octaves, this.goodSeedRandom, x, y, z);
     }
 
     // ----- V2 -----
