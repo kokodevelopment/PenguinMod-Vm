@@ -217,8 +217,9 @@ class Files {
         return {
             id: 'twFiles',
             name: 'Files',
-            color1: '#ffbb00',
-            color2: '#ffaa00',
+            color1: '#fcb103',
+            color2: '#db9a37',
+            color3: '#db8937',
             blocks: [
                 {
                     opcode: 'showPicker',
