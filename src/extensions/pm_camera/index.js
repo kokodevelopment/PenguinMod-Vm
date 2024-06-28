@@ -63,7 +63,6 @@ class PenguinModCamera {
             dir: 90 - state.dir,
             scale: state.size / 100
         }, state.silent);
-        console.log(state);
     }
     _fixDirection(target) {
         const state = this._getCameraState(target);
