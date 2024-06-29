@@ -292,7 +292,29 @@ class JgDevBlocks {
                     color2: '#000000',
                     color3: '#000000',
                     disableMonitor: true
-                }
+                },
+                {
+                    opcode: 'duplicato',
+                    text: 'duplicato',
+                    blockType: BlockType.REPORTER,
+                    canDragDuplicate: true,
+                    disableMonitor: true,
+                    hideFromPalette: true
+                },
+                {
+                    opcode: 'theheheuoihew9h9',
+                    blockType: BlockType.COMMAND,
+                    text: 'This block will appear in the penguinmod wiki [SEP] [DUPLIC]',
+                    arguments: {
+                        SEP: {
+                            type: ArgumentType.SEPERATOR,
+                        },
+                        DUPLIC: {
+                            type: ArgumentType.STRING,
+                            fillIn: 'duplicato',
+                        }
+                    }
+                },
             ],
             menus: {
                 variableInternal: {

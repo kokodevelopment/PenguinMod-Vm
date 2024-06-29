@@ -154,6 +154,9 @@ const ArgumentTypeMap = (() => {
         fieldName: "BROADCAST",
         variableType: 'broadcast_msg'
     };
+    map[ArgumentType.SEPERATOR] = {
+        fieldType: 'field_vertical_separator'
+    };
     return map;
 })();
 
@@ -1564,7 +1567,8 @@ class Runtime extends EventEmitter {
             extensions: blockInfo.extensions ?? [],
             colour: blockInfo.color1 ?? categoryInfo.color1,
             colourSecondary: blockInfo.color2 ?? categoryInfo.color2,
-            colourTertiary: blockInfo.color3 ?? categoryInfo.color3
+            colourTertiary: blockInfo.color3 ?? categoryInfo.color3,
+            canDragDuplicate: blockInfo.canDragDuplicate === true
         };
         const context = {
             // TODO: store this somewhere so that we can map args appropriately after translation.
@@ -1684,8 +1688,8 @@ class Runtime extends EventEmitter {
             blockJSON[`args${outLineNum}`] = [{
                 type: 'field_image',
                 src: blockInfo.branchIndicator ?? blockInfo.branchIconURI ?? './static/blocks-media/repeat.svg',
-                width: 24,
-                height: 24,
+                width: blockInfo.branchIndicatorWidth ?? 24,
+                height: blockInfo.branchIndicatorHeight ?? 24,
                 alt: '*', // TODO remove this since we don't use collapsed blocks in scratch
                 flip_rtl: true
             }];
@@ -1851,6 +1855,10 @@ class Runtime extends EventEmitter {
             argJSON = this._constructInlineImageJson(argInfo);
         } else if (argTypeInfo.fieldType === 'field_variable') {
             argJSON = this._constructVariableDropdown(argInfo, placeholder);
+        } else if (argTypeInfo.fieldType === 'field_vertical_separator') {
+            argJSON = {
+                type: 'field_vertical_separator',
+            };
         } else {
             // Construct input value
 
@@ -1874,6 +1882,7 @@ class Runtime extends EventEmitter {
 
             let valueName;
             let shadowType;
+            let blockType;
             let fieldName;
             let variableID;
             let variableName;
@@ -1920,6 +1929,12 @@ class Runtime extends EventEmitter {
                 shadowType = (argTypeInfo.shadow && argTypeInfo.shadow.type) || null;
                 fieldName = (argTypeInfo.shadow && argTypeInfo.shadow.fieldName) || null;
             }
+            // TODO: Allow fillIn to work with non-shadow.
+            if (argInfo.fillIn/* && argInfo.fillInShadow*/) {
+                shadowType = `${context.categoryInfo.id}_${argInfo.fillIn}`;
+            }/* else if (argInfo.fillIn) {
+                blockType = `${context.categoryInfo.id}_${argInfo.fillIn}`;
+            }*/
 
             // <value> is the ScratchBlocks name for a block input.
             if (valueName) {
@@ -1930,6 +1945,11 @@ class Runtime extends EventEmitter {
             // Boolean inputs don't need to specify a shadow in the XML.
             if (shadowType) {
                 context.inputList.push(`<shadow type="${xmlEscape.escapeAttribute(shadowType)}">`);
+            }
+            
+            // TODO: This doesnt seem to work properly with fillIn. Default to shadow for now.
+            if (blockType) {
+                context.inputList.push(`<block type="${xmlEscape.escapeAttribute(blockType)}">`);
             }
 
             if (shadowType === 'polygon') {
@@ -1948,6 +1968,10 @@ class Runtime extends EventEmitter {
             if (variableID) {
                 // eslint-disable-next-line max-len
                 context.inputList.push(`<field name="${fieldName}" id="${variableID}" variableType="${variableType}">${variableName}</field>`);
+            }
+            
+            if (blockType) {
+                context.inputList.push('</block>');
             }
 
             if (shadowType) {
