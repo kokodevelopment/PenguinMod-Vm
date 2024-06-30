@@ -76,7 +76,7 @@ class JgPrismBlocks {
                     arguments: {
                         URL: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'https://pm-bapi.vercel.app/buauauau.mp3'
+                            defaultValue: 'https://extensions.turbowarp.org/meow.mp3'
                         }
                     }
                 },

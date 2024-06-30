@@ -33,7 +33,7 @@ const SERVER_HOST = 'https://synthesis-service.scratch.mit.edu';
  * pm: The url of the extra TTS server.
  * @type {string}
  */
-const PM_SERVER_HOST = 'https://pm-bapi.vercel.app/api';
+const PM_SERVER_HOST = 'https://gextapi.penguinmod.com';
 
 /**
  * How long to wait in ms before timing out requests to synthesis server.
