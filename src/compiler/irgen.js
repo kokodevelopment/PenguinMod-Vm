@@ -777,7 +777,7 @@ class ScriptTreeGenerator {
 
         case 'lmsTempVars2_listRuntimeVariables':
             return {
-                kind: 'tempVars.a;;',,
+                kind: 'tempVars.all',
                 runtime: true
             };
         case 'lmsTempVars2_listThreadVariables':
