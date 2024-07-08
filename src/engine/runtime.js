@@ -2821,6 +2821,8 @@ class Runtime extends EventEmitter {
         this.play();
         // Emit stop event to allow blocks to clean up any state.
         this.emit(Runtime.PROJECT_STOP_ALL);
+        // clear runtime variables
+        this.variables = Object.create(null);
 
         // Dispose all clones.
         const newTargets = [];
