@@ -920,6 +920,14 @@ class ExtensionManager {
         return blockInfo;
     }
 
+    extensionUrlFromId(extId) {
+        for (const [extensionId, serviceName] of this._loadedExtensions.entries()) {
+            if (extensionId !== extId) continue;
+            // Service names for extension workers are in the format "extension.WORKER_ID.EXTENSION_ID"
+            const workerId = +serviceName.split('.')[1];
+            return this.workerURLs[workerId];
+        }
+    }
     getExtensionURLs() {
         const extensionURLs = {};
         for (const [extensionId, serviceName] of this._loadedExtensions.entries()) {
