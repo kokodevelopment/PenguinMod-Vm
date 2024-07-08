@@ -738,17 +738,53 @@ class ScriptTreeGenerator {
                 value: block.fields.SOUND_MENU.value
             };
 
+        case 'lmsTempVars2_getRuntimeVariable':
+            return {
+                kind: 'tempVars.get',
+                var: this.descendInputOfBlock(block, 'name'),
+                runtime: true
+            };
+        case 'lmsTempVars2_getThreadVariable':
+            return {
+                kind: 'tempVars.get',
+                var: this.descendInputOfBlock(block, 'name'),
+                thread: true
+            };
         case 'tempVars_getVariable':
             return {
                 kind: 'tempVars.get',
                 var: this.descendInputOfBlock(block, 'name')
             };
-
+        
+        case 'lmsTempVars2_runtimeVariableExists':
+            return {
+                kind: 'tempVars.exists',
+                var: this.descendInputOfBlock(block, 'name'),
+                runtime: true
+            };
+        case 'lmsTempVars2_threadVariableExists':
+            return {
+                kind: 'tempVars.exists',
+                var: this.descendInputOfBlock(block, 'name'),
+                thread: true
+            };
         case 'tempVars_variableExists':
             // This menu is special compared to other menus -- it actually has an opcode function.
             return {
                 kind: 'tempVars.exists',
                 var: this.descendInputOfBlock(block, 'name')
+            };
+
+        case 'lmsTempVars2_listRuntimeVariables':
+            return {
+                kind: 'tempVars.a;;',
+                var: this.descendInputOfBlock(block, 'name'),
+                runtime: true
+            };
+        case 'lmsTempVars2_listThreadVariables':
+            return {
+                kind: 'tempVars.all',
+                thread: true
             };
         case 'tempVars_allVariables':
             return {
@@ -1774,12 +1810,60 @@ class ScriptTreeGenerator {
             control.if.return.else.return
             */
 
+        case 'lmsTempVars2_setRuntimeVariable':
+            return {
+                kind: 'tempVars.set',
+                var: this.descendInputOfBlock(block, 'VAR'),
+                val: this.descendInputOfBlock(block, 'STRING'),
+                runtime: true
+            };
+        case 'lmsTempVars2_setThreadVariable':
+            return {
+                kind: 'tempVars.set',
+                var: this.descendInputOfBlock(block, 'VAR'),
+                val: this.descendInputOfBlock(block, 'STRING'),
+                thread: true
+            };
         case 'tempVars_setVariable':
             return {
                 kind: 'tempVars.set',
                 var: this.descendInputOfBlock(block, 'name'),
                 val: this.descendInputOfBlock(block, 'value')
             };
+        
+        case 'lmsTempVars2_changeRuntimeVariable':
+            const name = this.descendInputOfBlock(block, 'VAR');
+            return {
+                kind: 'tempVars.set',
+                var: name,
+                val: {
+                    kind: 'op.add',
+                    left: {
+                        kind: 'tempVars.get',
+                        var: name,
+                        thread: true
+                    },
+                    right: this.descendInputOfBlock(block, 'NUM')
+                },
+                runtime: true
+            };
+        case 'lmsTempVars2_changeThreadVariable': {
+            const name = this.descendInputOfBlock(block, 'VAR');
+            return {
+                kind: 'tempVars.set',
+                var: name,
+                val: {
+                    kind: 'op.add',
+                    left: {
+                        kind: 'tempVars.get',
+                        var: name,
+                        thread: true
+                    },
+                    right: this.descendInputOfBlock(block, 'NUM')
+                },
+                thread: true
+            };
+        }
         case 'tempVars_changeVariable': {
             const name = this.descendInputOfBlock(block, 'name');
             return {
@@ -1795,14 +1879,36 @@ class ScriptTreeGenerator {
                 }
             };
         }
+
+        case 'lmsTempVars2_deleteRuntimeVariable':
+            return {
+                kind: 'tempVars.delete',
+                var: this.descendInputOfBlock(block, 'VAR'),
+                runtime: true
+            };
         case 'tempVars_deleteVariable':
             return {
                 kind: 'tempVars.delete',
                 var: this.descendInputOfBlock(block, 'name')
             };
+
+        case 'lmsTempVars2_deleteAllRuntimeVariable':
+            return {
+                kind: 'tempVars.deleteAll',
+                runtime: true
+            };
         case 'tempVars_deleteAllVariables':
             return {
                 kind: 'tempVars.deleteAll'
+            };
+
+        case 'lmsTempVars2_forEachThreadVariable':
+            return {
+                kind: 'tempVars.delete',
+                var: this.descendInputOfBlock(block, 'VAR'),
+                loops: this.descendInputOfBlock(block, 'NUM'),
+                do: this.descendSubstack(block, 'SUBSTACK'),
+                thread: true
             };
         case 'tempVars_forEachTempVar':
             this.analyzeLoop();

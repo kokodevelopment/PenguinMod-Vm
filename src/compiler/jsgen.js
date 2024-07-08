@@ -985,16 +985,34 @@ class JSGenerator {
 
         case 'tempVars.get': {
             const name = this.descendInput(node.var);
+            const hostObj = node.runtime 
+                ? 'runtime.variables' 
+                : node.thread 
+                    ? 'thread.variables' 
+                    : 'tempVars';
             if (environment.supportsNullishCoalescing) {
-                return new TypedInput(`(tempVars[${name.asString()}] ?? "")`, TYPE_UNKNOWN);
+                return new TypedInput(`(${hostObj}[${name.asString()}] ?? "")`, TYPE_UNKNOWN);
             }
-            return new TypedInput(`nullish(${name.asString()}, "")`, TYPE_UNKNOWN);
+            return new TypedInput(`nullish(${hostObj}[${name.asString()}], "")`, TYPE_UNKNOWN);
         }
         case 'tempVars.exists': {
             const name = this.descendInput(node.var);
-            return new TypedInput(`!!tempVars[${name.asString()}]`, TYPE_BOOLEAN);
+            const hostObj = node.runtime 
+                ? 'runtime.variables' 
+                : node.thread 
+                    ? 'thread.variables' 
+                    : 'tempVars';
+            return new TypedInput(`${name.asString()} in ${hostObj}`, TYPE_BOOLEAN);
         }
         case 'tempVars.all':
+            const hostObj = node.runtime 
+                ? 'runtime.variables' 
+                : node.thread 
+                    ? 'thread.variables' 
+                    : 'tempVars';
+            if (node.runtime || node.thread) {
+                return new TypedInput(`Object.keys(${hostObj}).join(',')`);
+            }
             return new TypedInput(`JSON.stringify(Object.keys(tempVars))`, TYPE_STRING);
 
         default:
@@ -1708,28 +1726,53 @@ class JSGenerator {
         case 'tempVars.set': {
             const name = this.descendInput(node.var);
             const val = this.descendInput(node.val);
-            this.source += `tempVars[${name.asString()}] = ${val.asUnknown()};`;
+            const hostObj = node.runtime 
+                ? 'runtime.variables' 
+                : node.thread 
+                    ? 'thread.variables' 
+                    : 'tempVars';
+            this.source += `${hostObj}[${name.asString()}] = ${val.asUnknown()};`;
             break;
         }
         case 'tempVars.change': {
             const name = this.descendInput(node.var);
             const val = this.descendInput(node.val);
-            this.source += `tempVars[${name.asString()}] += ${val.asUnknown()};`;
+            const hostObj = node.runtime 
+                ? 'runtime.variables' 
+                : node.thread 
+                    ? 'thread.variables' 
+                    : 'tempVars';
+            this.source += `${hostObj}[${name.asString()}] += ${val.asUnknown()};`;
             break;
         }
         case 'tempVars.delete': {
             const name = this.descendInput(node.var);
-            this.source += `delete tempVars[${name.asString()}];`;
+            const hostObj = node.runtime 
+                ? 'runtime.variables' 
+                : node.thread 
+                    ? 'thread.variables' 
+                    : 'tempVars';
+            this.source += `delete ${hostObj}[${name.asString()}];`;
             break;
         }
         case 'tempVars.deleteAll': {
-            this.source += `tempVars = Object.create(null);`;
+            const hostObj = node.runtime 
+                ? 'runtime.variables' 
+                : node.thread 
+                    ? 'thread.variables' 
+                    : 'tempVars';
+            this.source += `${hostObj} = Object.create(null);`;
             break;
         }
         case 'tempVars.forEach': {
             const name = this.descendInput(node.var);
             const loops = this.descendInput(node.loops);
-            const index = `tempVars[${name.asString()}]`;
+            const hostObj = node.runtime 
+                ? 'runtime.variables' 
+                : node.thread 
+                    ? 'thread.variables' 
+                    : 'tempVars';
+            const index = `${hostObj}[${name.asString()}]`;
             this.source += `${index} = 0; `;
             this.source += `while (${index} < ${loops.asNumber()}) { `;
             this.source += `${index}++;\n`;

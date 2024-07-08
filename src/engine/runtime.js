@@ -589,6 +589,13 @@ class Runtime extends EventEmitter {
         this._extensionVariables = {};
         // lists all custom serializers
         this.serializers = {};
+
+        /**
+         * An object to contain runtime variables from the
+         * LilyMakesThings Thread Variables extension
+         * @type {Object}
+         */
+        this.variables = Object.create(null);
     }
 
     /**
