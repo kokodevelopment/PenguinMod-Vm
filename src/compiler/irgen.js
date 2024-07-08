@@ -741,13 +741,13 @@ class ScriptTreeGenerator {
         case 'lmsTempVars2_getRuntimeVariable':
             return {
                 kind: 'tempVars.get',
-                var: this.descendInputOfBlock(block, 'name'),
+                var: this.descendInputOfBlock(block, 'VAR'),
                 runtime: true
             };
         case 'lmsTempVars2_getThreadVariable':
             return {
                 kind: 'tempVars.get',
-                var: this.descendInputOfBlock(block, 'name'),
+                var: this.descendInputOfBlock(block, 'VAR'),
                 thread: true
             };
         case 'tempVars_getVariable':
@@ -759,13 +759,13 @@ class ScriptTreeGenerator {
         case 'lmsTempVars2_runtimeVariableExists':
             return {
                 kind: 'tempVars.exists',
-                var: this.descendInputOfBlock(block, 'name'),
+                var: this.descendInputOfBlock(block, 'VAR'),
                 runtime: true
             };
         case 'lmsTempVars2_threadVariableExists':
             return {
                 kind: 'tempVars.exists',
-                var: this.descendInputOfBlock(block, 'name'),
+                var: this.descendInputOfBlock(block, 'VAR'),
                 thread: true
             };
         case 'tempVars_variableExists':
@@ -777,8 +777,7 @@ class ScriptTreeGenerator {
 
         case 'lmsTempVars2_listRuntimeVariables':
             return {
-                kind: 'tempVars.a;;',
-                var: this.descendInputOfBlock(block, 'name'),
+                kind: 'tempVars.a;;',,
                 runtime: true
             };
         case 'lmsTempVars2_listThreadVariables':
