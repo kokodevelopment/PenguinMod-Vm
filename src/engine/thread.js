@@ -63,13 +63,6 @@ class _StackFrame {
          * @type {Object}
          */
         this.executionContext = null;
-
-        /**
-         * Thread vars: for allowing a compiled version of the 
-         * LilyMakesThings Thread Variables extension
-         * @type {Object}
-         */
-        this.variables = Object.create(null);
     }
 
     /**
@@ -214,6 +207,13 @@ class Thread {
          */
         this.procedures = null;
         this.executableHat = false;
+
+        /**
+         * Thread vars: for allowing a compiled version of the 
+         * LilyMakesThings Thread Variables extension
+         * @type {Object}
+         */
+        this.variables = Object.create(null);
     }
 
     /**
