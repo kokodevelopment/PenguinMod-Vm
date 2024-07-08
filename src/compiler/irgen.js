@@ -1903,7 +1903,7 @@ class ScriptTreeGenerator {
 
         case 'lmsTempVars2_forEachThreadVariable':
             return {
-                kind: 'tempVars.delete',
+                kind: 'tempVars.forEach',
                 var: this.descendInputOfBlock(block, 'VAR'),
                 loops: this.descendInputOfBlock(block, 'NUM'),
                 do: this.descendSubstack(block, 'SUBSTACK'),
