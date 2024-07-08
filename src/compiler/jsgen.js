@@ -69,8 +69,6 @@ const generatorNameVariablePool = new VariablePool('gen');
  */
 class TypedInput {
     constructor (source, type) {
-        // for debugging
-        if (typeof type !== 'number') throw new Error('type is invalid');
         this.source = source;
         this.type = type;
     }
