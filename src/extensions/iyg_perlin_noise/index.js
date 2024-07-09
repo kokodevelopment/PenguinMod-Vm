@@ -413,7 +413,7 @@ class iygPerlin {
         let y = args.Y + .5;
         let z = args.Z + .5;
 
-        return this.generatePerlin(seed, perlin_octaves, this.dumbSeedRandom, x, y, z);
+        return this.generatePerlin(seed, perlin_octaves, this.dumbSeedRandom.bind(this), x, y, z);
     }
 
     // ----- V2 -----
@@ -435,7 +435,7 @@ class iygPerlin {
         let z = args.Z;
         let pre_seed = this.seed;
         this.seed = seed + (x * 743) + (y * 942 ) + (z * 645);
-        let result = this.goodSeedRandom();
+        let result = this.goodSeedRandom.bind(this)();
         this.seed = pre_seed;
         return result;
     }
