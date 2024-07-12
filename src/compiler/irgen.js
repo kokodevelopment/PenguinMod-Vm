@@ -1840,7 +1840,7 @@ class ScriptTreeGenerator {
                     left: {
                         kind: 'tempVars.get',
                         var: name,
-                        thread: true
+                        runtime: true
                     },
                     right: this.descendInputOfBlock(block, 'NUM')
                 },
