@@ -1333,11 +1333,11 @@ class canvas {
 
     createNewCanvas() {
         // expect the global ScratchBlocks from inside the window
-        ScratchBlocks.prompt(ScratchBlocks.Msg.NEW_VARIABLE_TITLE, '', 
+        ScratchBlocks.prompt('New Canvas name:', '', 
             (name, additionalVars, {scope}) => {
                 name = ScratchBlocks.Variables.validateScalarVarOrListName_(name, 
                     ScratchBlocks.getMainWorkspace(), additionalVars, false, 
-                    'canvas', ScratchBlocks.Msg.VARIABLE_ALREADY_EXISTS);
+                    'canvas', 'A Canvas named "%1" already exists.');
                 if (!name) return;
 
                 const target = scope
@@ -1345,7 +1345,7 @@ class canvas {
                     : this.runtime.vm.editingTarget;
                 target.createVariable(uid(), name, 'canvas');
                 this.runtime.vm.emitWorkspaceUpdate();
-            }, ScratchBlocks.Msg.VARIABLE_MODAL_TITLE, 'canvas');
+            }, 'New Canvas', 'canvas');
     }
 
     /**
