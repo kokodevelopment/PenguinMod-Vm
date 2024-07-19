@@ -51,6 +51,7 @@ ${blockSeparator}
 %b18>
 %b19>
 %b23>
+%b24>
 ${blockSeparator}
 %b14>
 <block type="sensing_getspritewithattrib">
@@ -111,6 +112,8 @@ class pmSensingExpansion {
         this.loudnessArray = [0];
 
         this.scrollDistance = 0;
+
+        this.lastValues = {};
     }
 
     orderCategoryBlocks(extensionBlocks) {
@@ -350,6 +353,16 @@ class pmSensingExpansion {
                             defaultValue: '0'
                         }
                     }
+                },
+                {
+                    opcode: 'changed',
+                    blockType: BlockType.BOOLEAN,
+                    text: '[ONE] changed?',
+                    arguments: {
+                        ONE: {
+                          type: null,
+                        },
+                    },
                 }
             ],
             menus: {
@@ -408,6 +421,17 @@ class pmSensingExpansion {
     getButtonIsDown (args, util) {
         const button = Cast.toNumber(args.MOUSE_BUTTON);
         return util.ioQuery('mouse', 'getButtonIsDown', [button]);
+    }
+
+    changed(args, util) {
+      const id = util.thread.peekStack()
+      if (!this.lastValues[id])
+        this.lastValues[id] = Cast.toString(args.ONE);
+      if (Cast.toString(args.ONE) !== this.lastValues[id]) {
+        this.lastValues[id] = Cast.toString(args.ONE);
+        return true;
+      }
+      return false;
     }
 
     pickColor(args) {
