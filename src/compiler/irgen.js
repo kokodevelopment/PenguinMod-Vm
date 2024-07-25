@@ -1005,6 +1005,10 @@ class ScriptTreeGenerator {
             return {
                 kind: 'control.exitLoop'
             };
+        case 'control_continueLoop':
+            return {
+                kind: 'control.continueLoop'
+            };
         case 'control_all_at_once':
             // In Scratch 3, this block behaves like "if 1 = 1"
             // WE ARE IN PM NOW IT BEHAVES PROPERLY LESS GO

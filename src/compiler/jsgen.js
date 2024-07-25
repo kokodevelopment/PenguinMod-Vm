@@ -1170,10 +1170,17 @@ class JSGenerator {
             break;
         case 'control.exitLoop':
             if (!this.currentFrame.importantData.containedByLoop) {
-                this.source += `throw 'All "exit loop" blocks must be inside of a looping block.';`;
+                this.source += `throw 'All "escape loop" blocks must be inside of a looping block.';`;
                 break;
             }
             this.source += `break;\n`;
+            break;
+        case 'control.continueLoop':
+            if (!this.currentFrame.importantData.containedByLoop) {
+                this.source += `throw 'All "continue loop" blocks must be inside of a looping block.';`;
+                break;
+            }
+            this.source += `continue;\n`;
             break;
         case 'control.if':
             this.source += `if (${this.descendInput(node.condition).asBoolean()}) {\n`;
