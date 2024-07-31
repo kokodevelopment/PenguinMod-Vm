@@ -1246,6 +1246,13 @@ class ScriptTreeGenerator {
                 index: index
             };
         }
+        case 'data_shiftlist': {
+            return {
+                kind: 'list.shift',
+                list: this.descendVariable(block, 'LIST', LIST_TYPE),
+                index: this.descendInputOfBlock(block, 'INDEX')
+            };
+        }
         case 'data_hidelist':
             return {
                 kind: 'list.hide',

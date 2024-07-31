@@ -1424,6 +1424,13 @@ class JSGenerator {
         case 'list.deleteAll':
             this.source += `${this.referenceVariable(node.list)}.value = [];\n`;
             break;
+        case 'list.shift':
+            const list = this.referenceVariable(node.list);
+            const index = this.descendInput(node.index).asNumber();
+            if (index <= 0) break;
+            this.source += `${list}.value = ${list}.value.slice(${index});\n`
+            this.source += `${list}._monitorUpToDate = false;\n`
+            break
         case 'list.hide':
             this.source += `runtime.monitorBlocks.changeBlock({ id: "${sanitize(node.list.id)}", element: "checkbox", value: false }, runtime);\n`;
             break;
