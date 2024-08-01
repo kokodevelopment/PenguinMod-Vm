@@ -536,6 +536,13 @@ class VirtualMachine extends EventEmitter {
         zip.file('project.json', projectJson);
         this._addFileDescsToZip(this.serializeAssets(), zip);
 
+        // Use a fixed modification date for the files in the zip instead of letting JSZip use the
+        // current time to avoid a very small metadata leak and make zipping deterministic. The magic
+        // number is from the first TurboWarp/scratch-vm commit after forking
+        const date = new Date(1591657163000);
+        for (const file of Object.values(zip.files)) {
+            file.date = date;
+        }
         return zip;
     }
 
