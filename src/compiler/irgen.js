@@ -301,12 +301,18 @@ class ScriptTreeGenerator {
                 list: this.descendVariable(block, 'LIST', LIST_TYPE),
                 item: this.descendInputOfBlock(block, 'ITEM')
             };
-        case 'data_itemnumoflist':
-            return {
-                kind: 'list.indexOf',
-                list: this.descendVariable(block, 'LIST', LIST_TYPE),
-                item: this.descendInputOfBlock(block, 'ITEM')
-            };
+            case 'data_itemnumoflist':
+                return {
+                    kind: 'list.indexOf',
+                    list: this.descendVariable(block, 'LIST', LIST_TYPE),
+                    item: this.descendInputOfBlock(block, 'ITEM')
+                };
+            case 'data_amountinlist':
+                return {
+                    kind: 'list.amountOf',
+                    list: this.descendVariable(block, 'LIST', LIST_TYPE),
+                    value: this.descendInputOfBlock(block, 'VALUE')
+                };
         case 'data_listcontents':
             return {
                 kind: 'list.contents',

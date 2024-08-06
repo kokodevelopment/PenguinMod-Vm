@@ -599,6 +599,8 @@ class JSGenerator {
         }
         case 'list.indexOf':
             return new TypedInput(`listIndexOf(${this.referenceVariable(node.list)}, ${this.descendInput(node.item).asUnknown()})`, TYPE_NUMBER);
+        case 'list.amountOf':
+            return new TypedInput(`${this.referenceVariable(node.list)}.value.filter((x) => x === ${this.descendInput(node.value).asString()}).length`, TYPE_NUMBER);
         case 'list.length':
             return new TypedInput(`${this.referenceVariable(node.list)}.value.length`, TYPE_NUMBER);
 
