@@ -610,7 +610,7 @@ class JSGenerator {
             this.source += `${this.referenceVariable(node.list)}.value = ${this.referenceVariable(node.list)}.value.filter((item) => {`;
             this.source += `    runtime.ext_scratch3_data._listFilterItem = item;`;
             this.source += `    return ${this.descendInput(node.bool).asBoolean()};`;
-            this.source += `}`;
+            this.source += `})`;
             break;
 
         case 'looks.size':
