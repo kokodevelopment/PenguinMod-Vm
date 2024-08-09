@@ -322,12 +322,6 @@ class ScriptTreeGenerator {
             return {
                 kind: 'list.filteritem'
             };
-        case 'data_filterlist':
-            return {
-                kind: 'list.filter',
-                list: this.descendVariable(block, 'LIST', LIST_TYPE),
-                bool: this.descendInputOfBlock(block, 'BOOL')
-            };
 
         case 'event_broadcast_menu': {
             const broadcastOption = block.fields.BROADCAST_OPTION;
@@ -1308,6 +1302,12 @@ class ScriptTreeGenerator {
             return {
                 kind: 'var.show',
                 variable: this.descendVariable(block, 'VARIABLE', SCALAR_TYPE)
+            };
+        case 'data_filterlist':
+            return {
+                kind: 'list.filter',
+                list: this.descendVariable(block, 'LIST', LIST_TYPE),
+                bool: this.descendInputOfBlock(block, 'BOOL')
             };
 
         case 'event_broadcast':
