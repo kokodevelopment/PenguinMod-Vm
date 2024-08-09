@@ -319,6 +319,8 @@ class Scratch3DataBlocks {
         }
         return false;
     }
+
+    _listFilterItem = ""
 }
 
 module.exports = Scratch3DataBlocks;

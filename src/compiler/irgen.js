@@ -318,6 +318,16 @@ class ScriptTreeGenerator {
                 kind: 'list.contents',
                 list: this.descendVariable(block, 'LIST', LIST_TYPE)
             };
+        case 'data_filterlistitem':
+            return {
+                kind: 'list.filteritem'
+            };
+        case 'data_filterlist':
+            return {
+                kind: 'list.filter',
+                list: this.descendVariable(block, 'LIST', LIST_TYPE),
+                bool: this.descendInputOfBlock(block, 'BOOL')
+            };
 
         case 'event_broadcast_menu': {
             const broadcastOption = block.fields.BROADCAST_OPTION;

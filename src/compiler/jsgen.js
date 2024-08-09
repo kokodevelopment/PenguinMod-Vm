@@ -604,6 +604,17 @@ class JSGenerator {
         case 'list.length':
             return new TypedInput(`${this.referenceVariable(node.list)}.value.length`, TYPE_NUMBER);
 
+        case 'list.filteritem':
+            return new TypedInput('runtime.ext_scratch3_data._listFilterItem', TYPE_UNKNOWN);
+        case 'list.filter':
+            this.source += `
+            ${this.referenceVariable(node.list)}.value.filter(item => {
+                runtime.ext_scratch3_data._listFilterItem = item
+                return ${this.descendInput(node.bool).asUnknown()}
+            })
+            `;
+            break;
+
         case 'looks.size':
             return new TypedInput('target.size', TYPE_NUMBER);
         case 'looks.tintColor':
