@@ -606,12 +606,6 @@ class JSGenerator {
 
         case 'list.filteritem':
             return new TypedInput('runtime.ext_scratch3_data._listFilterItem', TYPE_UNKNOWN);
-        case 'list.filter':
-            this.source += `${this.referenceVariable(node.list)}.value = ${this.referenceVariable(node.list)}.value.filter((item) => {`;
-            this.source += `    runtime.ext_scratch3_data._listFilterItem = item;`;
-            this.source += `    return ${this.descendInput(node.bool).asBoolean()};`;
-            this.source += `})`;
-            break;
 
         case 'looks.size':
             return new TypedInput('target.size', TYPE_NUMBER);
@@ -1462,6 +1456,13 @@ class JSGenerator {
             break;
         case 'list.show':
             this.source += `runtime.monitorBlocks.changeBlock({ id: "${sanitize(node.list.id)}", element: "checkbox", value: true }, runtime);\n`;
+            break;
+        
+        case 'list.filter':
+            this.source += `${this.referenceVariable(node.list)}.value = ${this.referenceVariable(node.list)}.value.filter((item) => {`;
+            this.source += `    runtime.ext_scratch3_data._listFilterItem = item;`;
+            this.source += `    return ${this.descendInput(node.bool).asBoolean()};`;
+            this.source += `})`;
             break;
 
         case 'looks.backwardLayers':
