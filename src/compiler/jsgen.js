@@ -608,9 +608,9 @@ class JSGenerator {
             return new TypedInput('runtime.ext_scratch3_data._listFilterItem', TYPE_UNKNOWN);
         case 'list.filter':
             this.source += `
-            ${this.referenceVariable(node.list)}.value.filter(item => {
+            ${this.referenceVariable(node.list)}.value = ${this.referenceVariable(node.list)}.value.filter(item => {
                 runtime.ext_scratch3_data._listFilterItem = item
-                return ${this.descendInput(node.bool).asUnknown()}
+                return ${this.descendInput(node.bool).asBoolean()}
             })
             `;
             break;
