@@ -1461,7 +1461,7 @@ class JSGenerator {
             break;
         
         case 'list.filter':
-            this.source += `${this.referenceVariable(node.list)}.value = ${this.referenceVariable(node.list)}.value.filter(function* (item, index) {`;
+            this.source += `${this.referenceVariable(node.list)}.value = ${this.referenceVariable(node.list)}.value.filter(function (item, index) {`;
             this.source += `    runtime.ext_scratch3_data._listFilterItem = item;`;
             this.source += `    runtime.ext_scratch3_data._listFilterIndex = index + 1;`;
             this.source += `    return ${this.descendInput(node.bool).asBoolean()};`;
