@@ -606,6 +606,8 @@ class JSGenerator {
 
         case 'list.filteritem':
             return new TypedInput('runtime.ext_scratch3_data._listFilterItem', TYPE_UNKNOWN);
+        case 'list.filterindex':
+            return new TypedInput('runtime.ext_scratch3_data._listFilterIndex', TYPE_UNKNOWN);
 
         case 'looks.size':
             return new TypedInput('target.size', TYPE_NUMBER);
@@ -1459,10 +1461,13 @@ class JSGenerator {
             break;
         
         case 'list.filter':
-            this.source += `${this.referenceVariable(node.list)}.value = ${this.referenceVariable(node.list)}.value.filter(function* (item) {`;
+            this.source += `${this.referenceVariable(node.list)}.value = ${this.referenceVariable(node.list)}.value.filter(function* (item, index) {`;
             this.source += `    runtime.ext_scratch3_data._listFilterItem = item;`;
+            this.source += `    runtime.ext_scratch3_data._listFilterIndex = index + 1;`;
             this.source += `    return ${this.descendInput(node.bool).asBoolean()};`;
             this.source += `})`;
+            this.source += `runtime.ext_scratch3_data._listFilterItem = "";`;
+            this.source += `runtime.ext_scratch3_data._listFilterIndex = 0;`;
             break;
 
         case 'looks.backwardLayers':

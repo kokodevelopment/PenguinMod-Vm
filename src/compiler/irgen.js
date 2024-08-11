@@ -322,6 +322,10 @@ class ScriptTreeGenerator {
             return {
                 kind: 'list.filteritem'
             };
+        case 'data_filterlistindex':
+            return {
+                kind: 'list.filterindex'
+            };
 
         case 'event_broadcast_menu': {
             const broadcastOption = block.fields.BROADCAST_OPTION;
