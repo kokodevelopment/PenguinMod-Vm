@@ -947,6 +947,16 @@ class pmOperatorsExpansion {
         if (idx < 0) return '';
         return base.substring(0, idx);
     }
+
+    // These blocks are compiled
+    orIfFalsey(args) { return "" }
+    ifIsTruthy(args) { return "" }
+    shiftLeft(args) { return "" }
+    shiftRight(args) { return "" }
+    binnaryAnd(args) { return false }
+    binnaryOr(args) { return false }
+    binnaryXor(args) { return false }
+    binnaryNot(args) { return false }
 }
 
 module.exports = pmOperatorsExpansion;
