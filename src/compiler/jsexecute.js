@@ -617,9 +617,10 @@ runtimeFunctions._resolveKeyPath = `const _resolveKeyPath = (obj, keyPath) => {
     let root;
     let top = obj;
     let done;
+    debugger;
     while (top && !(key = path.next()).done) {
         done = key.done;
-        root = top
+        root = top;
         key = key.value.groups.chilKey || key.value.groups.mainKey || key.value.groups.litKey;
         top = top[key];
     }
