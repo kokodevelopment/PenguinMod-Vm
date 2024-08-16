@@ -611,7 +611,20 @@ runtimeFunctions.parseJSONSafe = `const parseJSONSafe = json => {
     catch return {}
 }`;
 
-runtimeFunctions._resolveKeyPath = 
+runtimeFunctions._resolveKeyPath = `const _resolveKeyPath = (obj, keyPath) => {
+    const path = keyPath.matchAll(/((?<mainKey>[^.[]+)|\\.(?<chilKey>[^.[]+)|\\[(?<litkey>(\\\\\\]|[^]])+)\\])/g);
+    let key;
+    let root;
+    let done;
+    while (obj && !(key = path.next()).done) {
+        root = obj;
+        done = key.done;
+        key = key.value.groups.chilKey || key.value.groups.mainKey || key.value.groups.litKey;
+        obj = obj[key];
+    }
+    if (!done) return [obj, keyPath];
+    return [root, key];
+}`;
 
 runtimeFunctions.get = `const get = (obj, keyPath) => {
     const [root, key] = _resolveKeyPath(obj, keyPath);
