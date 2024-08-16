@@ -622,7 +622,7 @@ runtimeFunctions._resolveKeyPath = `const _resolveKeyPath = (obj, keyPath) => {
         key = key.value.groups.chilKey || key.value.groups.mainKey || key.value.groups.litKey;
         obj = obj[key];
     }
-    if (!done) return [obj, keyPath];
+    if (!done || !root) return [obj, keyPath];
     return [root, key];
 }`;
 
