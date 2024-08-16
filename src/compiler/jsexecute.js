@@ -661,7 +661,7 @@ const insertRuntime = source => {
         result = result.replace('let hasResumedFromPromise = false;', `let hasResumedFromPromise = false;\n${runtimeFunctions.waitPromise}`);
     }
     if (result.includes('_resolveKeyPath') && !result.includes('const _resolveKeyPath')) {
-        result = runtimeFunctions._resolveKeyPath + result;
+        result = runtimeFunctions._resolveKeyPath + ';' + result;
     }
     result += `return ${source}`;
     return result;
