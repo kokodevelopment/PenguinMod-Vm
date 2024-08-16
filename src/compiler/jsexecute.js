@@ -615,12 +615,13 @@ runtimeFunctions._resolveKeyPath = `const _resolveKeyPath = (obj, keyPath) => {
     const path = keyPath.matchAll(/((?<mainKey>[^.[]+)|\\.(?<chilKey>[^.[]+)|\\[(?<litkey>(\\\\\\]|[^]])+)\\])/g);
     let key;
     let root;
+    let top = obj;
     let done;
-    while (obj && !(key = path.next()).done) {
-        root = obj;
+    while (top && !(key = path.next()).done) {
         done = key.done;
+        root = top
         key = key.value.groups.chilKey || key.value.groups.mainKey || key.value.groups.litKey;
-        obj = obj[key];
+        top = top[key];
     }
     if (!done || !root) return [obj, keyPath];
     return [root, key];
