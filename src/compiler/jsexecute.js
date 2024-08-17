@@ -622,7 +622,7 @@ runtimeFunctions._resolveKeyPath = `const _resolveKeyPath = (obj, keyPath) => {
         done = key.done;
         root = top;
         key = key.value.groups.chilKey || key.value.groups.mainKey || key.value.groups.litKey;
-        top = top[key];
+        top = root.get?.(key) ?? top[key];
     }
     if (!done || !root) return [obj, keyPath];
     return [root, key];
@@ -630,22 +630,26 @@ runtimeFunctions._resolveKeyPath = `const _resolveKeyPath = (obj, keyPath) => {
 
 runtimeFunctions.get = `const get = (obj, keyPath) => {
     const [root, key] = _resolveKeyPath(obj, keyPath);
-    return root[key];
+    if (!root) return '';
+    return root.get?.(key) ?? root[key];
 }`;
 
 runtimeFunctions.set = `const set = (obj, keyPath, val) => {
     const [root, key] = _resolveKeyPath(obj, keyPath);
-    return root[key] = val;
+    if (!root) return '';
+    return root.set?.(key) ?? root[key] = val;
 }`;
 
 runtimeFunctions.remove = `const remove = (obj, keyPath) => {
     const [root, key] = _resolveKeyPath(obj, keyPath);
-    return delete root[key];
+    if (!root) return '';
+    return root.delete?.(key) ?? root.remove?.(key) ?? delete root[key];
 }`;
 
-runtimeFunctions.includes = `const remove = (obj, keyPath) => {
+runtimeFunctions.includes = `const includes = (obj, keyPath) => {
     const [root, key] = _resolveKeyPath(obj, keyPath);
-    return key in root;
+    if (!root) return false;
+    return root.has?.(key) ?? key in root;
 }`;
 
 /**
