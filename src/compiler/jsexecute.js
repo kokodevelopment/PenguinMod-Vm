@@ -612,13 +612,13 @@ runtimeFunctions.parseJSONSafe = `const parseJSONSafe = json => {
 }`;
 
 runtimeFunctions._resolveKeyPath = `const _resolveKeyPath = (obj, keyPath) => {
-    const path = keyPath.matchAll(/(\\.|^)(?<key>[^.[]+)|\\[(?<litkey>(\\\\\\]|[^]])+)\\]/g);
+    const path = keyPath.matchAll(/(\\.|^)(?<key>[^.[]+)|\\[(?<litkey>(\\\\\\]|\\\\|[^]])+)\\]/g);
     let top = obj;
     let pre;
     let tok;
     let key;
     while (!(tok = path.next()).done) {
-        key = tok.value.groups.key ?? tok.value.groups.litKey;
+        key = tok.value.groups.key ?? tok.value.groups.litKey.replaceAll('\\\\', '\\').replaceAll('\\\\]', ']');
         pre = top;
         top = top?.get?.(key) ?? top?.[key];
         if (!top) return [obj, keyPath];
@@ -672,6 +672,9 @@ const insertRuntime = source => {
     }
     if (result.includes('executeInCompatibilityLayer') && !result.includes('const waitPromise')) {
         result = result.replace('let hasResumedFromPromise = false;', `let hasResumedFromPromise = false;\n${runtimeFunctions.waitPromise}`);
+    }
+    if (result.includes('_resolveKeyPath') && !result.includes('const _resolveKeyPath')) {
+        result = runtimeFunctions._resolveKeyPath + ';' + result;
     }
     result += `return ${source}`;
     return result;
