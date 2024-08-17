@@ -637,19 +637,19 @@ runtimeFunctions.get = `const get = (obj, keyPath) => {
 runtimeFunctions.set = `const set = (obj, keyPath, val) => {
     const [root, key] = _resolveKeyPath(obj, keyPath);
     if (!root) return '';
-    return root.set?.(key) ?? root[key] = val;
+    return root.set?.(key) ?? (root[key] = val);
 }`;
 
 runtimeFunctions.remove = `const remove = (obj, keyPath) => {
     const [root, key] = _resolveKeyPath(obj, keyPath);
     if (!root) return '';
-    return root.delete?.(key) ?? root.remove?.(key) ?? delete root[key];
+    return root.delete?.(key) ?? root.remove?.(key) ?? (delete root[key]);
 }`;
 
 runtimeFunctions.includes = `const includes = (obj, keyPath) => {
     const [root, key] = _resolveKeyPath(obj, keyPath);
     if (!root) return false;
-    return root.has?.(key) ?? key in root;
+    return root.has?.(key) ?? (key in root);
 }`;
 
 /**
