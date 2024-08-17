@@ -995,10 +995,13 @@ class JSGenerator {
                 : node.thread 
                     ? 'thread.variables' 
                     : 'tempVars';
+            const code = this.isOptimized 
+                ? `${hostObj}[${name.asString()}]` 
+                : `get(${hostObj}, ${name.asString()})`; 
             if (environment.supportsNullishCoalescing) {
-                return new TypedInput(`(${hostObj}[${name.asString()}] ?? "")`, TYPE_UNKNOWN);
+                return new TypedInput(`(${code} ?? "")`, TYPE_UNKNOWN);
             }
-            return new TypedInput(`nullish(${hostObj}[${name.asString()}], "")`, TYPE_UNKNOWN);
+            return new TypedInput(`nullish(${code}, "")`, TYPE_UNKNOWN);
         }
         case 'tempVars.exists': {
             const name = this.descendInput(node.var);
@@ -1007,7 +1010,10 @@ class JSGenerator {
                 : node.thread 
                     ? 'thread.variables' 
                     : 'tempVars';
-            return new TypedInput(`${name.asString()} in ${hostObj}`, TYPE_BOOLEAN);
+            const code = this.isOptimized 
+                ? `${name.asString()} in ${hostObj}` 
+                : `includes(${hostObj}, ${name.asString()})`; 
+            return new TypedInput(code, TYPE_BOOLEAN);
         }
         case 'tempVars.all':
             const hostObj = node.runtime 
@@ -1016,7 +1022,7 @@ class JSGenerator {
                     ? 'thread.variables' 
                     : 'tempVars';
             if (node.runtime || node.thread) {
-                return new TypedInput(`Object.keys(${hostObj}).join(',')`);
+                return new TypedInput(`Object.keys(${hostObj}).join(',')`, TYPE_STRING);
             }
             return new TypedInput(`JSON.stringify(Object.keys(tempVars))`, TYPE_STRING);
 
@@ -1760,18 +1766,9 @@ class JSGenerator {
                 : node.thread 
                     ? 'thread.variables' 
                     : 'tempVars';
-            this.source += `${hostObj}[${name.asString()}] = ${val.asUnknown()};`;
-            break;
-        }
-        case 'tempVars.change': {
-            const name = this.descendInput(node.var);
-            const val = this.descendInput(node.val);
-            const hostObj = node.runtime 
-                ? 'runtime.variables' 
-                : node.thread 
-                    ? 'thread.variables' 
-                    : 'tempVars';
-            this.source += `${hostObj}[${name.asString()}] += ${val.asUnknown()};`;
+            this.source += this.isOptimized  
+                ? `${hostObj}[${name.asString()}] = ${val.asUnknown()};` 
+                : `set(${hostObj}, ${name.asString()}, ${val.asUnknown()});`; 
             break;
         }
         case 'tempVars.delete': {
@@ -1781,7 +1778,9 @@ class JSGenerator {
                 : node.thread 
                     ? 'thread.variables' 
                     : 'tempVars';
-            this.source += `delete ${hostObj}[${name.asString()}];`;
+            this.source += this.isOptimized  
+                ? `delete ${hostObj}[${name.asString()}];` 
+                : `remove(${hostObj}, ${name.asString()})`;  
             break;
         }
         case 'tempVars.deleteAll': {
@@ -1801,7 +1800,13 @@ class JSGenerator {
                 : node.thread 
                     ? 'thread.variables' 
                     : 'tempVars';
-            const index = `${hostObj}[${name.asString()}]`;
+            const rootVar = this.localVariables.next(); 
+            const keyVar = this.localVariables.next(); 
+            const index = this.isOptimized  
+                ? `${hostObj}[${name.asString()}]` 
+                : `${rootVar}[${keyVar}]`; 
+            if (!this.isOptimized)  
+                this.source += `const [${rootVar},${keyVar}] = _resolveKeyPath(${hostObj}, ${name.asString()}); `; 
             this.source += `${index} = 0; `;
             this.source += `while (${index} < ${loops.asNumber()}) { `;
             this.source += `${index}++;\n`;
