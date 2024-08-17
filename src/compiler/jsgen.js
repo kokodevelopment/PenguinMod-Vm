@@ -1808,7 +1808,7 @@ class JSGenerator {
                 ? `${hostObj}[${name.asString()}]`
                 : `${rootVar}[${keyVar}]`;
             if (!this.isOptimized) 
-                this.source += `const [${rootVar},${keyVar}] = _resolveKeyPath(${hostObj}, ${name.asString()})`;
+                this.source += `const [${rootVar},${keyVar}] = _resolveKeyPath(${hostObj}, ${name.asString()}); `;
             this.source += `${index} = 0; `;
             this.source += `while (${index} < ${loops.asNumber()}) { `;
             this.source += `${index}++;\n`;
