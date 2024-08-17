@@ -1106,7 +1106,10 @@ class JSGenerator {
             }
             break;
         }
-
+        case 'procedures.set':
+            const val = node.val.value.replaceAll('\\', '\\\\').replaceAll('"', '\\"');
+            this.source += `p${node.param.index} = "${val}";\n`;
+            break;
         case 'control.createClone':
             this.source += `runtime.ext_scratch3_control._createClone(${this.descendInput(node.target).asString()}, target);\n`;
             break;
