@@ -611,47 +611,6 @@ runtimeFunctions.parseJSONSafe = `const parseJSONSafe = json => {
     catch return {}
 }`;
 
-runtimeFunctions._resolveKeyPath = `const _resolveKeyPath = (obj, keyPath) => {
-    const path = keyPath.matchAll(/((?<mainKey>[^.[]+)|\\.(?<chilKey>[^.[]+)|\\[(?<litkey>(\\\\\\]|[^]])+)\\])/g);
-    let key;
-    let root;
-    let top = obj;
-    let done;
-    debugger;
-    while (top && !(key = path.next()).done) {
-        done = key.done;
-        root = top;
-        key = key.value.groups.chilKey || key.value.groups.mainKey || key.value.groups.litKey;
-        top = root.get?.(key) ?? top[key];
-    }
-    if (!done || !root) return [obj, keyPath];
-    return [root, key];
-}`;
-
-runtimeFunctions.get = `const get = (obj, keyPath) => {
-    const [root, key] = _resolveKeyPath(obj, keyPath);
-    if (!root) return '';
-    return root.get?.(key) ?? root[key];
-}`;
-
-runtimeFunctions.set = `const set = (obj, keyPath, val) => {
-    const [root, key] = _resolveKeyPath(obj, keyPath);
-    if (!root) return '';
-    return root.set?.(key) ?? (root[key] = val);
-}`;
-
-runtimeFunctions.remove = `const remove = (obj, keyPath) => {
-    const [root, key] = _resolveKeyPath(obj, keyPath);
-    if (!root) return '';
-    return root.delete?.(key) ?? root.remove?.(key) ?? (delete root[key]);
-}`;
-
-runtimeFunctions.includes = `const includes = (obj, keyPath) => {
-    const [root, key] = _resolveKeyPath(obj, keyPath);
-    if (!root) return false;
-    return root.has?.(key) ?? (key in root);
-}`;
-
 /**
  * Step a compiled thread.
  * @param {Thread} thread The thread to step.
@@ -678,9 +637,6 @@ const insertRuntime = source => {
     }
     if (result.includes('executeInCompatibilityLayer') && !result.includes('const waitPromise')) {
         result = result.replace('let hasResumedFromPromise = false;', `let hasResumedFromPromise = false;\n${runtimeFunctions.waitPromise}`);
-    }
-    if (result.includes('_resolveKeyPath') && !result.includes('const _resolveKeyPath')) {
-        result = runtimeFunctions._resolveKeyPath + ';' + result;
     }
     result += `return ${source}`;
     return result;

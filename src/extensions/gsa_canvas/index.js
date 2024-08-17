@@ -95,7 +95,6 @@ const canvasPropInfos = [
     ['shadow color', 'shadowColor', ArgumentType.COLOR, null],
     ['shadow X offset', 'shadowOffsetX', ArgumentType.NUMBER, '0'],
     ['shadow Y offset', 'shadowOffsetY', ArgumentType.NUMBER, '0'],
-    ['fill color', 'fillStyle', ArgumentType.COLOR, null],
     ['line color', 'strokeStyle', ArgumentType.COLOR, null],
     ['text horizontal alignment', 'textAlign', [
         ['start', 'start'],
