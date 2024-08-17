@@ -1569,6 +1569,12 @@ class ScriptTreeGenerator {
                 kind: 'procedures.return',
                 return: this.descendInputOfBlock(block, 'return')
             };
+        case 'procedures_set': 
+            return {
+                kind: 'procedures.set',
+                param: this.descendInputOfBlock(block, "PARAM"),
+                val: this.descendInputOfBlock(block, "VALUE")
+            };
         case 'procedures_call': {
             // setting of yields will be handled later in the analysis phase
             // patches output previewing
