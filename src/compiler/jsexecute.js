@@ -618,7 +618,7 @@ runtimeFunctions._resolveKeyPath = `const _resolveKeyPath = (obj, keyPath) => {
     let tok;
     let key;
     while (!(tok = path.next()).done) {
-        key = tok.value.groups.key ?? tok.value.groups.litKey.replaceAll('\\\\', '\\').replaceAll('\\\\]', ']');
+        key = tok.value.groups.key ?? tok.value.groups.litKey.replaceAll('\\\\\\\\', '\\\\').replaceAll('\\\\]', ']');
         pre = top;
         top = top?.get?.(key) ?? top?.[key];
         if (!top) return [obj, keyPath];
