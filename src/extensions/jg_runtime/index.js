@@ -699,6 +699,7 @@ class JgRuntimeBlocks {
                         "high quality pen",
                         "offscreen sprites",
                         "remove miscellaneous limits",
+                        "out of bounds rendering",
                         "interpolation",
                     ]
                 },
@@ -891,6 +892,11 @@ class JgRuntimeBlocks {
                     miscLimits: !enabled,
                 });
                 break;
+            case "out of bounds rendering":
+                this.runtime.vm.setRuntimeOptions({
+                    oobRendering: enabled,
+                });
+                break;
             case "interpolation":
                 this.runtime.vm.setInterpolation(enabled);
                 break;
@@ -906,6 +912,8 @@ class JgRuntimeBlocks {
                 return !this.runtime.runtimeOptions.fencing;
             case "remove miscellaneous limits":
                 return !this.runtime.runtimeOptions.miscLimits;
+            case "out of bounds rendering":
+                return this.runtime.oobRendering;
             case "interpolation":
                 return this.runtime.interpolationEnabled;
             default:
