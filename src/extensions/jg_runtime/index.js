@@ -913,7 +913,7 @@ class JgRuntimeBlocks {
             case "remove miscellaneous limits":
                 return !this.runtime.runtimeOptions.miscLimits;
             case "out of bounds rendering":
-                return this.runtime.oobRendering;
+                return this.runtime.runtimeOptions.oobRendering;
             case "interpolation":
                 return this.runtime.interpolationEnabled;
             default:
