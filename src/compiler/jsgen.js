@@ -1108,7 +1108,8 @@ class JSGenerator {
         }
         case 'procedures.set':
             const val = this.descendInput(node.val);
-            this.source += `p${node.param.index} = ${val.asSafe()};\n`;
+            const i = node.param.index;
+            if (i !== undefined) this.source += `p${i} = ${val.asSafe()};\n`;
             break;
         case 'control.createClone':
             this.source += `runtime.ext_scratch3_control._createClone(${this.descendInput(node.target).asString()}, target);\n`;
