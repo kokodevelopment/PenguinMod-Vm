@@ -701,6 +701,7 @@ class JgRuntimeBlocks {
                         "remove miscellaneous limits",
                         "out of bounds rendering",
                         "interpolation",
+                        "warp timer"
                     ]
                 },
                 renderConfigCappable: {
@@ -883,22 +884,19 @@ class JgRuntimeBlocks {
                 this.runtime.renderer.setUseHighQualityRender(enabled);
                 break;
             case "offscreen sprites":
-                this.runtime.vm.setRuntimeOptions({
-                    fencing: !enabled,
-                });
+                this.runtime.vm.setRuntimeOptions({ fencing: !enabled });
                 break;
             case "remove miscellaneous limits":
-                this.runtime.vm.setRuntimeOptions({
-                    miscLimits: !enabled,
-                });
+                this.runtime.vm.setRuntimeOptions({ miscLimits: !enabled });
                 break;
             case "out of bounds rendering":
-                this.runtime.vm.setRuntimeOptions({
-                    oobRendering: enabled,
-                });
+                this.runtime.vm.setRuntimeOptions({ oobRendering: enabled });
                 break;
             case "interpolation":
                 this.runtime.vm.setInterpolation(enabled);
+                break;
+            case "warp timer":
+                this.runtime.setCompilerOptions({ warpTimer: enabled })
                 break;
         }
     }
@@ -916,6 +914,8 @@ class JgRuntimeBlocks {
                 return this.runtime.runtimeOptions.oobRendering;
             case "interpolation":
                 return this.runtime.interpolationEnabled;
+            case "warp timer":
+                return this.runtime.compilerOptions.warpTimer;
             default:
                 return false;
         }
