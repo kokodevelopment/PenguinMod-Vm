@@ -493,7 +493,7 @@ class Runtime extends EventEmitter {
             miscLimits: true,
             fencing: true,
             dangerousOptimizations: false,
-            oobRendering: true
+            disableOffscreenRendering: false
         };
 
         this.compilerOptions = {
@@ -2206,6 +2206,7 @@ class Runtime extends EventEmitter {
         this.renderer = renderer;
         this.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS);
         this.renderer.offscreenTouching = !this.runtimeOptions.fencing;
+        this.renderer.renderOffscreen = this.runtimeOptions.disableOffscreenRendering;
         this.updatePrivacy();
     }
 
@@ -3051,6 +3052,10 @@ class Runtime extends EventEmitter {
         this.emit(Runtime.RUNTIME_OPTIONS_CHANGED, this.runtimeOptions);
         if (this.renderer) {
             this.renderer.offscreenTouching = !this.runtimeOptions.fencing;
+            // if these miss match then update (do full rerender as the state drastically changes output)
+            if (this.runtimeOptions.disableOffscreenRendering === this.renderer.renderOffscreen) {
+                this.renderer.setRenderOffscreen(!this.runtimeOptions.disableOffscreenRendering);
+            }
         }
     }
 
