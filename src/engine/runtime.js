@@ -2206,7 +2206,7 @@ class Runtime extends EventEmitter {
         this.renderer = renderer;
         this.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS);
         this.renderer.offscreenTouching = !this.runtimeOptions.fencing;
-        // this.renderer.renderOffscreen = this.runtimeOptions.disableOffscreenRendering;
+        this.renderer.renderOffscreen = this.runtimeOptions.disableOffscreenRendering;
         this.updatePrivacy();
     }
 
@@ -3053,11 +3053,9 @@ class Runtime extends EventEmitter {
         if (this.renderer) {
             this.renderer.offscreenTouching = !this.runtimeOptions.fencing;
             // if these miss match then update (do full rerender as the state drastically changes output)
-            /*
             if (this.runtimeOptions.disableOffscreenRendering === this.renderer.renderOffscreen) {
                 this.renderer.setRenderOffscreen(!this.runtimeOptions.disableOffscreenRendering);
             }
-            */
         }
     }
 
