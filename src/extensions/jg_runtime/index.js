@@ -29,26 +29,17 @@ class JgRuntimeBlocks {
         fps = this.runtime.frameLoop.framerate;
         this.runtime.on('RUNTIME_STEP_START', () => {
             const now = performance.now();
-            while (times.length > 0 && times[0] <= now - 1000) {
-                times.shift();
-            }
+            while (times.length > 0 && times[0] <= now - 1000) { times.shift() }
             times.push(now);
             fps = times.length;
         });
-        this.runtime.on('PROJECT_STOP_ALL', () => {
-            this.pausedScripts = Object.create(null);
-        });
+        this.runtime.on('PROJECT_STOP_ALL', () => { this.pausedScripts = Object.create(null) });
     }
 
     _typeIsBitmap(type) {
         return (
-            type === 'image/png' ||
-            type === 'image/bmp' ||
-            type === 'image/jpg' ||
-            type === 'image/jpeg' ||
-            type === 'image/jfif' ||
-            type === 'image/webp' ||
-            type === 'image/gif'
+            type === 'image/png' || type === 'image/bmp' || type === 'image/jpg' || type === 'image/jpeg' || 
+            type === 'image/jfif' || type === 'image/webp' || type === 'image/gif'
         );
     }
 
@@ -639,55 +630,39 @@ class JgRuntimeBlocks {
                 objectType: {
                     acceptReporters: true,
                     items: [
-                        "sprite",
-                        "costume",
-                        "sound",
+                        "sprite", "costume", "sound"
                     ].map(item => ({ text: item, value: item }))
                 },
                 variableScope: {
                     acceptReporters: true,
                     items: [
-                        "all sprites",
-                        "this sprite",
+                        "all sprites", "this sprite"
                     ].map(item => ({ text: item, value: item }))
                 },
                 allVariableScope: {
                     acceptReporters: true,
                     items: [
-                        "for all sprites",
-                        "in every sprite",
-                        "in this sprite",
+                        "for all sprites", "in every sprite", "in this sprite"
                     ].map(item => ({ text: item, value: item }))
                 },
                 allVariableType: {
                     acceptReporters: true,
                     items: [
-                        "for all sprites",
-                        "in every sprite",
-                        "in this sprite",
-                        "in the cloud",
+                        "for all sprites", "in every sprite",
+                        "in this sprite", "in the cloud"
                     ].map(item => ({ text: item, value: item }))
                 },
                 variableTypes: {
                     acceptReporters: true,
                     items: [
-                        "all sprites",
-                        "this sprite",
-                        "cloud",
+                        "all sprites", "this sprite", "cloud"
                     ].map(item => ({ text: item, value: item }))
                 },
                 cloneLimit: {
                     items: [
-                        '100',
-                        '128',
-                        '300',
-                        '500',
-                        '1000',
-                        '1024',
-                        '5000',
-                        '10000',
-                        '16384',
-                        'Infinity'
+                        '100', '128', '300', '500',
+                        '1000', '1024', '5000',
+                        '10000', '16384', 'Infinity'
                     ],
                     isTypeable: true,
                     isNumeric: true
@@ -706,40 +681,23 @@ class JgRuntimeBlocks {
                 },
                 renderConfigCappable: {
                     acceptReporters: true,
-                    items: [
-                        "animated text resolution",
-                    ]
+                    items: ["animated text resolution"]
                 },
                 renderConfigNumber: {
                     acceptReporters: true,
-                    items: [
-                        "animated text resolution",
-                    ]
+                    items: ["animated text resolution"]
                 },
-                onoff: {
-                    items: [
-                        "on",
-                        "off"
-                    ]
-                },
-                cappableSettings: {
-                    items: [
-                        "uncapped",
-                        "capped",
-                        "fixed",
-                    ]
-                }
+                onoff: ["on", "off"],
+                cappableSettings: ["uncapped", "capped", "fixed"]
             }
         };
     }
     // utils
     _generateScratchId() {
-        const characters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "/", "|", ",", ".", "{", "}", "[", "]", "(", ")", "+", "-", "!", "?", "`"];
-        const array = Array.from(Array(20).keys());
-        const normalArray = array.map(() => {
-            return characters[Math.round(Math.random() * (characters.length - 1))]
-        })
-        return normalArray.join("");
+        const soup = "!#%()*+,-./:;=?@[]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        const id = [];
+        for (let i = 0; i < 20; i++) { id[i] = soup.charAt(Math.random() * soup.length) }
+        return id.join("");
     }
 
     // blocks
@@ -748,45 +706,27 @@ class JgRuntimeBlocks {
         return new Promise(resolve => {
             fetch(args.URL, { method: 'GET' }).then(x => x.blob().then(blob => {
                 if (!(
-                    (this._typeIsBitmap(blob.type)) ||
-                    (blob.type === 'image/svg+xml')
+                    (this._typeIsBitmap(blob.type)) || (blob.type === 'image/svg+xml')
                 )) {
                     resolve();
                     throw new Error(`Invalid mime type: "${blob.type}"`);
                 }
-
-                const assetType = this._typeIsBitmap(blob.type)
-                    ? this.runtime.storage.AssetType.ImageBitmap
-                    : this.runtime.storage.AssetType.ImageVector;
-
-                const dataType = blob.type === 'image/svg+xml'
-                    ? 'svg'
-                    : blob.type.split('/')[1];
-
-                blob.arrayBuffer()
-                    .then(buffer => {
-                        const data = dataType === 'image/svg+xml'
-                            ? buffer
-                            : new Uint8Array(buffer);
-                        const asset = this.runtime.storage.createAsset(assetType, dataType, data, null, true);
-                        const name = `${asset.assetId}.${asset.dataFormat}`;
-                        const spriteJson = {
-                            asset: asset,
-                            md5ext: name,
-                            name: args.name
-                        };
-                        const request = vm.addCostume(name, spriteJson, targetId);
-                        if (request.then) {
-                            request.then(resolve);
-                        } else {
-                            resolve();
-                        }
-                    })
-                    .catch(err => {
-                        console.error(`Failed to Load Costume: ${err}`);
-                        console.warn(err);
-                        resolve();
-                    });
+                const assetType = this._typeIsBitmap(blob.type) ? this.runtime.storage.AssetType.ImageBitmap : this.runtime.storage.AssetType.ImageVector;
+                const dataType = blob.type === 'image/svg+xml' ? 'svg' : blob.type.split('/')[1];
+                blob.arrayBuffer().then(buffer => {
+                    const data = dataType === 'image/svg+xml'
+                        ? buffer : new Uint8Array(buffer);
+                    const asset = this.runtime.storage.createAsset(assetType, dataType, data, null, true);
+                    const name = `${asset.assetId}.${asset.dataFormat}`;
+                    const spriteJson = { asset: asset, md5ext: name, name: args.name };
+                    const request = vm.addCostume(name, spriteJson, targetId);
+                    if (request.then) request.then(resolve);
+                    else resolve();
+                })
+                .catch(err => {
+                    console.error(`Failed to Load Costume: ${err}`);
+                    resolve();
+                });
             }));
         });
     }
@@ -800,43 +740,26 @@ class JgRuntimeBlocks {
         if (index < 0) return;
         util.target.deleteSound(index);
     }
-    getIndexOfCostume(args, util) {
-        return util.target.getCostumeIndexByName(args.costume) + 1;
-    }
+    getIndexOfCostume(args, util) { return util.target.getCostumeIndexByName(args.costume) + 1 }
     getIndexOfSound(args, util) {
         let index = 0;
         const sounds = util.target.getSounds();
         for (let i = 0; i < sounds.length; i++) {
-            const sound = sounds[i];
-            if (sound.name === args.NAME) index = i + 1;
+            if (sounds[i].name === args.NAME) index = i + 1;
         }
         return index;
     }
     setStageSize(args) {
-        let width = Cast.toNumber(args.WIDTH);
-        let height = Cast.toNumber(args.HEIGHT);
-        if (width <= 0) width = 1;
-        if (height <= 0) height = 1;
-        if (vm) vm.setStageSize(width, height);
+        if (vm) vm.setStageSize(
+            Math.max(1, Cast.toNumber(args.WIDTH)), Math.max(1, Cast.toNumber(args.HEIGHT))
+        );
     }
-    turboModeEnabled() {
-        return this.runtime.turboMode;
-    }
-    amountOfClones() {
-        return this.runtime._cloneCounter;
-    }
-    getStageWidth() {
-        return this.runtime.stageWidth;
-    }
-    getStageHeight() {
-        return this.runtime.stageHeight;
-    }
-    getMaxFrameRate() {
-        return this.runtime.frameLoop.framerate;
-    }
-    getIsClone(_, util) {
-        return !(util.target.isOriginal);
-    }
+    turboModeEnabled() { return this.runtime.turboMode }
+    amountOfClones() { return this.runtime._cloneCounter }
+    getStageWidth() { return this.runtime.stageWidth }
+    getStageHeight() { return this.runtime.stageHeight }
+    getMaxFrameRate() { return this.runtime.frameLoop.framerate }
+    getIsClone(_, util) { return !(util.target.isOriginal) }
 
     changeRenderingCapping(args) {
         const option = Cast.toString(args.OPTION).toLowerCase();
@@ -845,11 +768,8 @@ class JgRuntimeBlocks {
             case "animated text resolution": {
                 this.runtime.renderer.customRenderConfig.textCostumeResolution.fixed = false;
                 this.runtime.renderer.customRenderConfig.textCostumeResolution.capped = false;
-                if (capping === "fixed") {
-                    this.runtime.renderer.customRenderConfig.textCostumeResolution.fixed = true;
-                } else if (capping === "capped") {
-                    this.runtime.renderer.customRenderConfig.textCostumeResolution.capped = true;
-                }
+                if (capping === "fixed") this.runtime.renderer.customRenderConfig.textCostumeResolution.fixed = true;
+                else if (capping === "capped") this.runtime.renderer.customRenderConfig.textCostumeResolution.capped = true;
                 break;
             }
         }
@@ -875,74 +795,43 @@ class JgRuntimeBlocks {
 
     updateRuntimeConfig(args) {
         const enabled = Cast.toString(args.ENABLED).toLowerCase() === 'on';
-
         switch (Cast.toString(args.OPTION).toLowerCase()) {
-            case 'turbo mode':
-                this.runtime.vm.setTurboMode(enabled);
-                break;
-            case "high quality pen":
-                this.runtime.renderer.setUseHighQualityRender(enabled);
-                break;
-            case "offscreen sprites":
-                this.runtime.vm.setRuntimeOptions({ fencing: !enabled });
-                break;
-            case "remove miscellaneous limits":
-                this.runtime.vm.setRuntimeOptions({ miscLimits: !enabled });
-                break;
-            case "out of bounds rendering":
-                this.runtime.vm.setRuntimeOptions({ oobRendering: enabled });
-                break;
-            case "interpolation":
-                this.runtime.vm.setInterpolation(enabled);
-                break;
-            case "warp timer":
-                this.runtime.setCompilerOptions({ warpTimer: enabled })
-                break;
+            case 'turbo mode': return vm.setTurboMode(enabled);
+            case "high quality pen": return this.runtime.renderer.setUseHighQualityRender(enabled);
+            case "offscreen sprites": return vm.setRuntimeOptions({ fencing: !enabled });
+            case "remove miscellaneous limits": return vm.setRuntimeOptions({ miscLimits: !enabled });
+            case "out of bounds rendering": return vm.setRuntimeOptions({ disableOffscreenRendering: !enabled });
+            case "interpolation": return vm.setInterpolation(enabled);
+            case "warp timer": return this.runtime.setCompilerOptions({ warpTimer: enabled });
         }
     }
     runtimeConfigEnabled(args) {
         switch (Cast.toString(args.OPTION).toLowerCase()) {
-            case 'turbo mode':
-                return this.runtime.turboMode;
-            case "high quality pen":
-                return this.runtime.renderer.useHighQualityRender;
-            case "offscreen sprites":
-                return !this.runtime.runtimeOptions.fencing;
-            case "remove miscellaneous limits":
-                return !this.runtime.runtimeOptions.miscLimits;
-            case "out of bounds rendering":
-                return this.runtime.runtimeOptions.oobRendering;
-            case "interpolation":
-                return this.runtime.interpolationEnabled;
-            case "warp timer":
-                return this.runtime.compilerOptions.warpTimer;
-            default:
-                return false;
+            case 'turbo mode': return this.runtime.turboMode;
+            case "high quality pen": return this.runtime.renderer.useHighQualityRender;
+            case "offscreen sprites": return !this.runtime.runtimeOptions.fencing;
+            case "remove miscellaneous limits": return !this.runtime.runtimeOptions.miscLimits;
+            case "out of bounds rendering": return !this.runtime.runtimeOptions.disableOffscreenRendering;
+            case "interpolation": return this.runtime.interpolationEnabled;
+            case "warp timer": return this.runtime.compilerOptions.warpTimer;
+            default: return false;
         }
     }
     setMaxClones(args) {
         const limit = Math.round(Cast.toNumber(args.MAX));
-        this.runtime.vm.setRuntimeOptions({
-            maxClones: limit,
-        });
+        this.runtime.vm.setRuntimeOptions({ maxClones: limit });
     }
-    maxAmountOfClones() {
-        return this.runtime.runtimeOptions.maxClones;
-    }
+    maxAmountOfClones() { return this.runtime.runtimeOptions.maxClones }
     setBackgroundColor(args) {
-        const color = Cast.toRgbColorObject(args.COLOR);
-        this.runtime.renderer.setBackgroundColor(
-            color.r / 255,
-            color.g / 255,
-            color.b / 255
-        );
+        const RGB = Cast.toRgbColorObject(args.COLOR);
+        this.runtime.renderer.setBackgroundColor(RGB.r / 255, RGB.g / 255, RGB.b / 255);
     }
     getBackgroundColor() {
         const colorArray = this.runtime.renderer._backgroundColor3b;
         const colorObject = {
             r: Math.round(Cast.toNumber(colorArray[0])),
             g: Math.round(Cast.toNumber(colorArray[1])),
-            b: Math.round(Cast.toNumber(colorArray[2])),
+            b: Math.round(Cast.toNumber(colorArray[2]))
         };
         const hex = Color.rgbToHex(colorObject);
         return hex;
@@ -1003,10 +892,8 @@ class JgRuntimeBlocks {
                 if (!costumes[index]) return "[]";
                 const costume = costumes[index];
                 const data = costume.asset.data;
-
                 const array = BufferUtil.bufferToArray(data.buffer);
-                const stringified = JSON.stringify(array);
-                return stringified;
+                return JSON.stringify(array);
             }
             case "sound": {
                 const sounds = util.target.getSounds();
@@ -1014,13 +901,10 @@ class JgRuntimeBlocks {
                 if (!sounds[index]) return "[]";
                 const sound = sounds[index];
                 const data = sound.asset.data;
-
                 const array = BufferUtil.bufferToArray(data.buffer);
-                const stringified = JSON.stringify(array);
-                return stringified;
+                return JSON.stringify(array);
             }
-            default:
-                return "[]";
+            default: return "[]";
         }
     }
     getDataUriOption(args, util) {
@@ -1044,21 +928,16 @@ class JgRuntimeBlocks {
                 const index = util.target.getCostumeIndexByName(args.NAME);
                 if (!costumes[index]) return "";
                 const costume = costumes[index];
-                const data = costume.asset;
-
-                return data.encodeDataURI();
+                return costume.asset.encodeDataURI();
             }
             case "sound": {
                 const sounds = util.target.getSounds();
                 const index = this.getIndexOfSound(args, util) - 1;
                 if (!sounds[index]) return "";
                 const sound = sounds[index];
-                const data = sound.asset;
-
-                return data.encodeDataURI();
+                return sound.asset.encodeDataURI();
             }
-            default:
-                return "";
+            default: return "";
         }
     }
     getAllSprites() {
@@ -1102,16 +981,10 @@ class JgRuntimeBlocks {
             const failingUrl = 'data:application/octet-stream;base64,';
             vm.saveProjectSb3().then(blob => {
                 const fileReader = new FileReader();
-                fileReader.onload = () => {
-                    resolve(fileReader.result);
-                };
-                fileReader.onerror = () => {
-                    resolve(failingUrl);
-                }
+                fileReader.onload = () => { resolve(fileReader.result); };
+                fileReader.onerror = () => { resolve(failingUrl) }
                 fileReader.readAsDataURL(blob);
-            }).catch(() => {
-                resolve(failingUrl);
-            });
+            }).catch(() => { resolve(failingUrl) });
         });
     }
 
@@ -1145,8 +1018,7 @@ class JgRuntimeBlocks {
                 if (!variables) return "[]";
                 return JSON.stringify(Object.values(variables).filter(v => v.type !== "list").filter(v => v.isCloud === true).map(v => v.name));
             }
-            default:
-                return "[]";
+            default: return "[]";
         }
     }
     getAllLists(args, util) {
@@ -1172,15 +1044,12 @@ class JgRuntimeBlocks {
                 if (!variables) return "[]";
                 return JSON.stringify(Object.values(variables).filter(v => v.type === "list").map(v => v.name));
             }
-            default:
-                return "[]";
+            default: return "[]";
         }
     }
 
     // ShovelUtils
-    getFrameRate() {
-        return fps;
-    }
+    getFrameRate() { return fps }
     addSoundUrl(args, util) {
         const targetId = util.target.id;
         return new Promise((resolve) => {
@@ -1189,16 +1058,12 @@ class JgRuntimeBlocks {
                 .then((arrayBuffer) => {
                     const storage = this.runtime.storage;
                     const asset = new storage.Asset(
-                        storage.AssetType.Sound,
-                        null,
-                        storage.DataFormat.MP3,
-                        new Uint8Array(arrayBuffer),
-                        true
+                        storage.AssetType.Sound, null, storage.DataFormat.MP3,
+                        new Uint8Array(arrayBuffer), true
                     );
                     resolve(vm.addSound({
                         md5: asset.assetId + '.' + asset.dataFormat,
-                        asset: asset,
-                        name: args.NAME
+                        asset: asset, name: args.NAME
                     }, targetId));
                 }).catch(resolve);
         })
@@ -1219,13 +1084,8 @@ class JgRuntimeBlocks {
     variables_createVariable(args, util) {
         const variableName = args.NAME;
         switch (args.SCOPE) {
-            case "all sprites": {
-                return this.runtime.createNewGlobalVariable(variableName);
-            }
-            case "this sprite": {
-                const id = this._generateScratchId();
-                return util.target.createVariable(id, variableName, "");
-            }
+            case "all sprites": return this.runtime.createNewGlobalVariable(variableName);
+            case "this sprite": return util.target.createVariable(this._generateScratchId(), variableName, "");
         }
     }
     variables_createCloudVariable(args) {
@@ -1238,40 +1098,22 @@ class JgRuntimeBlocks {
     variables_createList(args, util) {
         const variableName = args.NAME;
         switch (args.SCOPE) {
-            case "all sprites": {
-                return this.runtime.createNewGlobalVariable(variableName, null, "list");
-            }
-            case "this sprite": {
-                const id = this._generateScratchId();
-                return util.target.createVariable(id, variableName, "list");
-            }
+            case "all sprites": return this.runtime.createNewGlobalVariable(variableName, null, "list");
+            case "this sprite": return util.target.createVariable(this._generateScratchId(), variableName, "list");
         }
     }
     variables_getVariable(args, util) {
         const variableName = args.NAME;
         let target;
         let isCloud = false;
-        switch (args.SCOPE) {
-            case "all sprites": {
-                target = this.runtime.getTargetForStage();
-                break;
-            }
-            case "this sprite": {
-                target = util.target;
-                break;
-            }
-            case "cloud": {
-                target = this.runtime.getTargetForStage();
-                isCloud = true;
-                break;
-            }
-            default:
-                return "";
-        }
+        if (args.SCOPE === "all sprites") target = this.runtime.getTargetForStage();
+        else if (args.SCOPE === "this sprite") target = util.target;
+        else if (args.SCOPE === "cloud") {
+            target = this.runtime.getTargetForStage();
+            isCloud = true;
+        } else return "";
         const variables = Object.values(target.variables).filter(variable => variable.type !== "list").filter(variable => {
-            if (variable.isCloud) {
-                return String(variable.name).replace("☁ ", "") === variableName;
-            }
+            if (variable.isCloud) return String(variable.name).replace("☁ ", "") === variableName;
             if (isCloud) return false; // above check should have already told us its a cloud variable
             return variable.name === variableName;
         });
@@ -1283,19 +1125,10 @@ class JgRuntimeBlocks {
     variables_getList(args, util) {
         const variableName = args.NAME;
         let target;
-        switch (args.SCOPE) {
-            case "all sprites": {
-                target = this.runtime.getTargetForStage();
-                break;
-            }
-            case "this sprite": {
-                target = util.target;
-                break;
-            }
-            default:
-                return "[]";
-        }
-        const variables = Object.values(target.variables).filter(variable => variable.type === "list").filter(variable => variable.name === variableName);
+        if (args.SCOPE === "all sprites") target = this.runtime.getTargetForStage();
+        else if (args.SCOPE === "this sprite") target = util.target;
+        else return "[]";
+        const variables = Object.values(target.variables).filter(v => v.type === "list").filter(v => v.name === variableName);
         if (!variables) return "[]";
         const variable = variables[0];
         if (!variable) return "[]";
@@ -1303,29 +1136,15 @@ class JgRuntimeBlocks {
     }
     variables_deleteVariable(args, util) {
         const variableName = args.NAME;
-        let target;
-        let isCloud = false;
-        switch (args.SCOPE) {
-            case "all sprites": {
-                target = this.runtime.getTargetForStage();
-                break;
-            }
-            case "this sprite": {
-                target = util.target;
-                break;
-            }
-            case "cloud": {
-                target = this.runtime.getTargetForStage();
-                isCloud = true;
-                break;
-            }
-            default:
-                return;
-        }
-        const variables = Object.values(target.variables).filter(variable => variable.type !== "list").filter(variable => {
-            if (variable.isCloud) {
-                return String(variable.name).replace("☁ ", "") === variableName;
-            }
+        let target, isCloud = false;
+        if (args.SCOPE === "all sprites") target = this.runtime.getTargetForStage();
+        else if (args.SCOPE === "this sprite") target = util.target;
+        else if (args.SCOPE === "cloud") {
+            target = this.runtime.getTargetForStage();
+            isCloud = true;
+        } else return;
+        const variables = Object.values(target.variables).filter(v => v.type !== "list").filter(variable => {
+            if (variable.isCloud) return String(variable.name).replace("☁ ", "") === variableName;
             if (isCloud) return false; // above check should have already told us its a cloud variable
             return variable.name === variableName;
         });
@@ -1337,19 +1156,10 @@ class JgRuntimeBlocks {
     variables_deleteList(args, util) {
         const variableName = args.NAME;
         let target;
-        switch (args.SCOPE) {
-            case "all sprites": {
-                target = this.runtime.getTargetForStage();
-                break;
-            }
-            case "this sprite": {
-                target = util.target;
-                break;
-            }
-            default:
-                return;
-        }
-        const variables = Object.values(target.variables).filter(variable => variable.type === "list").filter(variable => variable.name === variableName);
+        if (args.SCOPE === "all sprites") target = this.runtime.getTargetForStage();
+        else if (args.SCOPE === "this sprite") target = util.target;
+        else return;
+        const variables = Object.values(target.variables).filter(v => v.type === "list").filter(v => v.name === variableName);
         if (!variables) return;
         const variable = variables[0];
         if (!variable) return;
@@ -1357,29 +1167,15 @@ class JgRuntimeBlocks {
     }
     variables_existsVariable(args, util) {
         const variableName = args.NAME;
-        let target;
-        let isCloud = false;
-        switch (args.SCOPE) {
-            case "all sprites": {
-                target = this.runtime.getTargetForStage();
-                break;
-            }
-            case "this sprite": {
-                target = util.target;
-                break;
-            }
-            case "cloud": {
-                target = this.runtime.getTargetForStage();
-                isCloud = true;
-                break;
-            }
-            default:
-                return false;
-        }
-        const variables = Object.values(target.variables).filter(variable => variable.type !== "list").filter(variable => {
-            if (variable.isCloud) {
-                return String(variable.name).replace("☁ ", "") === variableName;
-            }
+        let target, isCloud = false;
+        if (args.SCOPE === "all sprites") target = this.runtime.getTargetForStage();
+        else if (args.SCOPE === "this sprite") target = util.target;
+        else if (args.SCOPE === "cloud") {
+            target = this.runtime.getTargetForStage();
+            isCloud = true;
+        } else return false;
+        const variables = Object.values(target.variables).filter(v => v.type !== "list").filter(variable => {
+            if (variable.isCloud) return String(variable.name).replace("☁ ", "") === variableName;
             if (isCloud) return false; // above check should have already told us its a cloud variable
             return variable.name === variableName;
         });
@@ -1391,19 +1187,10 @@ class JgRuntimeBlocks {
     variables_existsList(args, util) {
         const variableName = args.NAME;
         let target;
-        switch (args.SCOPE) {
-            case "all sprites": {
-                target = this.runtime.getTargetForStage();
-                break;
-            }
-            case "this sprite": {
-                target = util.target;
-                break;
-            }
-            default:
-                return false;
-        }
-        const variables = Object.values(target.variables).filter(variable => variable.type === "list").filter(variable => variable.name === variableName);
+        if (args.SCOPE === "all sprites") target = this.runtime.getTargetForStage();
+        else if (args.SCOPE === "this sprite") target = util.target;
+        else return false;
+        const variables = Object.values(target.variables).filter(v => v.type === "list").filter(v => v.name === variableName);
         if (!variables) return false;
         const variable = variables[0];
         if (!variable) return false;
