@@ -798,9 +798,9 @@ class JgRuntimeBlocks {
         switch (Cast.toString(args.OPTION).toLowerCase()) {
             case 'turbo mode': return vm.setTurboMode(enabled);
             case "high quality pen": return this.runtime.renderer.setUseHighQualityRender(enabled);
-            case "offscreen sprites": return vm.setRuntimeOptions({ fencing: !enabled });
-            case "remove miscellaneous limits": return vm.setRuntimeOptions({ miscLimits: !enabled });
-            case "out of bounds rendering": return vm.setRuntimeOptions({ disableOffscreenRendering: !enabled });
+            case "offscreen sprites": return this.runtime.setRuntimeOptions({ fencing: !enabled });
+            case "remove miscellaneous limits": return this.runtime.setRuntimeOptions({ miscLimits: !enabled });
+            case "out of bounds rendering": return this.runtime.setRuntimeOptions({ disableOffscreenRendering: enabled });
             case "interpolation": return vm.setInterpolation(enabled);
             case "warp timer": return this.runtime.setCompilerOptions({ warpTimer: enabled });
         }
@@ -811,7 +811,7 @@ class JgRuntimeBlocks {
             case "high quality pen": return this.runtime.renderer.useHighQualityRender;
             case "offscreen sprites": return !this.runtime.runtimeOptions.fencing;
             case "remove miscellaneous limits": return !this.runtime.runtimeOptions.miscLimits;
-            case "out of bounds rendering": return !this.runtime.runtimeOptions.disableOffscreenRendering;
+            case "out of bounds rendering": return this.runtime.runtimeOptions.disableOffscreenRendering;
             case "interpolation": return this.runtime.interpolationEnabled;
             case "warp timer": return this.runtime.compilerOptions.warpTimer;
             default: return false;
