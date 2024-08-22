@@ -23,224 +23,114 @@ const linear = x => x;
 
 const sine = (x, dir) => {
     switch (dir) {
-    case "in": {
-        return 1 - Math.cos((x * Math.PI) / 2);
-    }
-    case "out": {
-        return Math.sin((x * Math.PI) / 2);
-    }
-    case "in out": {
-        return -(Math.cos(Math.PI * x) - 1) / 2;
-    }
-    default:
-        return 0;
+        case "in": return 1 - Math.cos((x * Math.PI) / 2);
+        case "out": return Math.sin((x * Math.PI) / 2);
+        case "in out": return -(Math.cos(Math.PI * x) - 1) / 2;
+        default: return 0;
     }
 };
 
 const quad = (x, dir) => {
     switch (dir) {
-    case "in": {
-        return x * x;
-    }
-    case "out": {
-        return 1 - (1 - x) * (1 - x);
-    }
-    case "in out": {
-        return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
-    }
-    default:
-        return 0;
+        case "in": return x * x;
+        case "out": return 1 - (1 - x) * (1 - x);
+        case "in out": return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+        default: return 0;
     }
 };
 
 const cubic = (x, dir) => {
     switch (dir) {
-    case "in": {
-        return x * x * x;
-    }
-    case "out": {
-        return 1 - Math.pow(1 - x, 3);
-    }
-    case "in out": {
-        return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
-    }
-    default:
-        return 0;
+        case "in": return x * x * x;
+        case "out": return 1 - Math.pow(1 - x, 3);
+        case "in out": return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+        default: return 0;
     }
 };
 
 const quart = (x, dir) => {
     switch (dir) {
-    case "in": {
-        return x * x * x * x;
-    }
-    case "out": {
-        return 1 - Math.pow(1 - x, 4);
-    }
-    case "in out": {
-        return x < 0.5 ? 8 * x * x * x * x : 1 - Math.pow(-2 * x + 2, 4) / 2;
-    }
-    default:
-        return 0;
+        case "in": return x * x * x * x;
+        case "out": return 1 - Math.pow(1 - x, 4);
+        case "in out": return x < 0.5 ? 8 * x * x * x * x : 1 - Math.pow(-2 * x + 2, 4) / 2;
+        default: return 0;
     }
 };
 
 const quint = (x, dir) => {
     switch (dir) {
-    case "in": {
-        return x * x * x * x * x;
-    }
-    case "out": {
-        return 1 - Math.pow(1 - x, 5);
-    }
-    case "in out": {
-        return x < 0.5
-            ? 16 * x * x * x * x * x
-            : 1 - Math.pow(-2 * x + 2, 5) / 2;
-    }
-    default:
+        case "in": return x * x * x * x * x;
+        case "out": return 1 - Math.pow(1 - x, 5);
+        case "in out": return x < 0.5 ? 16 * x * x * x * x * x : 1 - Math.pow(-2 * x + 2, 5) / 2;
+        default:
         return 0;
     }
 };
 
 const expo = (x, dir) => {
     switch (dir) {
-    case "in": {
-        return x === 0 ? 0 : Math.pow(2, 10 * x - 10);
-    }
-    case "out": {
-        return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
-    }
-    case "in out": {
-        return x === 0
-            ? 0
-            : x === 1
-                ? 1
-                : x < 0.5
-                    ? Math.pow(2, 20 * x - 10) / 2
-                    : (2 - Math.pow(2, -20 * x + 10)) / 2;
-    }
-    default:
-        return 0;
+        case "in": return x === 0 ? 0 : Math.pow(2, 10 * x - 10);
+        case "out": return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
+        case "in out": return x === 0 ? 0 : x === 1 ? 1 : x < 0.5
+            ? Math.pow(2, 20 * x - 10) / 2 : (2 - Math.pow(2, -20 * x + 10)) / 2;
+        default: return 0;
     }
 };
 
 const circ = (x, dir) => {
     switch (dir) {
-    case "in": {
-        return 1 - Math.sqrt(1 - Math.pow(x, 2));
-    }
-    case "out": {
-        return Math.sqrt(1 - Math.pow(x - 1, 2));
-    }
-    case "in out": {
-        return x < 0.5
-            ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
+        case "in": return 1 - Math.sqrt(1 - Math.pow(x, 2));
+        case "out": return Math.sqrt(1 - Math.pow(x - 1, 2));
+        case "in out": return x < 0.5 ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
             : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2;
-    }
-    default:
-        return 0;
+        default: return 0;
     }
 };
 
 const back = (x, dir) => {
+    const c1 = 1.70158;
+    const c2 = c1 * 1.525;
+    const c3 = c1 + 1;
     switch (dir) {
-    case "in": {
-        const c1 = 1.70158;
-        const c3 = c1 + 1;
-        return c3 * x * x * x - c1 * x * x;
-    }
-    case "out": {
-        const c1 = 1.70158;
-        const c3 = c1 + 1;
-        return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
-    }
-    case "in out": {
-        const c1 = 1.70158;
-        const c2 = c1 * 1.525;
-        return x < 0.5
-            ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+        case "in": return c3 * x * x * x - c1 * x * x;
+        case "out": return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+        case "in out": return x < 0.5 ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
             : (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
-    }
-    default:
-        return 0;
+        default: return 0;
     }
 };
 
 const elastic = (x, dir) => {
+    const c4 = (2 * Math.PI) / 3;
+    const c5 = (2 * Math.PI) / 4.5;
     switch (dir) {
-    case "in": {
-        const c4 = (2 * Math.PI) / 3;
-        return x === 0
-            ? 0
-            : x === 1
-                ? 1
-                : -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * c4);
-    }
-    case "out": {
-        const c4 = (2 * Math.PI) / 3;
-        return x === 0
-            ? 0
-            : x === 1
-                ? 1
-                : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
-    }
-    case "in out": {
-        const c5 = (2 * Math.PI) / 4.5;
-        return x === 0
-            ? 0
-            : x === 1
-                ? 1
-                : x < 0.5
-                    ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * c5)) / 2
-                    : (Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * c5)) / 2 +
-                        1;
-    }
-    default:
-        return 0;
+        case "in": return x === 0 ? 0 : x === 1 ? 1 : -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * c4);
+        case "out": return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
+        case "in out": return x === 0 ? 0 : x === 1 ? 1 : x < 0.5
+            ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * c5)) / 2
+            : (Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * c5)) / 2 + 1;
+        default: return 0;
     }
 };
 
 const bounce = (x, dir) => {
     switch (dir) {
-    case "in": {
-        return 1 - bounce(1 - x, "out");
-    }
-    case "out": {
-        const n1 = 7.5625;
-        const d1 = 2.75;
-        if (x < 1 / d1) {
-            return n1 * x * x;
-        } else if (x < 2 / d1) {
-            return n1 * (x -= 1.5 / d1) * x + 0.75;
-        } else if (x < 2.5 / d1) {
-            return n1 * (x -= 2.25 / d1) * x + 0.9375;
-        } 
-        return n1 * (x -= 2.625 / d1) * x + 0.984375;
-            
-    }
-    case "in out": {
-        return x < 0.5
-            ? (1 - bounce(1 - 2 * x, "out")) / 2
-            : (1 + bounce(2 * x - 1, "out")) / 2;
-    }
-    default:
-        return 0;
+        case "in": return 1 - bounce(1 - x, "out");
+        case "out": {
+            const n1 = 7.5625, d1 = 2.75;
+            if (x < 1 / d1) return n1 * x * x;
+            else if (x < 2 / d1) return n1 * (x -= 1.5 / d1) * x + 0.75;
+            else if (x < 2.5 / d1) return n1 * (x -= 2.25 / d1) * x + 0.9375;
+            return n1 * (x -= 2.625 / d1) * x + 0.984375;
+        }
+        case "in out": return x < 0.5 ? (1 - bounce(1 - 2 * x, "out")) / 2 : (1 + bounce(2 * x - 1, "out")) / 2;
+        default: return 0;
     }
 };
 
 const EasingMethods = {
-    linear,
-    sine,
-    quad,
-    cubic,
-    quart,
-    quint,
-    expo,
-    circ,
-    back,
-    elastic,
-    bounce
+    linear, sine, quad, cubic, quart,
+    quint, expo, circ, back, elastic, bounce
 };
 
 class Tween {
@@ -251,11 +141,9 @@ class Tween {
          */
         this.runtime = runtime;
     }
-
     now() {
         return this.runtime.currentMSecs;
     }
-
     getInfo() {
         return {
             id: "jgTween",
@@ -377,7 +265,42 @@ class Tween {
                             menu: "direction"
                         }
                     }
-                }
+                },
+                "---",
+                {
+                    opcode: "tweenC", blockType: Scratch.BlockType.LOOP,
+                    text: "[MODE] ease [DIRECTION] [CHANGE] [START] to [END] in [SEC] secs",
+                    arguments: {
+                        MODE: {
+                            type: ArgumentType.STRING,
+                            menu: "modes",
+                        },
+                        DIRECTION: {
+                            type: ArgumentType.STRING,
+                            menu: "direction",
+                        },
+                        CHANGE: {
+                            type: ArgumentType.STRING,
+                            fillIn: "tweenVal"
+                        },
+                        START: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0,
+                        },
+                        END: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 100,
+                        },
+                        SEC: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1,
+                        }, 
+                    }
+                },
+                {
+                    opcode: "tweenVal", blockType: Scratch.BlockType.REPORTER,
+                    canDragDuplicate: true, hideFromPalette: true, text: "tween value"
+                },
             ],
             menus: {
                 modes: {
@@ -403,19 +326,12 @@ class Tween {
     getVariables() {
         const variables =
             // @ts-expect-error
-            typeof Blockly === "undefined"
-                ? []
-                : // @ts-expect-error
+            typeof Blockly === "undefined" ? [] :
+            // @ts-expect-error
                 Blockly.getMainWorkspace()
-                    .getVariableMap()
-                    .getVariablesOfType("")
-                    .map(model => ({
-                        text: model.name,
-                        value: model.getId()
-                    }));
-        if (variables.length > 0) {
-            return variables;
-        } 
+                    .getVariableMap().getVariablesOfType("")
+                    .map(model => ({ text: model.name, value: model.getId() }));
+        if (variables.length > 0) return variables;
         return [{ text: "", value: "" }];
         
     }
@@ -454,21 +370,14 @@ class Tween {
             const end = Cast.toNumber(args[valueArgName]);
 
             let easingFunction;
-            if (Object.prototype.hasOwnProperty.call(EasingMethods, easeMethod)) {
-                easingFunction = EasingMethods[easeMethod];
-            } else {
-                easingFunction = EasingMethods.linear;
-            }
+            if (Object.prototype.hasOwnProperty.call(EasingMethods, easeMethod)) easingFunction = EasingMethods[easeMethod];
+            else easingFunction = EasingMethods.linear;
 
             util.stackFrame[id] = {
-                startTimeMS: this.now(),
-                durationMS,
-                easingFunction,
-                easeDirection,
-                start,
-                end
+                startTimeMS: this.now(), durationMS,
+                easingFunction, easeDirection,
+                start, end
             };
-
             return start;
         } else if (this.now() - state.startTimeMS >= state.durationMS) {
             // Done
@@ -480,15 +389,12 @@ class Tween {
         const progress = (this.now() - state.startTimeMS) / state.durationMS;
         const tweened = state.easingFunction(progress, state.easeDirection);
         return interpolate(tweened, state.start, state.end);
-        
     }
 
     tweenVariable(args, util) {
         const variable = util.target.lookupVariableById(args.VAR);
         const value = this._tweenValue(args, util, "", "VALUE", variable.value);
-        if (variable && variable.type === "") {
-            variable.value = value;
-        }
+        if (variable && variable.type === "") variable.value = value;
     }
 
     tweenXY(args, util) {
@@ -499,27 +405,56 @@ class Tween {
 
     tweenProperty(args, util) {
         let currentValue = 0;
-        if (args.PROPERTY === "x position") {
-            currentValue = util.target.x;
-        } else if (args.PROPERTY === "y position") {
-            currentValue = util.target.y;
-        } else if (args.PROPERTY === "direction") {
-            currentValue = util.target.direction;
-        } else if (args.PROPERTY === "size") {
-            currentValue = util.target.size;
-        }
+        if (args.PROPERTY === "x position") currentValue = util.target.x;
+        else if (args.PROPERTY === "y position") currentValue = util.target.y;
+        else if (args.PROPERTY === "direction") currentValue = util.target.direction;
+        else if (args.PROPERTY === "size") currentValue = util.target.size;
 
         const value = this._tweenValue(args, util, "", "VALUE", currentValue);
 
-        if (args.PROPERTY === "x position") {
-            util.target.setXY(value, util.target.y);
-        } else if (args.PROPERTY === "y position") {
-            util.target.setXY(util.target.x, value);
-        } else if (args.PROPERTY === "direction") {
-            util.target.setDirection(value);
-        } else if (args.PROPERTY === "size") {
-            util.target.setSize(value);
+        if (args.PROPERTY === "x position") util.target.setXY(value, util.target.y);
+        else if (args.PROPERTY === "y position") util.target.setXY(util.target.x, value);
+        else if (args.PROPERTY === "direction") util.target.setDirection(value);
+        else if (args.PROPERTY === "size") util.target.setSize(value);
+    }
+
+    tweenC(args, util) {
+      const id = "loopedVal";
+      const state = util.stackFrame[id];
+      if (!state) {
+        const durationMS = Cast.toNumber(args.SEC) * 1000;
+        const easeMethod = Cast.toString(args.MODE);
+        const easeDirection = Cast.toString(args.DIRECTION);
+        const start = Cast.toNumber(args.START);
+        const end = Cast.toNumber(args.END);
+        const params = util.thread.tweenValue;
+        if (typeof params === "undefined") util.thread.stackFrames[0].tweenValue = start;
+        let easingFunction;
+        if (Object.prototype.hasOwnProperty.call(EasingMethods, easeMethod)) easingFunction = EasingMethods[easeMethod];
+        else easingFunction = EasingMethods.linear;
+
+        util.stackFrame[id] = {
+          startTimeMS: now(), durationMS,
+          easingFunction, easeDirection,
+          start, end,
+        };
+        util.startBranch(1, true);
+      } else if (now() - state.startTimeMS >= state.durationMS) {
+        util.thread.stackFrames[0].tweenValue = util.stackFrame[id].end;
+        if (util.stackFrame[id].durationMS !== "stop") {
+          util.stackFrame[id].durationMS = "stop";
+          util.startBranch(1, true);
         }
+      } else {
+        const progress = (now() - state.startTimeMS) / state.durationMS;
+        const tweened = state.easingFunction(progress, state.easeDirection);
+        util.thread.stackFrames[0].tweenValue =  interpolate(tweened, state.start, state.end);
+        if (util.stackFrame[id].durationMS !== "stop") util.startBranch(1, true);
+      }
+    }
+
+    tweenVal(_, util) {
+        return util.thread.stackFrames[0].tweenValue ?? "";
     }
 }
 
