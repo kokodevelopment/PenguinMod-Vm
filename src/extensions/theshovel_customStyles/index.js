@@ -18,7 +18,7 @@ let allowScrolling = "", askBackground = "";
 let askBackgroundRoundness = -1, askBackgroundBorderWidth = -1;
 let askButtonBackground = "", askButtonRoundness = -1;
 let askInputBackground = "", askInputRoundness = -1, askInputBorderWidth = -1;
-let askBoxIcon = "", askInputText = "", askButtonImage = "", askInputBorder = "";
+let askBoxIcon = "", askInputText = "", askQuestionText = "", askButtonImage = "", askInputBorder = "";
 
 // CSS selectors
 let monitorRoot, monitorValue, monitorListHeader, monitorListFooter, monitorRowValueOuter, monitorRowsInner, monitorRowsScroller, monitorRowIndex, monitorValueLarge;
@@ -183,7 +183,7 @@ const applyCSS = () => {
     askBackgroundRoundness = -1, askBackgroundBorderWidth = -1;
     askButtonBackground = "", askButtonRoundness = -1;
     askInputBackground = "", askInputRoundness = -1, askInputBorderWidth = -1;
-    askBoxIcon = "", askInputText = "", askButtonImage = "", askInputBorder = "";
+    askBoxIcon = "", askInputText = "", askQuestionText = "", askButtonImage = "", askInputBorder = "";
     applyCSS();
   };
 
