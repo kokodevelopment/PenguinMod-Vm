@@ -3,9 +3,6 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
 
-// Edited by GarboMuffin for TurboWarp
-// These edits were moved over to PenguinMod because they were goode'
-
 /**
    * @param {number} time should be 0-1
    * @param {number} a value at 0
@@ -15,8 +12,7 @@ const Cast = require('../../util/cast');
 const interpolate = (time, a, b) => {
     // don't restrict range of time as some easing functions are expected to go outside the range
     const multiplier = b - a;
-    const result = time * multiplier + a;
-    return result;
+    return time * multiplier + a;
 };
 
 const linear = x => x;
@@ -268,7 +264,7 @@ class Tween {
                 },
                 "---",
                 {
-                    opcode: "tweenC", blockType: Scratch.BlockType.LOOP,
+                    opcode: "tweenC", blockType: BlockType.LOOP,
                     text: "[MODE] ease [DIRECTION] [CHANGE] [START] to [END] in [SEC] secs",
                     arguments: {
                         MODE: {
@@ -298,7 +294,7 @@ class Tween {
                     }
                 },
                 {
-                    opcode: "tweenVal", blockType: Scratch.BlockType.REPORTER,
+                    opcode: "tweenVal", blockType: BlockType.REPORTER,
                     canDragDuplicate: true, hideFromPalette: true, text: "tween value"
                 },
             ],
