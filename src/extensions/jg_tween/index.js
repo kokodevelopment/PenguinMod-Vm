@@ -295,7 +295,7 @@ class Tween {
                 },
                 {
                     opcode: "tweenVal", blockType: BlockType.REPORTER,
-                    canDragDuplicate: true, hideFromPalette: true, text: "tween value"
+                    text: "tween value", canDragDuplicate: true, hideFromPalette: true
                 },
             ],
             menus: {
@@ -430,19 +430,19 @@ class Tween {
         else easingFunction = EasingMethods.linear;
 
         util.stackFrame[id] = {
-          startTimeMS: now(), durationMS,
+          startTimeMS: this.now(), durationMS,
           easingFunction, easeDirection,
           start, end,
         };
         util.startBranch(1, true);
-      } else if (now() - state.startTimeMS >= state.durationMS) {
+      } else if (this.now() - state.startTimeMS >= state.durationMS) {
         util.thread.stackFrames[0].tweenValue = util.stackFrame[id].end;
         if (util.stackFrame[id].durationMS !== "stop") {
           util.stackFrame[id].durationMS = "stop";
           util.startBranch(1, true);
         }
       } else {
-        const progress = (now() - state.startTimeMS) / state.durationMS;
+        const progress = (this.now() - state.startTimeMS) / state.durationMS;
         const tweened = state.easingFunction(progress, state.easeDirection);
         util.thread.stackFrames[0].tweenValue =  interpolate(tweened, state.start, state.end);
         if (util.stackFrame[id].durationMS !== "stop") util.startBranch(1, true);
