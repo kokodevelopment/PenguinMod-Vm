@@ -174,7 +174,7 @@ const executeInCompatibilityLayer = function*(inputs, blockFunction, isWarp, use
     thread.stackFrames[thread.stackFrames.length - 1].reuse(isWarp);
 
     const executeBlock = () => {
-        blockUtility.init(thread, blockId, stackFrame);
+        blockUtility.init(thread, blockId, stackFrame, branchInfo);
         return blockFunction(inputs, blockUtility, visualReport);
     };
 
@@ -228,7 +228,8 @@ runtimeFunctions.createBranchInfo = `const createBranchInfo = (isLoop) => ({
     defaultIsLoop: isLoop,
     isLoop: false,
     branch: 0,
-    stackFrame: {}
+    stackFrame: {},
+    onEnd: [],
 });`;
 
 /**
