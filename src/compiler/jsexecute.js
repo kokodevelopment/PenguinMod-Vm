@@ -228,7 +228,8 @@ runtimeFunctions.createBranchInfo = `const createBranchInfo = (isLoop) => ({
     defaultIsLoop: isLoop,
     isLoop: false,
     branch: 0,
-    stackFrame: {}
+    stackFrame: {},
+    onEnd: [],
 });`;
 
 /**
