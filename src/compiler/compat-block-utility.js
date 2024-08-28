@@ -8,7 +8,7 @@ class CompatibilityLayerBlockUtility extends BlockUtility {
     }
 
     get stackFrame () {
-        return this._stackFrame;
+        return this.thread.compatibilityStackFrame;
     }
 
     startBranch (branchNumber, isLoop, onEnd) {
@@ -54,6 +54,7 @@ class CompatibilityLayerBlockUtility extends BlockUtility {
         this._startedBranch = null;
         this._branchInfo = branchInfo;
         thread.stack[0] = fakeBlockId;
+        thread.compatibilityStackFrame = stackFrame;
     }
 }
 
