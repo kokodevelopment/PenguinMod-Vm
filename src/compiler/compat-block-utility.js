@@ -3,7 +3,6 @@ const BlockUtility = require('../engine/block-utility');
 class CompatibilityLayerBlockUtility extends BlockUtility {
     constructor () {
         super();
-        this._stackFrame = {};
         this._startedBranch = null;
     }
 
@@ -50,7 +49,6 @@ class CompatibilityLayerBlockUtility extends BlockUtility {
     init (thread, fakeBlockId, stackFrame, branchInfo) {
         this.thread = thread;
         this.sequencer = thread.target.runtime.sequencer;
-        this._stackFrame = stackFrame;
         this._startedBranch = null;
         this._branchInfo = branchInfo;
         thread.stack[0] = fakeBlockId;
