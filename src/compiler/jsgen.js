@@ -1784,7 +1784,7 @@ class JSGenerator {
                     : 'tempVars';
             this.source += this.isOptimized  
                 ? `delete ${hostObj}[${name.asString()}];` 
-                : `remove(${hostObj}, ${name.asString()})`;  
+                : `remove(${hostObj}, ${name.asString()});`;  
             break;
         }
         case 'tempVars.deleteAll': {
