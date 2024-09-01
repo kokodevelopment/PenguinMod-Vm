@@ -63,6 +63,13 @@ class _StackFrame {
          * @type {Object}
          */
         this.executionContext = null;
+
+        /**
+         * Internal block object being executed. This is *not* the same as the object found
+         * in target.blocks.
+         * @type {object}
+         */
+        this.op = null;
     }
 
     /**
@@ -79,6 +86,7 @@ class _StackFrame {
         this.waitingReporter = null;
         this.params = null;
         this.executionContext = null;
+        this.op = null;
 
         return this;
     }
@@ -207,6 +215,7 @@ class Thread {
          */
         this.procedures = null;
         this.executableHat = false;
+        this.compatibilityStackFrame = null;
 
         /**
          * Thread vars: for allowing a compiled version of the 
@@ -325,7 +334,16 @@ class Thread {
         let blockID = this.peekStack();
         while (blockID !== null) {
             const block = this.target.blocks.getBlock(blockID);
+            // Reporter form of procedures_call
+            if (this.peekStackFrame().waitingReporter) break;
+
+            // Command form of procedures_call
             if (typeof block !== 'undefined' && block.opcode === 'procedures_call') {
+                // By definition, if we get here, the procedure is done, so skip ahead so
+                // the arguments won't be re-evaluated and then discarded as frozen state
+                // about which arguments have been evaluated is lost.
+                // This fixes https://github.com/TurboWarp/scratch-vm/issues/201
+                this.goToNextBlock();
                 break;
             }
             this.popStack();
@@ -422,7 +440,7 @@ class Thread {
             if (frame.params === null) {
                 continue;
             }
-            if (frame.params.hasOwnProperty(paramName)) {
+            if (Object.prototype.hasOwnProperty.call(frame.params, paramName)) {
                 return frame.params[paramName];
             }
             return null;
@@ -462,9 +480,9 @@ class Thread {
      */
     isRecursiveCall (procedureCode) {
         let callCount = 5; // Max number of enclosing procedure calls to examine.
-        const sp = this.stack.length - 1;
+        const sp = this.stackFrames.length - 1;
         for (let i = sp - 1; i >= 0; i--) {
-            const block = this.target.blocks.getBlock(this.stack[i]);
+            const block = this.target.blocks.getBlock(this.stackFrames[i].op.id);
             if (block.opcode === 'procedures_call' &&
                 block.mutation.proccode === procedureCode) {
                 return true;

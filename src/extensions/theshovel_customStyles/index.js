@@ -1,9 +1,6 @@
 // Created by TheShovel
 // https://github.com/TheShovel
-//
-// 99% of the code here was not created by a PenguinMod developer!
-// Look above for proper crediting :)
-//
+
 // Thanks LilyMakesThings for the awesome banner!
 
 const ArgumentType = require("../../extension-support/argument-type");
@@ -11,48 +8,21 @@ const BlockType = require("../../extension-support/block-type");
 const Cast = require("../../util/cast");
 
 // Styles
-let monitorText = "";
-let monitorBorder = "";
-let monitorBackgroundColor = "";
-let variableValueBackground = "";
-let variableValueTextColor = "";
-let listFooterBackground = "";
-let listHeaderBackground = "";
-let listValueText = "";
-let listValueBackground = "";
-let variableValueRoundness = -1;
-let listValueRoundness = -1;
-let monitorBackgroundRoundness = -1;
-let monitorBackgroundBorderWidth = -1;
-let allowScrolling = "";
-let askBackground = "";
-let askBackgroundRoundness = -1;
-let askBackgroundBorderWidth = -1;
-let askButtonBackground = "";
-let askButtonRoundness = -1;
-let askInputBackground = "";
-let askInputRoundness = -1;
-let askInputBorderWidth = -1;
-let askBoxIcon = "";
-let askInputText = "";
-let askButtonImage = "";
-let askInputBorder = "";
+let monitorText = "", monitorBorder = "", monitorBackgroundColor = "";
+let variableValueBackground = "", variableValueTextColor = "";
+let listFooterBackground = "", listHeaderBackground = "";
+let listValueText = "", listValueBackground = "";
+let variableValueRoundness = -1, listValueRoundness = -1;
+let monitorBackgroundRoundness = -1, monitorBackgroundBorderWidth = -1;
+let allowScrolling = "", askBackground = "";
+let askBackgroundRoundness = -1, askBackgroundBorderWidth = -1;
+let askButtonBackground = "", askButtonRoundness = -1;
+let askInputBackground = "", askInputRoundness = -1, askInputBorderWidth = -1;
+let askBoxIcon = "", askInputText = "", askQuestionText = "", askButtonImage = "", askInputBorder = "";
 
 // CSS selectors
-let monitorRoot;
-let monitorValue;
-let monitorListHeader;
-let monitorListFooter;
-let monitorRowValueOuter;
-let monitorRowsInner;
-let monitorRowsScroller;
-let monitorRowIndex;
-let monitorValueLarge;
-let askBoxBG;
-let askBoxButton;
-let askBoxInner;
-let askBoxBorderMain;
-let askBoxBorderOuter;
+let monitorRoot, monitorValue, monitorListHeader, monitorListFooter, monitorRowValueOuter, monitorRowsInner, monitorRowsScroller, monitorRowIndex, monitorValueLarge;
+let askBoxBG, askBoxButton, askBoxInner, askBoxText, askBoxBorderMain, askBoxBorderOuter;
 if (typeof scaffolding !== "undefined") {
     monitorRoot = ".sc-monitor-root";
     monitorValue = ".sc-monitor-value";
@@ -68,6 +38,7 @@ if (typeof scaffolding !== "undefined") {
     askBoxInner = ".sc-question-input";
     askBoxBorderMain = ".sc-question-input:hover";
     askBoxBorderOuter = ".sc-question-input:focus";
+    askBoxText = ".sc-question-text";
 } else {
     monitorRoot = 'div[class^="monitor_monitor-container_"]';
     monitorValue = 'div[class^="monitor_value_"]';
@@ -75,18 +46,16 @@ if (typeof scaffolding !== "undefined") {
     monitorListFooter = 'div[class^="monitor_list-footer_"]';
     monitorRowValueOuter = 'div[class^="monitor_list-value_"]';
     monitorRowsInner = 'div[class^="monitor_list-body_"]';
-    monitorRowsScroller =
-        'div[class^="monitor_list-body_"] > .ReactVirtualized__List';
+    monitorRowsScroller = 'div[class^="monitor_list-body_"] > .ReactVirtualized__List';
     monitorRowIndex = 'div[class^="monitor_list-index_"]';
     monitorValueLarge = 'div[class^="monitor_large-value_"]';
     askBoxBG = 'div[class^="question_question-container_"]';
     askBoxButton = 'button[class^="question_question-submit-button_"]';
-    askBoxInner =
-        '[class^="question_question-container_"] input[class^="input_input-form_"]';
+    askBoxInner = '[class^="question_question-container_"] input[class^="input_input-form_"]';
     askBoxIcon = 'img[class^="question_question-submit-button-icon_"]';
-    askBoxBorderMain =
-        '[class^="question_question-input_"] input:focus, [class^="question_question-input_"] input:hover';
+    askBoxBorderMain = '[class^="question_question-input_"] input:focus, [class^="question_question-input_"] input:hover';
     askBoxBorderOuter = '[class^="question_question-input_"] > input:focus';
+    askBoxText = '[class^="question_question-container_"] div[class^="question_question-label_"]';
 }
 
 const ColorIcon =
@@ -196,9 +165,27 @@ const applyCSS = () => {
         css += `${askBoxBorderMain}, ${askBoxBorderOuter} { border-color: ${askInputBorder} !important; }`;
         css += `${askBoxBorderOuter} { box-shadow: none !important; }`;
     }
+    if (askQuestionText) {
+        css += `${askBoxText} { color: ${askQuestionText} !important; }`;
+    }
 
     stylesheet.textContent = css;
 };
+
+ const resetStyles = () => {
+    monitorText = "", monitorBorder = "", monitorBackgroundColor = "";
+    variableValueBackground = "", variableValueTextColor = "";
+    listFooterBackground = "", listHeaderBackground = "";
+    listValueText = "", listValueBackground = "";
+    variableValueRoundness = -1, listValueRoundness = -1;
+    monitorBackgroundRoundness = -1, monitorBackgroundBorderWidth = -1;
+    allowScrolling = "", askBackground = "";
+    askBackgroundRoundness = -1, askBackgroundBorderWidth = -1;
+    askButtonBackground = "", askButtonRoundness = -1;
+    askInputBackground = "", askInputRoundness = -1, askInputBorderWidth = -1;
+    askBoxIcon = "", askInputText = "", askQuestionText = "", askButtonImage = "", askInputBorder = "";
+    applyCSS();
+  };
 
 const getMonitorRoot = (id) => {
     const allMonitors = document.querySelectorAll(monitorRoot);
@@ -252,9 +239,9 @@ const parseColor = (color, callback) => {
         return;
     }
 
-    // Simple linear gradient
-    if (/^linear-gradient\(\d+deg,#?[a-z0-9]+,#?[a-z0-9]+\)$/.test(color)) {
-        callback(color);
+    // General gradient pattern
+    if (/^[a-z-]+-gradient\([a-z0-9,#%. ]+\)$/i.test(color)) {
+          callback(color);
         return;
     }
 
@@ -277,8 +264,8 @@ const parseColor = (color, callback) => {
 class MonitorStyles {
     constructor(runtime) {
         this.runtime = runtime;
+        this.runtime.on("RUNTIME_DISPOSED", resetStyles);
     }
-
     getInfo() {
         return {
             id: "shovelcss",
@@ -482,6 +469,7 @@ class MonitorStyles {
                         "ask prompt background",
                         "ask prompt button background",
                         "ask prompt input background",
+                        "ask prompt question text",
                         "ask prompt input text",
                         "ask prompt input border",
                     ],
@@ -571,6 +559,8 @@ class MonitorStyles {
                 askInputBackground = color;
             } else if (args.COLORABLE === "ask prompt input text") {
                 askInputText = color;
+            } else if (args.COLORABLE === "ask prompt question text") {
+                askQuestionText = color;
             } else if (args.COLORABLE === "ask prompt input border") {
                 askInputBorder = color;
             }
@@ -665,33 +655,7 @@ class MonitorStyles {
     }
 
     clearCSS() {
-        monitorText = "";
-        monitorBorder = "";
-        monitorBackgroundColor = "";
-        variableValueBackground = "";
-        variableValueTextColor = "";
-        listFooterBackground = "";
-        listHeaderBackground = "";
-        listValueText = "";
-        listValueBackground = "";
-        variableValueRoundness = -1;
-        listValueRoundness = -1;
-        monitorBackgroundRoundness = -1;
-        monitorBackgroundBorderWidth = -1;
-        allowScrolling = "";
-        askBackground = "";
-        askBackgroundRoundness = -1;
-        askBackgroundBorderWidth = -1;
-        askButtonBackground = "";
-        askButtonRoundness = -1;
-        askInputBackground = "";
-        askInputRoundness = -1;
-        askInputBorderWidth = -1;
-        askBoxIcon = "";
-        askInputText = "";
-        askButtonImage = "";
-        askInputBorder = "";
-        applyCSS();
+        resetStyles();
     }
 
     getValue(args) {
@@ -721,6 +685,8 @@ class MonitorStyles {
             return askInputBackground;
         } else if (args.ITEM === "ask prompt input text") {
             return askInputText;
+        } else if (args.ITEM === "ask prompt question text") {
+            return askQuestionText;
         } else if (args.ITEM === "ask prompt input border") {
             return askInputBorder;
         } else if (args.ITEM === "monitor background border width") {
