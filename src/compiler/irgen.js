@@ -1,6 +1,8 @@
 const Cast = require('../util/cast');
 const StringUtil = require('../util/string-util');
 const BlockType = require('../extension-support/block-type');
+const Sequencer = require('../engine/sequencer');
+const BlockUtility = require('../engine/block-utility');
 const Variable = require('../engine/variable');
 const Color = require('../util/color');
 const log = require('../util/log');
@@ -69,6 +71,8 @@ class ScriptTreeGenerator {
         this.runtime = this.target.runtime;
         /** @private */
         this.stage = this.runtime.getTargetForStage();
+        /** @private */
+        this.util = new BlockUtility(this.runtime.sequencer, this.thread);
 
         /**
          * This script's intermediate representation.
@@ -1575,6 +1579,26 @@ class ScriptTreeGenerator {
                 param: this.descendInputOfBlock(block, "PARAM"),
                 val: this.descendInputOfBlock(block, "VALUE")
             };
+        case 'argument_reporter_command': {
+            const name = block.fields.VALUE.value;
+            // lastIndexOf because multiple parameters with the same name will use the value of the last definition
+            const index = this.script.arguments.lastIndexOf(name);
+            if (index === -1) { return }
+
+            const branchInfo = util.getParam(args.VALUE) || {};
+            if (branchInfo.entry === null) return;
+            const [branchId, target] = util.getBranchAndTarget(
+                branchInfo.callerId,
+                branchInfo.entry
+            ) || [];
+
+            return {
+                kind: 'args.command',
+                index: index,
+                branchId: branchId,
+                target: target
+            };
+        }
         case 'procedures_call': {
             // setting of yields will be handled later in the analysis phase
             // patches output previewing
