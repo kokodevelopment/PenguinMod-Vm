@@ -75,7 +75,8 @@ const statementBlocks = [
     'sound_set_stop_fadeout_to',
     'sound_play_at_seconds',
     'sound_play_at_seconds_until_done',
-    'sound_pauseallsounds'
+    'sound_pauseallsounds',
+    'argument_reporter_command'
 ];
 
 const outputBlocks = [
