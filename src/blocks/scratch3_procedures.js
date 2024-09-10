@@ -18,7 +18,8 @@ class Scratch3ProcedureBlocks {
             procedures_call: this.call,
             procedures_set: this.set,
             argument_reporter_string_number: this.argumentReporterStringNumber,
-            argument_reporter_boolean: this.argumentReporterBoolean
+            argument_reporter_boolean: this.argumentReporterBoolean,
+            argument_reporter_command: this.argumentReporterCommand
         };
     }
 
@@ -102,6 +103,21 @@ class Scratch3ProcedureBlocks {
             return 0;
         }
         return value;
+    }
+
+    argumentReporterCommand(args, util) {
+        const branchInfo = util.getParam(args.VALUE) || {};
+        if (branchInfo.entry === null) return;
+        const [branchId, target] = util.getBranchAndTarget(
+            branchInfo.callerId,
+            branchInfo.entry
+        ) || [];
+        if (branchId) {
+            // Push branch ID to the thread's stack.
+            util.thread.pushStack(branchId, target);
+        } else {
+            util.thread.pushStack(null);
+        }
     }
 }
 
