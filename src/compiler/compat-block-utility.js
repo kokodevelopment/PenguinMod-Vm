@@ -35,6 +35,7 @@ class CompatibilityLayerBlockUtility extends BlockUtility {
         return new Function(`Procedure ${proccode}`, evaluate)();
     }
 
+    /*
     // Parameters are not used by compiled scripts.
     initParams () {
         throw new Error('initParams is not supported by this BlockUtility');
@@ -45,6 +46,7 @@ class CompatibilityLayerBlockUtility extends BlockUtility {
     getParam () {
         throw new Error('getParam is not supported by this BlockUtility');
     }
+    */
 
     init (thread, fakeBlockId, stackFrame, branchInfo) {
         this.thread = thread;
