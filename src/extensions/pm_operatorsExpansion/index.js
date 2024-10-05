@@ -2,7 +2,7 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const createTranslate = require('../../extension-support/tw-l10n');
 const Cast = require('../../util/cast');
-const MathJS = require('mathjs');
+const MathJS = require('./mathjs.js');
 
 const blockSeparator = '<sep gap="36"/>'; // At default scale, about 28px
 
