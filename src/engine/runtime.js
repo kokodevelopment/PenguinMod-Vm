@@ -3692,7 +3692,12 @@ class Runtime extends EventEmitter {
             this.cameraStates[screen] = screen;
         }
         Object.assign(this.cameraStates[screen], state);
-        if (!silent) this.emit(Runtime.CAMERA_CHANGED, screen);
+        if (!silent) {
+            for (let i = 0; i < this.targets.length; i++) 
+                if (this.targets[i].cameraBound === screen)
+                    this.targets[i].cameraUpdateEvent();
+            this.emit(Runtime.CAMERA_CHANGED, screen);
+        }
     }
 
     /**
