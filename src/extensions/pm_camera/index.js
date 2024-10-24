@@ -414,7 +414,7 @@ class PenguinModCamera {
     }
 
     pointTowards({ DIRECTION }, util) {
-        this.updateCamera(util.target, { dir: DIRECTION });
+        this.updateCamera(util.target, { dir: DIRECTION -90 });
     }
     pointTowardsPoint({ X, Y }, util) {
         const { pos: [x, y] } = this.getCamera(util.target);
@@ -448,7 +448,7 @@ class PenguinModCamera {
     }
     direction(_, util) {
         const state = this.getCamera(util.target);
-        return state.dir -90;
+        return state.dir +90;
     }
     getSize(_, util) {
         const state = this.getCamera(util.target);
