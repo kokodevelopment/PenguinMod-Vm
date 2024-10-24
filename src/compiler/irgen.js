@@ -1932,7 +1932,7 @@ class ScriptTreeGenerator {
                 var: this.descendInputOfBlock(block, 'name')
             };
 
-        case 'lmsTempVars2_deleteAllRuntimeVariable':
+        case 'lmsTempVars2_deleteAllRuntimeVariables':
             return {
                 kind: 'tempVars.deleteAll',
                 runtime: true
