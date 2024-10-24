@@ -406,11 +406,11 @@ class PenguinModCamera {
         this.updateCamera(util.target, { pos: [X, Y] });
     }
     setSize({ ZOOM }, util) {
-        this.updateCamera(util.target, { size: ZOOM / 100 });
+        this.updateCamera(util.target, { scale: ZOOM / 100 });
     }
     changeSize({ ZOOM }, util) {
-        const { size } = this.getCamera(util.target);
-        this.updateCamera(util.target, { size: (ZOOM / 100) + size });
+        const { scale } = this.getCamera(util.target);
+        this.updateCamera(util.target, { scale: (ZOOM / 100) + scale });
     }
 
     pointTowards({ DIRECTION }, util) {
