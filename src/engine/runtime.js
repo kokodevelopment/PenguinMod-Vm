@@ -24,6 +24,7 @@ const { validateJSON } = require('../util/json-block-utilities');
 const Color = require('../util/color');
 const TabManager = require('../extension-support/pm-tab-manager');
 const ModalManager = require('../extension-support/pm-modal-manager');
+const MathUtil = require('../util/math-util');
 
 // Virtual I/O devices.
 const Clock = require('../io/clock');
@@ -3688,16 +3689,16 @@ class Runtime extends EventEmitter {
      * @param {boolean} silent if we should emit an event because of this change
      */
     updateCamera(screen, state, silent) {
-        if (!this.cameraStates[screen]) {
-            this.cameraStates[screen] = screen;
-        }
-        Object.assign(this.cameraStates[screen], state);
-        if (!silent) {
-            for (let i = 0; i < this.targets.length; i++) 
-                if (this.targets[i].cameraBound === screen)
-                    this.targets[i].cameraUpdateEvent();
-            this.emit(Runtime.CAMERA_CHANGED, screen);
-        }
+        state.dir = MathUtil.wrapClamp(state.dir, -179, 180);
+        this.cameraStates[screen] = state = 
+            Object.assign(this.cameraStates[screen] ?? {}, state);
+        if (!silent ?? state.silent) this.emitCameraChanged(screen);
+    }
+    emitCameraChanged(screen) {
+        for (let i = 0; i < this.targets.length; i++) 
+            if (this.targets[i].cameraBound === screen)
+                this.targets[i].cameraUpdateEvent();
+        this.emit(Runtime.CAMERA_CHANGED, screen);
     }
 
     /**
