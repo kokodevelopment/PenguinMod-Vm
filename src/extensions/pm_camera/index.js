@@ -448,7 +448,7 @@ class PenguinModCamera {
     }
     direction(_, util) {
         const state = this.getCamera(util.target);
-        return 90 - state.dir;
+        return state.dir -90;
     }
     getSize(_, util) {
         const state = this.getCamera(util.target);
