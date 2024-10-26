@@ -452,7 +452,7 @@ class PenguinModCamera {
     }
     getSize(_, util) {
         const state = this.getCamera(util.target);
-        return state.size * 100;
+        return state.scale * 100;
     }
     getCurrentCamera(_, util) {
         return this.getActiveCamera(util.target);
