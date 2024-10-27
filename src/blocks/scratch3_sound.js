@@ -1,6 +1,7 @@
 const MathUtil = require('../util/math-util');
 const Cast = require('../util/cast');
 const Clone = require('../util/clone');
+const getMonitorIdForBlockWithArgs = require('../util/get-monitor-id');
 
 /**
  * Occluded boolean value to make its use more understandable.
@@ -168,7 +169,11 @@ class Scratch3SoundBlocks {
             sound_volume: {
                 isSpriteSpecific: true,
                 getId: targetId => `${targetId}_volume`
-            }
+            },
+            sound_getEffectValue: {
+                isSpriteSpecific: true,
+                getId: (targetId, fields) => getMonitorIdForBlockWithArgs(`${targetId}_getEffectValue`, fields)
+            },
         };
     }
 

@@ -477,6 +477,38 @@ class Scratch3LooksBlocks {
                 isSpriteSpecific: true,
                 getId: targetId => `${targetId}_size`
             },
+            looks_stretchGetX: {
+                isSpriteSpecific: true,
+                getId: targetId => `${targetId}_stretchX`
+            },
+            looks_stretchGetY: {
+                isSpriteSpecific: true,
+                getId: targetId => `${targetId}_stretchY`
+            },
+            looks_sayWidth: {
+                isSpriteSpecific: true,
+                getId: targetId => `${targetId}_sayWidth`
+            },
+            looks_sayHeight: {
+                isSpriteSpecific: true,
+                getId: targetId => `${targetId}_sayHeight`
+            },
+            looks_getEffectValue: {
+                isSpriteSpecific: true,
+                getId: (targetId, fields) => getMonitorIdForBlockWithArgs(`${targetId}_getEffectValue`, fields)
+            },
+            looks_tintColor: {
+                isSpriteSpecific: true,
+                getId: targetId => `${targetId}_tintColor`
+            },
+            looks_getSpriteVisible: {
+                isSpriteSpecific: true,
+                getId: targetId => `${targetId}_getSpriteVisible`
+            },
+            looks_layersGetLayer: {
+                isSpriteSpecific: true,
+                getId: targetId => `${targetId}_layersGetLayer`
+            },
             looks_costumenumbername: {
                 isSpriteSpecific: true,
                 getId: (targetId, fields) => getMonitorIdForBlockWithArgs(`${targetId}_costumenumbername`, fields)

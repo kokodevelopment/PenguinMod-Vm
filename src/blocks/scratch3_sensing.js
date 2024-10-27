@@ -295,14 +295,23 @@ class Scratch3SensingBlocks {
             sensing_mousedown: {
                 getId: () => 'mousedown'
             },
+            sensing_mouseclicked: {
+                getId: () => 'mouseclicked'
+            },
             sensing_mousex: {
                 getId: () => 'mousex'
             },
             sensing_mousey: {
                 getId: () => 'mousey'
             },
+            sensing_getclipboard: {
+                getId: () => 'getclipboard'
+            },
             sensing_loudness: {
                 getId: () => 'loudness'
+            },
+            sensing_loud: {
+                getId: () => 'loud'
             },
             sensing_timer: {
                 getId: () => 'timer'
@@ -315,7 +324,10 @@ class Scratch3SensingBlocks {
                 // importing multiple monitors from the same opcode from sb2 files,
                 // something that is not currently supported in scratch 3.
                 getId: (_, fields) => getMonitorIdForBlockWithArgs('current', fields) // _${param}`
-            }
+            },
+            sensing_loggedin: {
+                getId: () => 'loggedin'
+            },
         };
     }
 
