@@ -1028,7 +1028,7 @@ class JSGenerator {
             }
             return new TypedInput(`JSON.stringify(Object.keys(tempVars))`, TYPE_STRING);
         case 'control.dualBlock':
-            return new TypedInput('dual block works!', TYPE_STRING);
+            return new TypedInput('"dual block works!"', TYPE_STRING);
 
         default:
             log.warn(`JS: Unknown input: ${node.kind}`, node);
