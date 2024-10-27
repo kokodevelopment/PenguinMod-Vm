@@ -920,6 +920,11 @@ class ScriptTreeGenerator {
                 kind: 'tw.lastKeyPressed'
             };
 
+        case 'control_dualblock':
+            return {
+                kind: 'control.dualBlock'
+            };
+
         default: {
             const opcodeFunction = this.runtime.getOpcodeFunction(block.opcode);
             if (opcodeFunction) {
@@ -1961,6 +1966,10 @@ class ScriptTreeGenerator {
                 var: this.descendInputOfBlock(block, 'NAME'),
                 loops: this.descendInputOfBlock(block, 'REPEAT'),
                 do: this.descendSubstack(block, 'SUBSTACK')
+            };
+        case 'control_dualblock':
+            return {
+                kind: 'control.dualBlock'
             };
 
         default: {

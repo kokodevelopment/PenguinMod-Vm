@@ -1027,6 +1027,8 @@ class JSGenerator {
                 return new TypedInput(`Object.keys(${hostObj}).join(',')`, TYPE_STRING);
             }
             return new TypedInput(`JSON.stringify(Object.keys(tempVars))`, TYPE_STRING);
+        case 'control.dualBlock':
+            return new TypedInput('dual block works!', TYPE_STRING);
 
         default:
             log.warn(`JS: Unknown input: ${node.kind}`, node);
@@ -1821,6 +1823,9 @@ class JSGenerator {
             this.source += '}\n';
             break;
         }
+        case 'control.error':
+            this.source += `console.log("dual block works");`
+            break
 
         default:
             log.warn(`JS: Unknown stacked block: ${node.kind}`, node);
