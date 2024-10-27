@@ -42,7 +42,6 @@ const defaultBuiltinExtensions = {
     boost: () => require('../extensions/scratch3_boost'),
     gdxfor: () => require('../extensions/scratch3_gdx_for'),
     text: () => require('../extensions/scratchLab_animatedText'),
-    faceSensing: () => require('../extensions/scratchLab_faceSensing'),
 
     // garbomuffin: *silence*
     // tw: core extension
