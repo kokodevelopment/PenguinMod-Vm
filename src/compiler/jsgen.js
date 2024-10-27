@@ -541,6 +541,8 @@ class JSGenerator {
             return new TypedInput('runtime.ext_scratch3_control._counter', TYPE_NUMBER);
         case 'control.error':
             return new TypedInput('runtime.ext_scratch3_control._error', TYPE_STRING);
+        case 'control.isclone':
+            return new TypedInput('(!target.isOriginal)', TYPE_BOOLEAN);
         case 'math.polygon':
             let points = JSON.stringify(node.points.map((point, num) => ({x: `x${num}`, y: `y${num}`})));
             for (let num = 0; num < node.points.length; num++) {

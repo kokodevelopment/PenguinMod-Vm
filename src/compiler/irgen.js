@@ -282,6 +282,10 @@ class ScriptTreeGenerator {
             return {
                 kind: 'control.error'
             };
+        case 'control_is_clone':
+            return {
+                kind: 'control.isclone'
+            };
 
         case 'data_variable':
             return {
