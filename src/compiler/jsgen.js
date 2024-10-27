@@ -1823,7 +1823,7 @@ class JSGenerator {
             this.source += '}\n';
             break;
         }
-        case 'control.error':
+        case 'control.dualBlock':
             this.source += `console.log("dual block works");`
             break
 
