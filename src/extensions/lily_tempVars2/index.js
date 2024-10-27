@@ -290,7 +290,7 @@ class lmsTempVars2 {
     }
   
     listRuntimeVariables(args, util) {
-        return Object.keys(runtimeVariables).join(",");
+        return Object.keys(this.runtime.variables).join(",");
     }
   
     deleteRuntimeVariable(args) {
