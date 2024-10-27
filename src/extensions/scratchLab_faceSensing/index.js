@@ -1,10 +1,10 @@
-const ArgumentType = require('./extension-support/argument-type.js');
-const BlockType = require('./extension-support/block-type.js');
-const Clone = require('./util/clone.js');
-const MathUtil = require('./util/math-util.js');
+const ArgumentType = require('../../extension-support/argument-type.js');
+const BlockType = require('../../extension-support/block-type.js');
+const Clone = require('../../util/clone.js');
+const MathUtil = require('../../util/math-util.js');
 const formatMessage = require('format-message');
-const Video = require('./io/video.js');
-const TargetType = require('./extension-support/target-type.js')
+const Video = require('../../io/video.js');
+const TargetType = require('../../extension-support/target-type.js')
 const Blazeface = require('@tensorflow-models/blazeface');
 
 
