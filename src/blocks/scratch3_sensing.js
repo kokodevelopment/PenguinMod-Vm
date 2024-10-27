@@ -307,6 +307,10 @@ class Scratch3SensingBlocks {
             sensing_getclipboard: {
                 getId: () => 'getclipboard'
             },
+            sensing_getdragmode: {
+                isSpriteSpecific: true,
+                getId: targetId => `${targetId}_getdragmode`
+            },
             sensing_loudness: {
                 getId: () => 'loudness'
             },
