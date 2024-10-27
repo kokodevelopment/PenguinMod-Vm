@@ -129,6 +129,7 @@ const outputBlocks = [
     "sensing_thing_has_text",
     "sensing_thing_has_number",
     "sensing_objecttouchingobject",
+    "sensing_objecttouchingclonesprite",
     'looks_getOtherSpriteVisible',
     'operator_gtorequal',
     'operator_ltorequal',

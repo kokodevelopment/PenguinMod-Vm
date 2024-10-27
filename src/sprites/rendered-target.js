@@ -866,9 +866,10 @@ class RenderedTarget extends Target {
     /**
      * Return whether this target is touching the mouse, an edge, or a sprite.
      * @param {string} requestedObject an id for mouse or edge, or a sprite name.
+     * @param {boolean?} unoriginalOnly if true, will use isTouchingSpriteUnoriginals when checking sprites.
      * @return {boolean} True if the sprite is touching the object.
      */
-    isTouchingObject (requestedObject) { // used by compiler
+    isTouchingObject (requestedObject, unoriginalOnly) { // used by compiler
         if (requestedObject === '_mouse_') {
             if (!this.runtime.ioDevices.mouse) return false;
             const mouseX = this.runtime.ioDevices.mouse.getClientX();
@@ -877,7 +878,12 @@ class RenderedTarget extends Target {
         } else if (requestedObject === '_edge_') {
             return this.isTouchingEdge();
         }
-        return this.isTouchingSprite(requestedObject);
+
+        if (unoriginalOnly) {
+            return this.isTouchingSpriteUnoriginals(requestedObject);
+        } else {
+            return this.isTouchingSprite(requestedObject);
+        }
     }
 
     /**
@@ -927,6 +933,25 @@ class RenderedTarget extends Target {
         // can detect other sprites using touching <sprite>, but cannot be detected
         // by other sprites while it is being dragged. This matches Scratch 2.0 behavior.
         const drawableCandidates = firstClone.sprite.clones.filter(clone => !clone.dragging)
+            .map(clone => clone.drawableID);
+        return this.renderer.isTouchingDrawables(
+            this.drawableID, drawableCandidates);
+    }
+    /**
+     * Return whether touching any of a named sprite's unoriginal clones.
+     * @param {string} spriteName Name of the sprite.
+     * @return {boolean} True if touching a clone of the sprite with isOriginal set to false.
+     */
+    isTouchingSpriteUnoriginals (spriteName) {
+        spriteName = Cast.toString(spriteName);
+        const firstClone = this.runtime.getSpriteTargetByName(spriteName);
+        if (!firstClone || !this.renderer) {
+            return false;
+        }
+        // Filter out dragging targets. This means a sprite that is being dragged
+        // can detect other sprites using touching <sprite>, but cannot be detected
+        // by other sprites while it is being dragged. This matches Scratch 2.0 behavior.
+        const drawableCandidates = firstClone.sprite.clones.filter(clone => !clone.dragging && !clone.isOriginal)
             .map(clone => clone.drawableID);
         return this.renderer.isTouchingDrawables(
             this.drawableID, drawableCandidates);

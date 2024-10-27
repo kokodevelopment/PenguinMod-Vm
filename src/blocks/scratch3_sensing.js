@@ -62,6 +62,7 @@ class Scratch3SensingBlocks {
     getPrimitives () {
         return {
             sensing_objecttouchingobject: this.objectTouchingObject,
+            sensing_objecttouchingclonesprite: this.objectTouchingCloneOfSprite,
             sensing_touchingobject: this.touchingObject,
             sensing_touchingcolor: this.touchingColor,
             sensing_coloristouchingcolor: this.colorTouchingColor,
@@ -416,6 +417,33 @@ class Scratch3SensingBlocks {
         const target = this.runtime.getSpriteTargetByName(object2);
         if (!target) return false;
         return target.isTouchingObject(object1);
+    }
+    objectTouchingCloneOfSprite (args, util) {
+        const object1 = args.FULLTOUCHINGOBJECTMENU;
+        let object2 = args.SPRITETOUCHINGOBJECTMENU;
+        if (object2 === "_myself_") {
+            object2 = util.target.getName();
+        }
+        if (object1 === "_myself_") {
+            return util.target.isTouchingObject(object2, true);
+        }
+
+        const target = this.runtime.getSpriteTargetByName(object2);
+        if (!target) return false;
+        if (object1 === "_mouse_") {
+            if (!this.runtime.ioDevices.mouse) return false;
+            const mouseX = this.runtime.ioDevices.mouse.getClientX();
+            const mouseY = this.runtime.ioDevices.mouse.getClientY();
+            const clones = target.sprite.clones.filter(clone => !clone.isOriginal && clone.isTouchingPoint(mouseX, mouseY));
+            return clones.length > 0;
+        } else if (object1 === '_edge_') {
+            const clones = target.sprite.clones.filter(clone => !clone.isOriginal && clone.isTouchingEdge());
+            return clones.length > 0;
+        }
+        
+        const originalSprite = this.runtime.getSpriteTargetByName(object1);
+        if (!originalSprite) return false;
+        return originalSprite.isTouchingObject(object2, true);
     }
 
     touchingObject (args, util) {
