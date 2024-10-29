@@ -3699,6 +3699,7 @@ class Runtime extends EventEmitter {
             if (this.targets[i].cameraBound === screen)
                 this.targets[i].cameraUpdateEvent();
         this.emit(Runtime.CAMERA_CHANGED, screen);
+        this.runtime.requestRedraw();
     }
 
     /**
