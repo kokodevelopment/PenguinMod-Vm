@@ -478,9 +478,9 @@ class ExtensionManager {
         const useLocal = (!blob || (oldHash && oldHash !== newHash)) && 
                         await this.securityManager.shouldUseLocal(extensionURL, !blob);
         if (useLocal && !this.extUrlCodes[extensionURL])
-            return Promise.reject(alert('No local extension was found.'));
+            return Promise.reject(Error(`Cant load local version of ${extensionURL}`));
         if (!useLocal && !blob)
-            return Promise.reject(alert('Failed to load extension from External URL.'));
+            return Promise.reject(Error(`Cant load ${extensionURL} at this moment`));
         const blobUrl = useLocal
             ? URL.createObjectURL(new Blob([this.extUrlCodes[extensionURL]]))
             : URL.createObjectURL(blob);
