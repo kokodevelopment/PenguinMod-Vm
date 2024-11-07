@@ -161,8 +161,9 @@ class SecurityManager {
         return Promise.resolve(false);
     }
 
-    shouldUseLocal(refrenceName) {
-        return Promise.resolve(!confirm(`it seems that the extension ${refrenceName} has been updated, use the up-to-date code?`))
+    shouldUseLocal(refrenceName, becauseGone) {
+        if (becauseGone) return Promise.resolve(confirm(`the extension ${refrenceName} couldnt be found anymore, try to load from local?`));
+        return Promise.resolve(!confirm(`it seems that the extension ${refrenceName} has been updated, use the up-to-date code?`));
     }
 }
 
