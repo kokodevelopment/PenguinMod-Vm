@@ -617,16 +617,26 @@ class VirtualMachine extends EventEmitter {
             fileName: `${asset.assetId}.${asset.dataFormat}`,
             fileContent: asset.data
         }));
-        return [
+
+        const assets = [
             ...costumeDescs,
             ...soundDescs,
             ...fontDescs,
-            ...Object.entries(this.extensionManager.extUrlCodes)
+        ];
+
+        // TODO: this was a quick patch for another bug, theres probably a cleaner way to do this
+        if (this.extensionManager.extUrlCodes) {
+            return [
+                ...assets,
+                ...Object.entries(this.extensionManager.extUrlCodes)
                 .map(([url, code]) => ({
                     fileName: `${this.extensionManager.extensionHashes[url]}.js`,
                     fileContent: code
                 }))
-        ];
+            ];
+        }
+
+        return assets;
     }
 
     _addFileDescsToZip (fileDescs, zip) {
