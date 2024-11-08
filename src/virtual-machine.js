@@ -620,12 +620,7 @@ class VirtualMachine extends EventEmitter {
         return [
             ...costumeDescs,
             ...soundDescs,
-            ...fontDescs,
-            ...Object.entries(this.extensionManager.extUrlCodes)
-                .map(([url, code]) => ({
-                    fileName: `${this.extensionManager.extensionHashes[url]}.js`,
-                    fileContent: code
-                }))
+            ...fontDescs
         ];
     }
 
@@ -737,9 +732,8 @@ class VirtualMachine extends EventEmitter {
     /**
      * @param {string[]} extensionIDs The IDs of the extensions
      * @param {Map<string, string>} extensionURLs A map of extension ID to URL
-     * @param {object<string, string>} hashes A map of all extension code hashes
      */
-    async _loadExtensions (extensionIDs, extensionURLs = new Map(), hashes) {
+    async _loadExtensions (extensionIDs, extensionURLs = new Map()) {
         const extensionPromises = [];
         for (const extensionID of extensionIDs) {
             const url = extensionURLs.get(extensionID);
@@ -748,7 +742,7 @@ class VirtualMachine extends EventEmitter {
             } else if (url) {
                 // extension url
                 if (await this.securityManager.canLoadExtensionFromProject(url)) {
-                    extensionPromises.push(this.extensionManager.loadExtensionURL(url, hashes[url]));
+                    extensionPromises.push(this.extensionManager.loadExtensionURL(url));
                 } else {
                     throw new Error(`Permission to load extension denied: ${extensionID}`);
                 }
@@ -774,11 +768,7 @@ class VirtualMachine extends EventEmitter {
 
         targets = targets.filter(target => !!target);
 
-        if (extensions.extensionCodes) {
-            this.extensionManager.extUrlCodes = Object.assign(this.extensionManager.extUrlCodes, extensions.extensionCodes);
-        }
-
-        return this._loadExtensions(extensions.extensionIDs, extensions.extensionURLs, extensions.extensionHashes).then(() => {
+        return this._loadExtensions(extensions.extensionIDs, extensions.extensionURLs).then(() => {
             for (const extension of extensions.extensionIDs) {
                 if (`ext_${extension}` in this.runtime) {
                     if ((typeof this.runtime[`ext_${extension}`].deserialize === 'function') && 

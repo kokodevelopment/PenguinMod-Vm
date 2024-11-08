@@ -24,7 +24,6 @@ const {loadCostume} = require('../import/load-costume.js');
 const {loadSound} = require('../import/load-sound.js');
 const {deserializeCostume, deserializeSound} = require('./deserialize-assets.js');
 const replacersPatch = require('./replacers patch.json');
-const RenderedTarget = require('../sprites/rendered-target.js');
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -817,7 +816,6 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
         target.extensions = extensions;
         if (extensionURLs) {
             target.extensionURLs = extensionURLs;
-            target.extensionHashes = runtime.extensionManager.extensionHashes;
         }
 
         // add extension datas
@@ -855,7 +853,6 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
     const extensionURLs = getExtensionURLsToSave(extensions, runtime);
     if (extensionURLs) {
         obj.extensionURLs = extensionURLs;
-        obj.extensionHashes = runtime.extensionManager.extensionHashes;
     }
 
     if (fonts) {
@@ -1593,8 +1590,6 @@ const deserialize = function (json, runtime, zip, isSingleSprite) {
         extensionIDs: new Set(json.extensions),
         extensionURLs: new Map(),
         extensionData: {},
-        extensionHashes: json.extensionHashes ?? {},
-        extensionCodes: {},
         patcher: extensionPatcher
     };
 
@@ -1657,15 +1652,6 @@ const deserialize = function (json, runtime, zip, isSingleSprite) {
         .then(targets => {
             monitorObjects.map(monitorDesc => deserializeMonitor(monitorDesc, runtime, targets, extensions));
             return targets;
-        })
-        .then(async ret => {
-            if (json.extensionHashes) {
-                for (const [url, hash] of Object.entries(json.extensionHashes)) {
-                    const code = await zip.file(`${hash}.js`).async("string")
-                    extensions.extensionCodes[url] = code;
-                }
-            }
-            return ret;
         })
         .then(targets => ({
             targets,

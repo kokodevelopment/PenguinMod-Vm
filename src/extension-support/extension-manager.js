@@ -1,4 +1,3 @@
-/* eslint-disable no-confusing-arrow */
 const dispatch = require('../dispatch/central-dispatch');
 const log = require('../util/log');
 const maybeFormatMessage = require('../util/maybe-format-message');
@@ -332,6 +331,8 @@ class ExtensionManager {
         });
 
         this.extUrlCodes = {};
+        // extensions that the user has stated (when they where loaded) that they do not wnat updated
+        this.keepOlder = [];
         // map of all new shas so we know when a new code update has happened and so ask the user about it
         this.extensionHashes = {};
     }
@@ -413,18 +414,6 @@ class ExtensionManager {
             return false;
         }
     }
-    _isDeprecatedExtensionURL(extensionURL) {
-        try {
-            const parsedURL = new URL(extensionURL);
-            return (
-                parsedURL.hostname === 'extensions.penguinmod.site' ||
-                parsedURL.hostname === 'extension.penguinmod.site' ||
-                parsedURL.hostname === 'penguinmod.site'
-            );
-        } catch (e) {
-            return false;
-        }
-    }
 
     /**
      * Load an extension by URL or internal extension ID
@@ -447,9 +436,8 @@ class ExtensionManager {
             throw new Error(`Invalid extension URL: ${extensionURL}`);
         }
 
-        // TODO: Move this into securityManager.rewriteExtensionURL
-        if (this._isDeprecatedExtensionURL(extensionURL)) {
-            alert("Extensions using penguinmod.site are deprecated, please swap them over to use penguinmod.com instead.");
+        if (extensionURL.includes("penguinmod.site")) {
+            alert("Extensions using penguinmod.site are deprecated, please swap them over to use penguinmod.com instead.")
         }
         const normalURL = extensionURL.replace("penguinmod.site", "penguinmod.com");
 
@@ -459,32 +447,22 @@ class ExtensionManager {
 
         const sandboxMode = await this.securityManager.getSandboxMode(normalURL);
         const rewritten = await this.securityManager.rewriteExtensionURL(normalURL);
-        const blob = (await fetch(rewritten)
-            .then(req => (req.ok ? req.blob() : null))
-            .catch(() => null));
+        const blob = (await fetch(rewritten).then(req => req.blob()))
+        const blobUrl = URL.createObjectURL(blob)
         const newHash = await new Promise(resolve => {
-            if (!blob) return resolve('');
-            const reader = new FileReader();
+            const reader = new FileReader()
             reader.onload = async ({ target: { result } }) => {
-                console.log(result);
-                this.extUrlCodes[extensionURL] = result;
-                resolve(await sha256(result));
-            };
+                console.log(result)
+                this.extUrlCodes[extensionURL] = result
+                resolve(await sha256(result))
+            }
             reader.onerror = err => {
-                console.error('couldnt read the contents of url', normalURL, err);
-            };
-            reader.readAsText(blob);
-        });
-        const useLocal = (!blob || (oldHash && oldHash !== newHash)) && 
-                        await this.securityManager.shouldUseLocal(extensionURL, !blob);
-        if (useLocal && !this.extUrlCodes[extensionURL])
-            return Promise.reject(alert('No local extension was found.'));
-        if (!useLocal && !blob)
-            return Promise.reject(alert('Failed to load extension from External URL.'));
-        const blobUrl = useLocal
-            ? URL.createObjectURL(new Blob([this.extUrlCodes[extensionURL]]))
-            : URL.createObjectURL(blob);
-        this.extensionHashes[extensionURL] = newHash;
+                console.error('couldnt read the contents of url', url, err)
+            }
+            reader.readAsText(blob)
+        })
+        this.extensionHashes[extensionURL] = newHash
+        if (oldHash && oldHash !== newHash && this.securityManager.shouldUseLocal(extensionURL)) return Promise.reject('useLocal') 
 
         if (sandboxMode === 'unsandboxed') {
             const { load } = require('./tw-unsandboxed-extension-runner');
