@@ -774,8 +774,10 @@ class VirtualMachine extends EventEmitter {
 
         targets = targets.filter(target => !!target);
 
-        if (extensions.extensionCodes) 
-            Object.assign(this.extensionManager.extUrlCodes, extensions.extensionCodes);
+        if (extensions.extensionCodes) {
+            this.extensionManager.extUrlCodes = Object.assign(this.extensionManager.extUrlCodes, extensions.extensionCodes);
+        }
+
         return this._loadExtensions(extensions.extensionIDs, extensions.extensionURLs, extensions.extensionHashes).then(() => {
             for (const extension of extensions.extensionIDs) {
                 if (`ext_${extension}` in this.runtime) {
