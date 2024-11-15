@@ -983,6 +983,7 @@ class JSGenerator {
             source += `))`;
             // Variable input types may have changes after a procedure call.
             this.resetVariableInputs();
+            console.log(source);
             return new TypedInput(source, TYPE_UNKNOWN);
         }
 
