@@ -17,6 +17,11 @@ const BlockShape = {
      * Output shape: squared (any/all values; strings).
      */
     SQUARE: 3,
+
+    /**
+     * Output shape: leaf-ed (custom shape thatl ooks cool).
+     */
+    LEAF: 4,
 };
 
 module.exports = BlockShape;
