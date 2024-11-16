@@ -6,6 +6,7 @@ const ArgumentType = require('../extension-support/argument-type');
 const Blocks = require('./blocks');
 const BlocksRuntimeCache = require('./blocks-runtime-cache');
 const BlockType = require('../extension-support/block-type');
+const BlockShape = require('../extension-support/block-shape');
 const Profiler = require('./profiler');
 const Sequencer = require('./sequencer');
 const execute = require('./execute.js');
@@ -158,6 +159,14 @@ const ArgumentTypeMap = (() => {
     map[ArgumentType.SEPERATOR] = {
         fieldType: 'field_vertical_separator'
     };
+
+    map[ArgumentType.LEAF] = {
+        shape: BlockShape.LEAF
+    };
+    map[ArgumentType.PLUS] = {
+        shape: BlockShape.PLUS
+    };
+
     return map;
 })();
 
@@ -1887,6 +1896,9 @@ class Runtime extends EventEmitter {
                 // input slot on the block accepts Boolean reporters, so it should be
                 // shaped like a hexagon
                 argJSON.check = argTypeInfo.check;
+            }
+            if (argTypeInfo.shape) {
+                argJSON.shape = argTypeInfo.shape;
             }
 
             let valueName;

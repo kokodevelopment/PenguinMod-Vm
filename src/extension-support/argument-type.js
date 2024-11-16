@@ -82,7 +82,13 @@ const ArgumentType = {
     /**
      * pm: Vertical seperator
      */
-    SEPERATOR: 'seperator'
+    SEPERATOR: 'seperator',
+
+    //custom block shape argument thingy till i work it all out
+
+    LEAF: 'leaf',
+
+    PLUS: 'plus',
 };
 
 module.exports = ArgumentType;

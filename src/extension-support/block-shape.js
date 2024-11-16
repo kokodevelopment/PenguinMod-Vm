@@ -22,6 +22,11 @@ const BlockShape = {
      * Output shape: leaf-ed (custom shape thatl ooks cool).
      */
     LEAF: 4,
+
+    /**
+     * Output shape: plus (custom).
+     */
+    PLUS: 5,
 };
 
 module.exports = BlockShape;
