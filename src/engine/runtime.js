@@ -160,13 +160,6 @@ const ArgumentTypeMap = (() => {
         fieldType: 'field_vertical_separator'
     };
 
-    map[ArgumentType.LEAF] = {
-        shape: BlockShape.LEAF
-    };
-    map[ArgumentType.PLUS] = {
-        shape: BlockShape.PLUS
-    };
-
     return map;
 })();
 
@@ -1897,11 +1890,9 @@ class Runtime extends EventEmitter {
                 // shaped like a hexagon
                 argJSON.check = argTypeInfo.check;
             }
-            if (argTypeInfo.shape) {
+            if (argInfo.shape) {
                 argJSON.shape = argTypeInfo.shape;
             }
-
-            console.debug(argJSON, argTypeInfo)
 
             let valueName;
             let shadowType;
