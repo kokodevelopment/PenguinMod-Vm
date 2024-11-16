@@ -3672,7 +3672,7 @@ class Runtime extends EventEmitter {
      * @returns {Object} the screen state object
      */
     getCamera(screen) {
-        if (!this.cameraStates[screen]) {
+        if (typeof this.cameraStates[screen] !== 'object') {
             this.cameraStates[screen] = {
                 pos: [0, 0],
                 dir: 0,
