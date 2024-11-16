@@ -1891,7 +1891,7 @@ class Runtime extends EventEmitter {
                 argJSON.check = argTypeInfo.check;
             }
             if (argInfo.shape) {
-                argJSON.shape = argTypeInfo.shape;
+                argJSON.shape = argInfo.shape;
             }
 
             let valueName;
