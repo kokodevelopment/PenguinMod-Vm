@@ -3690,8 +3690,15 @@ class Runtime extends EventEmitter {
      */
     updateCamera(screen, state, silent) {
         if (state.dir) state.dir = MathUtil.wrapClamp(state.dir, -179, 180);
+        if (typeof this.cameraStates[screen] !== 'object') {
+            this.cameraStates[screen] = {
+                pos: [0, 0],
+                dir: 0,
+                scale: 1
+            };
+        }
         this.cameraStates[screen] = state = 
-            Object.assign(this.cameraStates[screen] ?? {}, state);
+            Object.assign(this.cameraStates[screen], state);
         if (!silent ?? state.silent) this.emitCameraChanged(screen);
     }
     emitCameraChanged(screen) {
