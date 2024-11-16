@@ -1901,6 +1901,8 @@ class Runtime extends EventEmitter {
                 argJSON.shape = argTypeInfo.shape;
             }
 
+            console.debug(argJSON, argTypeInfo)
+
             let valueName;
             let shadowType;
             let blockType;
