@@ -1884,11 +1884,11 @@ class Runtime extends EventEmitter {
                     xmlEscape.escapeAttribute(maybeFormatMessage(
                         argInfo.defaultValue, this.makeMessageContextForTarget()).toString());
 
-            if (argTypeInfo.check) {
+            if (argTypeInfo.check || argInfo.check) {
                 // Right now the only type of 'check' we have specifies that the
                 // input slot on the block accepts Boolean reporters, so it should be
                 // shaped like a hexagon
-                argJSON.check = argTypeInfo.check;
+                argJSON.check = argInfo.check || argTypeInfo.check;
             }
             if (argInfo.shape) {
                 argJSON.shape = argInfo.shape;
