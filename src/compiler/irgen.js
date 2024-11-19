@@ -427,6 +427,12 @@ class ScriptTreeGenerator {
                 left: this.descendInputOfBlock(block, 'NUM1'),
                 right: this.descendInputOfBlock(block, 'NUM2')
             };
+        case 'operator_power':
+            return {
+                kind: 'op.power',
+                left: this.descendInputOfBlock(block, 'NUM1'),
+                right: this.descendInputOfBlock(block, 'NUM2')
+            };
         case 'operator_equals':
             return {
                 kind: 'op.equals',
@@ -1748,6 +1754,7 @@ class ScriptTreeGenerator {
                     with: this.descendInputOfBlock(block, 'res'),
                     in: this.descendInputOfBlock(block, 'text')
                 }
+            case "operator_getLettersFromIndexToIndexInTextFixed":
             case "operator_getLettersFromIndexToIndexInText":
                 return {
                     kind: "operator.getLettersFromIndexToIndexInText",

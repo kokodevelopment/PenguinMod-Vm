@@ -746,6 +746,9 @@ class JSGenerator {
         case 'op.divide':
             // Needs to be marked as NaN because 0 / 0 === NaN
             return new TypedInput(`(${this.descendInput(node.left).asNumber()} / ${this.descendInput(node.right).asNumber()})`, TYPE_NUMBER_NAN);
+        case 'op.power':
+            // Needs to be marked as NaN because -1 ** 0.5 === NaN
+            return new TypedInput(`(Math.pow(${this.descendInput(node.left).asNumber()}, ${this.descendInput(node.right).asNumber()}))`, TYPE_NUMBER_NAN);
         case 'op.equals': {
             const left = this.descendInput(node.left);
             const right = this.descendInput(node.right);
