@@ -100,8 +100,8 @@ const Vector = {
 
 class Extension {
     getInfo() {
-        Scratch.VectorExtension = Vector
-        
+        vm.VectorExtension = Vector
+
         return {
             id: "jwVector",
             name: "Vector",
