@@ -97,10 +97,11 @@ const Vector = {
         check: ["Vector"]
     }
 }
-Scratch.VectorExtension = Vector
 
 class Extension {
     getInfo() {
+        Scratch.VectorExtension = Vector
+        
         return {
             id: "jwVector",
             name: "Vector",
