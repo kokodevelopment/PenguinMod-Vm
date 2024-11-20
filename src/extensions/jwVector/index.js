@@ -100,7 +100,7 @@ const Vector = {
 
 class Extension {
     getInfo() {
-        vm.VectorExtension = Vector
+        vm.jwVector = Vector
 
         return {
             id: "jwVector",
