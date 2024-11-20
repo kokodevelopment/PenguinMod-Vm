@@ -147,6 +147,8 @@ const defaultBuiltinExtensions = {
     blockly2math: () => require("../extensions/blockly-2/math.js"),
     // jwXml: hi im back haha have funny xml
     jwXml: () => require("../extensions/jw_xml"),
+    // vector type blah blah blah
+    jwVector: () => require("../extensions/jwVector"),
 
     // jw: They'll think its made by jwklong >:)
     // (but it's not (yet (maybe (probably not (but its made by ianyourgod)))))
