@@ -149,6 +149,8 @@ const defaultBuiltinExtensions = {
     jwXml: () => require("../extensions/jw_xml"),
     // vector type blah blah blah
     jwVector: () => require("../extensions/jwVector"),
+    // cool new physics extension
+    jwPsychic: () => require("../extensions/jwPsychic"),
 
     // jw: They'll think its made by jwklong >:)
     // (but it's not (yet (maybe (probably not (but its made by ianyourgod)))))
