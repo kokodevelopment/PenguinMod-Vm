@@ -99,9 +99,11 @@ const Vector = {
 }
 
 class Extension {
-    getInfo() {
+    constructor() {
         vm.jwVector = Vector
+    }
 
+    getInfo() {
         return {
             id: "jwVector",
             name: "Vector",

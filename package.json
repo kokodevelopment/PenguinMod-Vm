@@ -45,6 +45,7 @@
     "jszip": "^3.1.5",
     "lz-string": "^1.5.0",
     "mathjs": "11.11.1",
+    "matter-js": "^0.20.0",
     "mersenne-twister": "^1.1.0",
     "minilog": "3.1.0",
     "pathfinding": "^0.4.18",
