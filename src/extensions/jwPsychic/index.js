@@ -18,7 +18,7 @@ class Extension {
 
         this.engine = Matter.Engine.create()
         
-        this.runtime.on("PROJECT_START", this.reset.bind(this));
+        vm.runtime.on("PROJECT_START", this.reset.bind(this));
 
         vm.PsychicDebug = this;
     }
