@@ -47,7 +47,7 @@ class Extension {
     }
 
     tick() {
-        let fps = this.runtime.frameLoop.framerate
+        let fps = vm.runtime.frameLoop.framerate
         if (fps == 0) fps = 60
         Matter.Engine.update(this.engine, 1000 / fps)
     }
