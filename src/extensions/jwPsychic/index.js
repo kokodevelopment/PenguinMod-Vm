@@ -65,7 +65,7 @@ class Extension {
     correctBody(id) {
         /** @type {Matter.Body} */
         let body = this.bodies[id]
-        let target = vm.runtime.targets[id]
+        let target = vm.runtime.getTargetById(id)
 
         if (target == undefined) {
             Matter.Composite.remove(this.engine.world, body)
@@ -80,7 +80,7 @@ class Extension {
     correctTarget(id) {
         /** @type {Matter.Body} */
         let body = this.bodies[id]
-        let target = vm.runtime.targets[id]
+        let target = vm.runtime.getTargetById(id)
 
         target.x = body.position.x
         target.y = body.position.y
