@@ -16,6 +16,16 @@ function formatNumber(x) {
     }
 }
 
+function span(text) {
+    let el = document.createElement('span')
+    el.innerHTML = text
+    el.style.display = 'hidden'
+    el.style.whiteSpace = 'nowrap'
+    el.style.width = '100%'
+    el.style.textAlign = 'center'
+    return el
+}
+
 class VectorType {
     constructor(x = 0, y = 0) {
         this.x = isNaN(x) ? 0 : x
@@ -31,19 +41,9 @@ class VectorType {
     toString() {
         return `${this.x},${this.y}`
     }
-    toMonitorContent = this.toString
+    toMonitorContent = () => this.toString()
 
     toReporterContent() {
-        function span(text) {
-            let el = document.createElement('span')
-            el.innerHTML = text
-            el.style.display = 'hidden'
-            el.style.whiteSpace = 'nowrap'
-            el.style.width = '100%'
-            el.style.textAlign = 'center'
-            return el
-        }
-
         let root = document.createElement('div')
         root.style.display = 'flex'
         root.style.width = "200px"
