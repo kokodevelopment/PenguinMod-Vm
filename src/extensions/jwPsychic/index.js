@@ -138,12 +138,12 @@ class Extension {
         switch (OPTION) {
             case 'all':
                 Matter.Composite.add(this.bounds, [
-                    Matter.Bodies.rectangle(-stageWidth * 1.5, 0, stageWidth, stageHeight * 1.5, { isStatic: true }),
-                    Matter.Bodies.rectangle(stageWidth * 1.5, 0, stageWidth, stageHeight * 1.5, { isStatic: true }),
-                    Matter.Bodies.rectangle(0, stageHeight * 1.5, stageWidth * 1.5, stageHeight, { isStatic: true }),
+                    Matter.Bodies.rectangle(-stageWidth, 0, stageWidth, Number.MAX_VALUE, { isStatic: true }),
+                    Matter.Bodies.rectangle(stageWidth, 0, stageWidth, Number.MAX_VALUE, { isStatic: true }),
+                    Matter.Bodies.rectangle(0, stageHeight, Number.MAX_VALUE, stageHeight, { isStatic: true }),
                 ])
             case 'floor':
-                Matter.Composite.add(this.bounds, Matter.Bodies.rectangle(0, -stageHeight * 1.5, stageWidth * 1.5, stageHeight, { isStatic: true }))
+                Matter.Composite.add(this.bounds, Matter.Bodies.rectangle(0, -stageHeight, Number.MAX_VALUE, stageHeight, { isStatic: true }))
                 break
         }
 
