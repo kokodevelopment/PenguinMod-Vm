@@ -165,7 +165,7 @@ class Extension {
                 throw "i need to finish precise mb"
                 break
             case 'box':
-                body = Matter.Bodies.rectangle(target.x, -target.y, size.x, size.y)
+                body = Matter.Bodies.rectangle(target.x, -target.y, size.y, size.x)
                 break
             case 'circle':
                 body = Matter.Bodies.circle(target.x, -target.y, Math.max(size.x, size.y) / 2)
