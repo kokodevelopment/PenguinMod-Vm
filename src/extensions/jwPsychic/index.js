@@ -60,6 +60,7 @@ class Extension {
 
     reset() {
         this.engine = Matter.Engine.create()
+        this.bodies = {}
     }
 
     correctBody(id) {
