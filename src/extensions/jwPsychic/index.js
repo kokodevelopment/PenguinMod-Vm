@@ -20,6 +20,8 @@ class Extension {
         this.engine = Matter.Engine.create()
         /** @type {Array.<Matter.Body>} */
         this.bodies = {}
+        /** @type {Matter.Composite?} */
+        this.bounds = null
         
         vm.runtime.on("PROJECT_START", this.reset.bind(this));
 
@@ -35,6 +37,18 @@ class Extension {
                     opcode: 'tick',
                     text: 'tick',
                     blockType: BlockType.COMMAND
+                },
+                "---",
+                {
+                    opcode: 'boundaries',
+                    text: 'set boundaries [OPTION]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        OPTION: {
+                            type: ArgumentType.STRING,
+                            menu: 'boundariesOption'
+                        }
+                    }
                 },
                 "---",
                 {
@@ -55,6 +69,11 @@ class Extension {
                     'precise',
                     'box',
                     'circle'
+                ],
+                boundariesOption: [
+                    'all',
+                    'floor',
+                    'none'
                 ]
             }
         };
@@ -63,6 +82,7 @@ class Extension {
     reset() {
         this.engine = Matter.Engine.create()
         this.bodies = {}
+        this.bounds = null
     }
 
     correctBody(id) {
@@ -102,6 +122,32 @@ class Extension {
         for (let id of Object.keys(this.bodies)) {
             this.correctTarget(id)
         }
+    }
+
+    boundaries({OPTION}) {
+        if (this.bounds) {
+            Matter.Composite.remove(this.engine.world, this.bounds)
+            this.bounds = null
+        }
+
+        let stageWidth = vm.runtime.stageWidth
+        let stageHeight = vm.runtime.stageHeight
+
+        this.bounds = Matter.Composite.create()
+
+        switch (OPTION) {
+            case 'all':
+                Matter.Composite.add(this.bounds, [
+                    Matter.Bodies.rectangle(-stageWidth * 1.5, 0, stageWidth, stageHeight * 1.5, { isStatic: true }),
+                    Matter.Bodies.rectangle(stageWidth * 1.5, 0, stageWidth, stageHeight * 1.5, { isStatic: true }),
+                    Matter.Bodies.rectangle(0, stageHeight * 1.5, stageWidth * 1.5, stageHeight, { isStatic: true }),
+                ])
+            case 'floor':
+                Matter.Composite.add(this.bounds, Matter.Bodies.rectangle(0, -stageHeight * 1.5, stageWidth * 1.5, stageHeight, { isStatic: true }))
+                break
+        }
+
+        Matter.Composite.add(this.engine.world, this.bounds)
     }
 
     enablePhysics({OPTION}, util) {
