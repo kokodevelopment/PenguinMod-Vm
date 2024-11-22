@@ -50,6 +50,19 @@ class Extension {
                         }
                     }
                 },
+                {
+                    opcode: 'setGravity',
+                    text: 'set gravity to [VECTOR]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        VECTOR: Vector.Argument
+                    }
+                },
+                {
+                    opcode: 'getGravity',
+                    text: 'gravity',
+                    ...Vector.Block
+                },
                 "---",
                 {
                     opcode: 'enablePhysics',
@@ -83,6 +96,14 @@ class Extension {
                 ]
             }
         };
+    }
+
+    vectorToMatter(vector) {
+        return Matter.Vector.create(vector.x, -vector.y)
+    }
+
+    matterToVector(matter) {
+        return new Vector.Type(matter.x, matter.y)
     }
 
     reset() {
@@ -154,6 +175,16 @@ class Extension {
         }
 
         Matter.Composite.add(this.engine.world, this.bounds)
+    }
+
+    setGravity({VECTOR}) {
+        let v = Vector.Type.toVector(VECTOR)
+        this.engine.gravity.x = v.x
+        this.engine.gravity.y = -v.y
+    }
+
+    getGravity() {
+        return this.matterToVector(this.engine.gravity)
     }
 
     enablePhysics({OPTION}, util) {
