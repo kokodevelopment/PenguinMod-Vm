@@ -189,7 +189,7 @@ class Extension {
         this.correctBody(target.id)
     }
 
-    disablePhysics({}, util) {
+    disablePhysics(_, util) {
         let body = this.bodies[util.target.id]
         if (!body) return
         Matter.Composite.remove(this.engine.world, body)
