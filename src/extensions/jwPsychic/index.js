@@ -105,8 +105,8 @@ class Extension {
     enablePhysics({OPTION}, util) {
         let target = util.target
         let size = {
-            x: target.getCostumes(target.currentCostume).size[0] * (target.size / 100) * (target.stretch[0] / 100),
-            y: target.getCostumes(target.currentCostume).size[1] * (target.size / 100) * (target.stretch[1] / 100)
+            x: target.getCostumes()[target.currentCostume].size[0] * (target.size / 100) * (target.stretch[0] / 100),
+            y: target.getCostumes()[target.currentCostume].size[1] * (target.size / 100) * (target.stretch[1] / 100)
         }
 
         let body = null
