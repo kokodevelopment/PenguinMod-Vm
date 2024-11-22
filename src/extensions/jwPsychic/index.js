@@ -5,6 +5,7 @@ const TargetType = require('../../extension-support/target-type')
 const Cast = require('../../util/cast')
 
 const Matter = require('matter-js')
+const { target } = require('../../compiler/compat-block-utility')
 
 let Vector = {
     Type: class {},
@@ -53,7 +54,7 @@ class Extension {
                 "---",
                 {
                     opcode: 'enablePhysics',
-                    text: 'setup physics as [OPTION]',
+                    text: 'enable physics as [OPTION]',
                     blockType: BlockType.COMMAND,
                     arguments: {
                         OPTION: {
@@ -61,6 +62,12 @@ class Extension {
                             menu: 'enablePhysicsOption'
                         }
                     },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'disablePhysics',
+                    text: 'disable physics',
+                    blockType: BlockType.COMMAND,
                     filter: [TargetType.SPRITE]
                 }
             ],
@@ -180,6 +187,14 @@ class Extension {
         Matter.Composite.add(this.engine.world, body)
 
         this.correctBody(target.id)
+    }
+
+    disablePhysics({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        Matter.Composite.remove(this.engine.world, body)
+        delete this.bodies[id]
+        return
     }
 }
 
