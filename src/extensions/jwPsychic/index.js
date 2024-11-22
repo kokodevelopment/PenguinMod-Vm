@@ -73,7 +73,7 @@ class Extension {
             return
         }
 
-        Matter.Body.setPosition(body, Matter.Vector.create(target.x, target.y))
+        Matter.Body.setPosition(body, Matter.Vector.create(target.x, -target.y))
         Matter.Body.setAngle(body, target.direction * Math.PI / 180)
     }
 
@@ -82,7 +82,7 @@ class Extension {
         let body = this.bodies[id]
         let target = vm.runtime.getTargetById(id)
 
-        target.setXY(body.position.x, body.position.y)
+        target.setXY(body.position.x, -body.position.y, false, true)
         target.setDirection(body.angle * 180 / Math.PI)
     }
 

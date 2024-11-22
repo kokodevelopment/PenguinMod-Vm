@@ -326,14 +326,15 @@ class RenderedTarget extends Target {
      * @param {!number} x New X coordinate, in Scratch coordinates.
      * @param {!number} y New Y coordinate, in Scratch coordinates.
      * @param {?boolean} force Force setting X/Y, in case of dragging
+     * @param {?boolean} ignoreFencing ignores fencing
      */
-    setXY (x, y, force) { // used by compiler
+    setXY (x, y, force, ignoreFencing) { // used by compiler
         if (this.isStage) return;
         if (this.dragging && !force) return;
         const oldX = this.x;
         const oldY = this.y;
         if (this.renderer) {
-            const position = this.runtime.runtimeOptions.fencing ?
+            const position = this.runtime.runtimeOptions.fencing || ignoreFencing ?
                 this.renderer.getFencedPositionOfDrawable(this.drawableID, [x, y]) :
                 [x, y];
             this.x = position[0];
