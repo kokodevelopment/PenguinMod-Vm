@@ -1,6 +1,7 @@
 const BlockType = require('../../extension-support/block-type')
 const BlockShape = require('../../extension-support/block-shape')
 const ArgumentType = require('../../extension-support/argument-type')
+const TargetType = require('../../extension-support/target-type')
 const Cast = require('../../util/cast')
 
 const Matter = require('matter-js')
@@ -45,7 +46,8 @@ class Extension {
                             type: ArgumentType.STRING,
                             menu: 'enablePhysicsOption'
                         }
-                    }
+                    },
+                    filter: [TargetType.SPRITE]
                 }
             ],
             menus: {
