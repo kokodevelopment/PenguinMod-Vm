@@ -82,9 +82,8 @@ class Extension {
         let body = this.bodies[id]
         let target = vm.runtime.getTargetById(id)
 
-        target.x = body.position.x
-        target.y = body.position.y
-        target.direction = body.angle * 180 / Math.PI
+        target.setXY(body.position.x, body.position.y)
+        target.setDirection(body.angle * 180 / Math.PI)
     }
 
     tick() {
@@ -95,7 +94,7 @@ class Extension {
             this.correctBody(id)
         }
 
-        Matter.Engine.update(this.engine, 1000 / fps)
+        Matter.Engine.update(this.engine, 1 / fps)
 
         for (let id of Object.keys(this.bodies)) {
             this.correctTarget(id)
