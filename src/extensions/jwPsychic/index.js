@@ -103,7 +103,7 @@ class Extension {
     }
 
     matterToVector(matter) {
-        return new Vector.Type(matter.x, matter.y)
+        return new Vector.Type(matter.x, -matter.y)
     }
 
     reset() {
