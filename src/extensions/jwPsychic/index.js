@@ -94,7 +94,7 @@ class Extension {
             this.correctBody(id)
         }
 
-        Matter.Engine.update(this.engine, 1 / fps)
+        Matter.Engine.update(this.engine, 1000 / fps)
 
         for (let id of Object.keys(this.bodies)) {
             this.correctTarget(id)
