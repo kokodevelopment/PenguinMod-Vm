@@ -41,7 +41,7 @@ class VectorType {
     toString() {
         return `${this.x},${this.y}`
     }
-    toMonitorContent = () => this.toString()
+    toMonitorContent = () => span(this.toString())
 
     toReporterContent() {
         let root = document.createElement('div')
