@@ -157,20 +157,24 @@ class Extension {
             y: target.getCostumes()[target.currentCostume].size[1] * (target.size / 100) * (target.stretch[1] / 100)
         }
 
+        console.debug(size)
+
         let body = null
         switch (OPTION) {
             case 'precise':
                 throw "i need to finish precise mb"
                 break
             case 'box':
-                body = Matter.Bodies.rectangle(target.x, target.y, size.x, size.y)
+                body = Matter.Bodies.rectangle(target.x, -target.y, size.x, size.y)
                 break
             case 'circle':
-                body = Matter.Bodies.circle(target.x, target.y, Math.max(size.x, size.y) / 2)
+                body = Matter.Bodies.circle(target.x, -target.y, Math.max(size.x, size.y) / 2)
                 break
             default:
                 throw "Invalid physics option"
         }
+
+        console.debug(body.bounds)
 
         this.bodies[target.id] = body
         Matter.Composite.add(this.engine.world, body)
