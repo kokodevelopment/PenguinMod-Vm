@@ -5,7 +5,6 @@ const TargetType = require('../../extension-support/target-type')
 const Cast = require('../../util/cast')
 
 const Matter = require('matter-js')
-const { target } = require('../../compiler/compat-block-utility')
 
 let Vector = {
     Type: class {},
@@ -189,7 +188,7 @@ class Extension {
         this.correctBody(target.id)
     }
 
-    disablePhysics(_, util) {
+    disablePhysics({}, util) {
         let body = this.bodies[util.target.id]
         if (!body) return
         Matter.Composite.remove(this.engine.world, body)
