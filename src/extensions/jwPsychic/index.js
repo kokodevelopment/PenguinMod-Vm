@@ -67,7 +67,7 @@ class Extension {
         let body = this.bodies[id]
         let target = vm.runtime.targets[id]
 
-        if (!target) {
+        if (target == undefined) {
             Matter.Composite.remove(this.engine.world, body)
             delete this.bodies[id]
             return
