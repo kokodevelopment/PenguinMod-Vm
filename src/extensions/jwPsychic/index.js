@@ -245,10 +245,8 @@ class Extension {
     }
 
     setPos({VECTOR}, util) {
-        let body = this.bodies[util.target.id]
-        if (!body) return
         let v = Vector.Type.toVector(VECTOR)
-        Matter.Body.setPosition(body, this.vectorToMatter(v))
+        util.target.setXY(v.x, v.y)
     }
 
     getPos({}, util) {
