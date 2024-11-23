@@ -100,6 +100,22 @@ class Extension {
                     ...Vector.Block
                 },
                 {
+                    opcode: 'setVel',
+                    text: 'set velocity to [VECTOR]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        VECTOR: Vector.Argument
+                    },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getVel',
+                    text: 'velocity',
+                    disableMonitor: true,
+                    filter: [TargetType.SPRITE],
+                    ...Vector.Block
+                },
+                {
                     opcode: 'setRot',
                     text: 'set rotation to [ANGLE]',
                     blockType: BlockType.COMMAND,
@@ -119,20 +135,23 @@ class Extension {
                     filter: [TargetType.SPRITE]
                 },
                 {
-                    opcode: 'setVel',
-                    text: 'set velocity to [VECTOR]',
+                    opcode: 'setAngVel',
+                    text: 'set angular velocity to [ANGLE]',
                     blockType: BlockType.COMMAND,
                     arguments: {
-                        VECTOR: Vector.Argument
+                        ANGLE: {
+                            type: ArgumentType.ANGLE,
+                            defaultValue: 0
+                        }
                     },
                     filter: [TargetType.SPRITE]
                 },
                 {
-                    opcode: 'getVel',
-                    text: 'velocity',
+                    opcode: 'getAngVel',
+                    text: 'angular velocity',
+                    blockType: BlockType.REPORTER,
                     disableMonitor: true,
-                    filter: [TargetType.SPRITE],
-                    ...Vector.Block
+                    filter: [TargetType.SPRITE]
                 }
             ],
             menus: {
@@ -320,6 +339,18 @@ class Extension {
         let body = this.bodies[util.target.id]
         if (!body) return new Vector.Type(0, 0)
         return this.matterToVector(body.velocity)
+    }
+
+    setAngVel({ANGLE}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        Matter.Body.setAngularVelocity(body, Cast.toNumber(ANGLE))
+    }
+
+    getAngVel({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return 0
+        return body.angularVelocity
     }
 }
 
