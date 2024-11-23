@@ -81,7 +81,24 @@ class Extension {
                     text: 'disable physics',
                     blockType: BlockType.COMMAND,
                     filter: [TargetType.SPRITE]
-                }
+                },
+                "---",
+                {
+                    opcode: 'setPos',
+                    text: 'set position to [VECTOR]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        VECTOR: Vector.Argument
+                    },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getPos',
+                    text: 'position',
+                    disableMonitor: true,
+                    filter: [TargetType.SPRITE],
+                    ...Vector.Block
+                },
             ],
             menus: {
                 enablePhysicsOption: [
@@ -225,6 +242,19 @@ class Extension {
         Matter.Composite.remove(this.engine.world, body)
         delete this.bodies[id]
         return
+    }
+
+    setPos({VECTOR}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        let v = Vector.Type.toVector(VECTOR)
+        Matter.Body.setPosition(body, this.vectorToMatter(v))
+    }
+
+    getPos({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return new Vector.Type(util.target.x, util.target.y)
+        return this.matterToVector(body.position)
     }
 }
 
