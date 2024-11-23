@@ -105,7 +105,8 @@ class Extension {
                     blockType: BlockType.COMMAND,
                     arguments: {
                         ANGLE: {
-                            type: ArgumentType.ANGLE
+                            type: ArgumentType.ANGLE,
+                            defaultValue: 90
                         }
                     },
                     filter: [TargetType.SPRITE]
@@ -141,6 +142,14 @@ class Extension {
         return new Vector.Type(matter.x, -matter.y)
     }
 
+    angleToMatter(angle) {
+        return (angle - 90) * Math.PI / 180
+    }
+
+    matterToAngle(matter) {
+        return (matter * 180 / Math.PI) + 90
+    }
+
     reset() {
         this.engine = Matter.Engine.create()
         this.bodies = {}
@@ -159,7 +168,7 @@ class Extension {
         }
 
         Matter.Body.setPosition(body, Matter.Vector.create(target.x, -target.y))
-        Matter.Body.setAngle(body, target.direction * Math.PI / 180)
+        Matter.Body.setAngle(body, this.angleToMatter(target.direction))
     }
 
     correctTarget(id) {
@@ -237,7 +246,7 @@ class Extension {
                 throw "i need to finish precise mb"
                 break
             case 'box':
-                body = Matter.Bodies.rectangle(target.x, -target.y, size.y, size.x)
+                body = Matter.Bodies.rectangle(target.x, -target.y, size.x, size.y)
                 break
             case 'circle':
                 body = Matter.Bodies.circle(target.x, -target.y, Math.max(size.x, size.y) / 2)
@@ -281,7 +290,7 @@ class Extension {
     getRot({}, util) {
         let body = this.bodies[util.target.id]
         if (!body) return util.target.direction
-        return body.angle * 180 / Math.PI
+        return this.matterToAngle(body.angle)
     }
 }
 
