@@ -177,7 +177,7 @@ class Extension {
         let target = vm.runtime.getTargetById(id)
 
         target.setXY(body.position.x, -body.position.y, false, true)
-        target.setDirection(body.angle * 180 / Math.PI)
+        target.setDirection(this.matterToAngle(body.angle))
     }
 
     tick() {
