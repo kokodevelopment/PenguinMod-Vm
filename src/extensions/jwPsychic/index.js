@@ -117,6 +117,22 @@ class Extension {
                     blockType: BlockType.REPORTER,
                     disableMonitor: true,
                     filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'setVel',
+                    text: 'set velocity to [VECTOR]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        VECTOR: Vector.Argument
+                    },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getVel',
+                    text: 'velocity',
+                    disableMonitor: true,
+                    filter: [TargetType.SPRITE],
+                    ...Vector.Block
                 }
             ],
             menus: {
@@ -291,6 +307,19 @@ class Extension {
         let body = this.bodies[util.target.id]
         if (!body) return util.target.direction
         return this.matterToAngle(body.angle)
+    }
+
+    setVel({VECTOR}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        let v = Vector.Type.toVector(VECTOR)
+        Matter.Body.setVelocity(body, this.vectorToMatter(v))
+    }
+
+    getVel({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return new Vector.Type(0, 0)
+        return this.matterToVector(body.velocity)
     }
 }
 
