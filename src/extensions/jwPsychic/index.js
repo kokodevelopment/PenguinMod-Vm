@@ -99,6 +99,24 @@ class Extension {
                     filter: [TargetType.SPRITE],
                     ...Vector.Block
                 },
+                {
+                    opcode: 'setRot',
+                    text: 'set rotation to [ANGLE]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        ANGLE: {
+                            type: ArgumentType.ANGLE
+                        }
+                    },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getRot',
+                    text: 'rotation',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    filter: [TargetType.SPRITE]
+                }
             ],
             menus: {
                 enablePhysicsOption: [
@@ -253,6 +271,17 @@ class Extension {
         let body = this.bodies[util.target.id]
         if (!body) return new Vector.Type(util.target.x, util.target.y)
         return this.matterToVector(body.position)
+    }
+
+    setRot({ANGLE}, util) {
+        let a = Cast.toNumber(ANGLE)
+        util.target.setDirection(a)
+    }
+
+    getRot({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return util.target.direction
+        return body.angle * 180 / Math.PI
     }
 }
 
