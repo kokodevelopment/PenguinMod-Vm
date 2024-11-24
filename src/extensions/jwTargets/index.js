@@ -28,7 +28,7 @@ class TargetType {
     toReporterContent() {
         try {
             let target = vm.runtime.getTargetById(this.targetId)
-            let name = target.name
+            let name = target.sprite.name
             let isClone = !target.isOriginal
             let costumeURI = target.getCostumes()[target.currentCostume].asset.encodeDataURI()
 
