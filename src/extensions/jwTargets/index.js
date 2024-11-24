@@ -46,7 +46,8 @@ class TargetType {
             root.appendChild(span(`${name}${isClone ? ' (clone)' : ''}`))
 
             return root
-        } catch {
+        } catch (e) {
+            console.error(e)
             return span("Unknown")
         }
     }
@@ -83,6 +84,7 @@ class Extension {
                 {
                     opcode: 'this',
                     text: 'this target',
+                    disableMonitor: true,
                     ...Target.Block
                 }
             ]
