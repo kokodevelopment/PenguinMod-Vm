@@ -149,6 +149,8 @@ const defaultBuiltinExtensions = {
     jwXml: () => require("../extensions/jw_xml"),
     // vector type blah blah blah
     jwVector: () => require("../extensions/jwVector"),
+    // mid extension but i need it
+    jwTargets: () => require("../extensions/jwTargets"),
     // cool new physics extension
     jwPsychic: () => require("../extensions/jwPsychic"),
 
