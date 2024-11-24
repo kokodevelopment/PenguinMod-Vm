@@ -27,6 +27,8 @@ function span(text) {
 }
 
 class VectorType {
+    customId = "jwVector"
+
     constructor(x = 0, y = 0) {
         this.x = isNaN(x) ? 0 : x
         this.y = isNaN(y) ? 0 : y

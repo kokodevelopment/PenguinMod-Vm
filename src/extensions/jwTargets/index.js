@@ -14,6 +14,8 @@ function span(text) {
 }
 
 class TargetType {
+    customId = "jwTargets"
+
     targetId = ""
 
     constructor(targetId) {
