@@ -27,7 +27,7 @@ class TargetType {
 
     toReporterContent() {
         try {
-            let target = vm.runtime.getTargetsById(this.targetId)[0]
+            let target = vm.runtime.getTargetById(this.targetId)[0]
             let name = target.name
             let isClone = !target.isOriginal
             let costumeURI = target.getCostumes()[target.currentCostume].asset.encodeDataURI()
@@ -46,8 +46,7 @@ class TargetType {
             root.appendChild(span(`${name}${isClone ? ' (clone)' : ''}`))
 
             return root
-        } catch (e) {
-            console.error(e)
+        } catch {
             return span("Unknown")
         }
     }
