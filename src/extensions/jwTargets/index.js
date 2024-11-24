@@ -22,7 +22,7 @@ class TargetType {
 
     toString() {
         try {
-            return target.sprite.name
+            return this.target.sprite.name
         } catch {
             return ""
         }
