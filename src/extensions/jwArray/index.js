@@ -3,6 +3,8 @@ const BlockShape = require('../../extension-support/block-shape')
 const ArgumentType = require('../../extension-support/argument-type')
 const Cast = require('../../util/cast')
 
+let arrayLimit = 2 ** 32 - 1
+
 /**
 * @param {number} x
 * @returns {string}
@@ -48,13 +50,15 @@ class ArrayType {
                 case "string":
                 case "boolean":
                     return Cast.toString(x)
+                case "undefined":
+                    return "null"
             }
         } catch {}
-        return "Unknown"
+        return "?"
     }
 
     jwArrayHandler() {
-        return `Array[${this.array.length}]`
+        return `Array[${formatNumber(this.array.length)}]`
     }
 
     toString() {
@@ -81,7 +85,7 @@ class ArrayType {
     }
 }
 
-const Array = {
+const jwArray = {
     Type: ArrayType,
     Block: {
         blockType: BlockType.REPORTER,
@@ -97,7 +101,7 @@ const Array = {
 
 class Extension {
     constructor() {
-        vm.jwArray = Array
+        vm.jwArray = jwArray
     }
 
     getInfo() {
@@ -109,22 +113,31 @@ class Extension {
                 {
                     opcode: 'blank',
                     text: 'blank array',
-                    ...Array.Block
+                    ...jwArray.Block
                 }, {
-                    opcode: 'test',
-                    text: 'poopie test',
-                    ...Array.Block
+                    opcode: 'blankLength',
+                    text: 'blank array of length [LENGTH]',
+                    arguments: {
+                        LENGTH: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        }
+                    },
+                    ...jwArray.Block
                 }
             ]
         };
     }
 
     blank() {
-        return new Array.Type()
+        return new jwArray.Type()
     }
 
-    test() {
-        return new Array.Type([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+    blankLength({LENGTH}) {
+        let LENGTH = Cast.toNumber(LENGTH)
+        LENGTH = Math.min(Math.max(LENGTH, 1), arrayLimit)
+
+        return new jwArray.Type(Array(LENGTH))
     }
 }
 
