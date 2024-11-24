@@ -86,6 +86,11 @@ class Extension {
                     text: 'this target',
                     ...Target.Block
                 },
+                {
+                    opcode: 'stage',
+                    text: 'stage target',
+                    ...Target.Block
+                },
                 '---',
                 {
                     blockType: BlockType.XML,
@@ -97,6 +102,10 @@ class Extension {
 
     this({}, util) {
         return new Target.Type(util.target.id)
+    }
+
+    stage() {
+        return new Target.Type(vm.runtime._stageTarget)
     }
 }
 
