@@ -89,6 +89,11 @@ class Extension {
                     text: 'this target',
                     disableMonitor: true,
                     ...Target.Block
+                },
+                '---',
+                {
+                    blockType: BlockType.XML,
+                    xml: `<block type="control_run_as_sprite" />`
                 }
             ]
         };

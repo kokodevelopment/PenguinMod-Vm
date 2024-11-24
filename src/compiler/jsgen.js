@@ -1323,7 +1323,7 @@ class JSGenerator {
             // pm: unknown behavior may appear so lets use try catch
             this.source += `try {\n`;
             // set target
-            const targetSprite = isStage ? stage : `runtime.getSpriteTargetByName(${sprite})`;
+            const targetSprite = isStage ? stage : `runtime.getSpriteTargetByName(${sprite}) || runtime.getTargetById(${sprite})`;
             this.source += `const target = (${targetSprite});\n`;
             // only run if target is found
             this.source += `if (target) {\n`;
