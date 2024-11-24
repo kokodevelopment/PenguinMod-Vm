@@ -124,7 +124,7 @@ class Extension {
     }
 
     test() {
-        return new Array.Type(["ab", new Array.Type(["a", "b", "c"])])
+        return new Array.Type([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
     }
 }
 

@@ -22,6 +22,10 @@ class TargetType {
         this.targetId = targetId
     }
 
+    jwArrayHandler() {
+        return 'Target'
+    }
+
     toString() {
         return this.targetId
     }

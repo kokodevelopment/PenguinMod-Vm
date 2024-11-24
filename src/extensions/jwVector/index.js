@@ -40,6 +40,10 @@ class VectorType {
         return new VectorType(0, 0)
     }
 
+    jwArrayHandler() {
+        return 'Vector'
+    }
+
     toString() {
         return `${this.x},${this.y}`
     }
