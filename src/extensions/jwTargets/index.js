@@ -27,7 +27,7 @@ class TargetType {
 
     toReporterContent() {
         try {
-            let target = vm.runtime.getTargetById(this.targetId)[0]
+            let target = vm.runtime.getTargetById(this.targetId)
             let name = target.name
             let isClone = !target.isOriginal
             let costumeURI = target.getCostumes()[target.currentCostume].asset.encodeDataURI()
