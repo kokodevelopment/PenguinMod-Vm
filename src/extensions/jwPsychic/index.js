@@ -95,7 +95,6 @@ class Extension {
                 {
                     opcode: 'getPos',
                     text: 'position',
-                    disableMonitor: true,
                     filter: [TargetType.SPRITE],
                     ...Vector.Block
                 },
@@ -111,7 +110,6 @@ class Extension {
                 {
                     opcode: 'getVel',
                     text: 'velocity',
-                    disableMonitor: true,
                     filter: [TargetType.SPRITE],
                     ...Vector.Block
                 },
@@ -131,7 +129,6 @@ class Extension {
                     opcode: 'getRot',
                     text: 'rotation',
                     blockType: BlockType.REPORTER,
-                    disableMonitor: true,
                     filter: [TargetType.SPRITE]
                 },
                 {
@@ -150,7 +147,6 @@ class Extension {
                     opcode: 'getAngVel',
                     text: 'angular velocity',
                     blockType: BlockType.REPORTER,
-                    disableMonitor: true,
                     filter: [TargetType.SPRITE]
                 }
             ],

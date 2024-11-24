@@ -92,7 +92,8 @@ const Vector = {
     Block: {
         blockType: BlockType.REPORTER,
         blockShape: BlockShape.LEAF,
-        forceOutputType: "Vector"
+        forceOutputType: "Vector",
+        disableMonitor: true
     },
     Argument: {
         shape: BlockShape.LEAF,
