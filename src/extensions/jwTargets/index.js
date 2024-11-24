@@ -21,11 +21,7 @@ class TargetType {
     }
 
     toString() {
-        try {
-            return this.target.sprite.name
-        } catch {
-            return ""
-        }
+        return this.targetId
     }
     toMonitorContent = () => span(this.toString())
 
