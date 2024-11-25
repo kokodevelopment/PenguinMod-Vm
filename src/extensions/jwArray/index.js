@@ -154,7 +154,8 @@ class Extension {
                             type: ArgumentType.STRING,
                             defaultValue: "foo"
                         }
-                    }
+                    },
+                    ...jwArray.Block
                 }
             ]
         };
