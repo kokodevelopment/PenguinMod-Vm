@@ -45,13 +45,14 @@ class ArrayType {
                         return x.jwArrayHandler()
                     }
                     return "Object"
-                case "number":
-                    return formatNumber(x)
-                case "string":
-                case "boolean":
-                    return Cast.toString(x)
                 case "undefined":
                     return "null"
+                case "number":
+                    return formatNumber(x)
+                case "boolean":
+                    return x ? "true" : "false"
+                case "string":
+                    return `"${Cast.toString(x)}"`
             }
         } catch {}
         return "?"
