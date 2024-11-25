@@ -105,7 +105,7 @@ class Extension {
     }
 
     stage() {
-        return new Target.Type(vm.runtime._stageTarget)
+        return new Target.Type(vm.runtime._stageTarget.id)
     }
 }
 
