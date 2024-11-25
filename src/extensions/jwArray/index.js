@@ -115,7 +115,8 @@ class Extension {
                     opcode: 'blank',
                     text: 'blank array',
                     ...jwArray.Block
-                }, {
+                },
+                {
                     opcode: 'blankLength',
                     text: 'blank array of length [LENGTH]',
                     arguments: {
@@ -125,6 +126,35 @@ class Extension {
                         }
                     },
                     ...jwArray.Block
+                },
+                "---",
+                {
+                    opcode: 'get',
+                    text: '[ARRAY] at [INDEX]',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        ARRAY: jwArray.Argument,
+                        INDEX: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        }
+                    }
+                },
+                "---",
+                {
+                    opcode: 'set',
+                    text: '[ARRAY] at [INDEX] to [VALUE]',
+                    arguments: {
+                        ARRAY: jwArray.Argument,
+                        INDEX: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        },
+                        VALUE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "foo"
+                        }
+                    }
                 }
             ]
         };
@@ -139,6 +169,15 @@ class Extension {
         LENGTH = Math.min(Math.max(LENGTH, 1), arrayLimit)
 
         return new jwArray.Type(Array(LENGTH))
+    }
+
+    get({ARRAY, INDEX}) {
+        return ARRAY.array[Cast.toNumber(INDEX)]
+    }
+
+    set({ARRAY, INDEX, VALUE}) {
+        ARRAY.array[Cast.toNumber(INDEX)] = VALUE
+        return ARRAY
     }
 }
 
