@@ -134,7 +134,7 @@ class Extension {
     }
 
     blankLength({LENGTH}) {
-        let LENGTH = Cast.toNumber(LENGTH)
+        LENGTH = Cast.toNumber(LENGTH)
         LENGTH = Math.min(Math.max(LENGTH, 1), arrayLimit)
 
         return new jwArray.Type(Array(LENGTH))
