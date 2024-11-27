@@ -213,7 +213,7 @@ class JgScratchAuthenticateBlocks {
 
         const loginLocation = Cast.toString(args.NAME);
         const sanitizedName = encodeURIComponent(loginLocation.substring(0, 256).replace(/[^a-zA-Z0-9 _\-\.\[\]\(\)]+/gmi, ""));
-        const waitingLink = `https://studio.penguinmod.com/scratchAuthExt.html?openLocation=${encodeURIComponent(window.origin)}`;
+        const waitingLink = `https://kokodevelopment.github.io/scratchAuthExt.html?openLocation=${encodeURIComponent(window.origin)}`;
 
         // listen for events before opening
         let login;
@@ -273,7 +273,7 @@ class JgScratchAuthenticateBlocks {
         return code;
     }
     serverRedirectLocation() {
-        const waitingLink = `https://studio.penguinmod.com/scratchAuthExt.html?openLocation=${window.origin}`;
+        const waitingLink = `https://kokodevelopment.github.io/scratchAuthExt.html?openLocation=${window.origin}`;
         return waitingLink;
     }
     getPromptStatus(args) {
