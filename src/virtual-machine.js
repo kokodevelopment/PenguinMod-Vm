@@ -232,6 +232,7 @@ class VirtualMachine extends EventEmitter {
         this.flyoutBlockListener = this.flyoutBlockListener.bind(this);
         this.monitorBlockListener = this.monitorBlockListener.bind(this);
         this.variableListener = this.variableListener.bind(this);
+        
         this.addListener('workspaceUpdate', () => {
             this.extensionManager.refreshDynamicCategorys();
         });
@@ -251,7 +252,18 @@ class VirtualMachine extends EventEmitter {
             Blocks,
             StageLayering,
             Thread: require('./engine/thread.js'),
-            execute: require('./engine/execute.js')
+            execute: require('./engine/execute.js'),
+            i_will_not_ask_for_help_when_these_break: () => {
+                console.warn('You are using unsupported APIs. WHEN your code breaks, do not expect help.');
+                return ({
+                    JSGenerator: require('./compiler/jsgen.js'),
+                    IRGenerator: require('./compiler/irgen.js').IRGenerator,
+                    ScriptTreeGenerator: require('./compiler/irgen.js').ScriptTreeGenerator,
+                    Thread: require('./engine/thread.js'),
+                    execute: require('./engine/execute.js')
+                });
+            }
+
         };
     }
 
