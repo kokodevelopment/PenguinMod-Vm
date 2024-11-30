@@ -930,6 +930,43 @@ class Jg3DBlocks {
         const result = this.raycastResultToReadable(intersects);
         return JSON.stringify(result);
     }
+
+    rayCollisionDistance(args) {
+        if (!this.scene) return '';
+        const origin = new Three.Vector3(
+            Cast.toNumber(args.X),
+            Cast.toNumber(args.Y),
+            Cast.toNumber(args.Z),
+        );
+        const direction = new Three.Vector3(
+            Cast.toNumber(args.DX),
+            Cast.toNumber(args.DY),
+            Cast.toNumber(args.DZ),
+        );
+        const ray = new Three.Raycaster(origin, direction, 0, args.DIS);
+        const intersects = ray.intersectObjects(this.scene.children, true);
+        if (intersects.length === 0) return '';
+        const first = intersects[0];
+        return first.object.name;
+    }
+    rayCollisionArrayDistance(args) {
+        if (!this.scene) return '[]';
+        const origin = new Three.Vector3(
+            Cast.toNumber(args.X),
+            Cast.toNumber(args.Y),
+            Cast.toNumber(args.Z),
+        );
+        const direction = new Three.Vector3(
+            Cast.toNumber(args.DX),
+            Cast.toNumber(args.DY),
+            Cast.toNumber(args.DZ),
+        );
+        const ray = new Three.Raycaster(origin, direction, 0, args.DIS);
+        const intersects = ray.intersectObjects(this.scene.children, true);
+        if (intersects.length === 0) return '[]';
+        const result = this.raycastResultToReadable(intersects);
+        return JSON.stringify(result);
+    }
 }
 
 module.exports = Jg3DBlocks;

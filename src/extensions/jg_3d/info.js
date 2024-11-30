@@ -400,6 +400,24 @@ module.exports = {
             DY: infoArgument(0),
             DZ: infoArgument(0),
         }, Icons.Raycast, true),
+        createReporterBlock("rayCollisionDistance", "first object in raycast from x: [X] y: [Y] z: [Z] with direction x: [DX] y: [DY] z: [DZ] with a max distance of [DIS]", {
+            X: infoArgument(0),
+            Y: infoArgument(0),
+            Z: infoArgument(0),
+            DX: infoArgument(0),
+            DY: infoArgument(0),
+            DZ: infoArgument(0),
+            DIS: infoArgument(10)
+        }, Icons.Raycast, true),
+        createReporterBlock("rayCollisionArrayDistance", "raycast result from x: [X] y: [Y] z: [Z] with direction x: [DX] y: [DY] z: [DZ] with a max distance of [DIS]", {
+            X: infoArgument(0),
+            Y: infoArgument(0),
+            Z: infoArgument(0),
+            DX: infoArgument(0),
+            DY: infoArgument(0),
+            DZ: infoArgument(0),
+            DIS: infoArgument(10)
+        }, Icons.Raycast, true),
         createReporterBlock("rayCollisionCamera", "first object from raycast in camera center", {
         }, Icons.Raycast, true),
         createReporterBlock("rayCollisionCameraArray", "raycast result starting from the camera center", {
