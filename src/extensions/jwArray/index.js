@@ -215,9 +215,9 @@ class Extension {
     }
     
     getLists() {
-        const globalLists = Object.values(this.runtime.getTargetForStage().variables)
+        const globalLists = Object.values(vm.runtime.getTargetForStage().variables)
             .filter((x) => x.type == "list");
-        const localLists = Object.values(this.runtime.vm.editingTarget.variables)
+        const localLists = Object.values(vm.editingTarget.variables)
             .filter((x) => x.type == "list");
         const uniqueLists = [...new Set([...globalLists, ...localLists])];
         if (uniqueLists.length === 0) return [{ text: "", value: "" }];
