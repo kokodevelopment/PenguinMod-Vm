@@ -105,16 +105,16 @@ class Extension {
         vm.jwArray = jwArray
 
         //patch square shape
-        if (Blockly !== undefined) {
-            Blockly.BlockSvg.INPUT_SHAPE_SQUARE =
-                Blockly.BlockSvg.TOP_LEFT_CORNER_START +
-                Blockly.BlockSvg.TOP_LEFT_CORNER +
-                ' h ' + (4 * Blockly.BlockSvg.GRID_UNIT - 2 * Blockly.BlockSvg.CORNER_RADIUS) +
-                Blockly.BlockSvg.TOP_RIGHT_CORNER +
-                ' v ' + (8 * Blockly.BlockSvg.GRID_UNIT - 2 * Blockly.BlockSvg.CORNER_RADIUS) +
-                Blockly.BlockSvg.BOTTOM_RIGHT_CORNER +
-                ' h ' + (-4 * Blockly.BlockSvg.GRID_UNIT + 2 * Blockly.BlockSvg.CORNER_RADIUS) +
-                Blockly.BlockSvg.BOTTOM_LEFT_CORNER +
+        if (ScratchBlocks !== undefined) {
+            ScratchBlocks.BlockSvg.INPUT_SHAPE_SQUARE =
+                ScratchBlocks.BlockSvg.TOP_LEFT_CORNER_START +
+                ScratchBlocks.BlockSvg.TOP_LEFT_CORNER +
+                ' h ' + (4 * ScratchBlocks.BlockSvg.GRID_UNIT - 2 * ScratchBlocks.BlockSvg.CORNER_RADIUS) +
+                ScratchBlocks.BlockSvg.TOP_RIGHT_CORNER +
+                ' v ' + (8 * ScratchBlocks.BlockSvg.GRID_UNIT - 2 * ScratchBlocks.BlockSvg.CORNER_RADIUS) +
+                ScratchBlocks.BlockSvg.BOTTOM_RIGHT_CORNER +
+                ' h ' + (-4 * ScratchBlocks.BlockSvg.GRID_UNIT + 2 * ScratchBlocks.BlockSvg.CORNER_RADIUS) +
+                ScratchBlocks.BlockSvg.BOTTOM_LEFT_CORNER +
                 ' z';
         }
     }
