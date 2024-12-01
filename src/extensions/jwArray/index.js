@@ -119,9 +119,7 @@ const jwArray = {
 class Extension {
     constructor() {
         vm.jwArray = jwArray
-
-        //this basically copies variable serialization
-        this.runtime.registerSerializer(
+        vm.runtime.registerSerializer( //this basically copies variable serialization
             "jwArray",
             v => v.array.map(w => {
                 if (typeof w == "object" && w != null && w.customId) {

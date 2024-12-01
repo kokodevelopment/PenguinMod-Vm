@@ -79,8 +79,7 @@ let jwArray = {
 class Extension {
     constructor() {
         vm.jwTargets = Target
-
-        this.runtime.registerSerializer(
+        vm.runtime.registerSerializer(
             "jwTargets", 
             v => v.targetId, 
             v => new Target.Type(v)

@@ -109,7 +109,7 @@ const Vector = {
 class Extension {
     constructor() {
         vm.jwVector = Vector
-        this.runtime.registerSerializer(
+        vm.runtime.registerSerializer(
             "jwVector", 
             v => [v.x, v.y], 
             v => new Vector.Type(v[0], v[1])
