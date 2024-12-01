@@ -55,7 +55,7 @@ class ArrayType {
                     if (typeof x.jwArrayHandler == "function") {
                         return x.jwArrayHandler()
                     }
-                    return "Object"
+                    return Cast.toString(x)
                 case "undefined":
                     return "null"
                 case "number":
@@ -94,6 +94,10 @@ class ArrayType {
         root.appendChild(span(`Length: ${this.array.length}`))
 
         return root
+    }
+
+    get length() {
+        return this.array.length
     }
 }
 
@@ -175,6 +179,14 @@ class Extension {
                         }
                     }
                 },
+                {
+                    opcode: 'length',
+                    text: 'length of [ARRAY]',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        ARRAY: jwArray.Argument
+                    }
+                },
                 "---",
                 {
                     opcode: 'set',
@@ -230,6 +242,12 @@ class Extension {
         ARRAY = jwArray.Type.toArray(ARRAY)
 
         return ARRAY.array[Cast.toNumber(INDEX)-1] || ""
+    }
+
+    length({ARRAY}) {
+        ARRAY = jwArray.Type.toArray(ARRAY)
+
+        return ARRAY.length
     }
 
     set({ARRAY, INDEX, VALUE}) {
