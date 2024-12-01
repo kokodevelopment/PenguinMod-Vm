@@ -121,7 +121,7 @@ class Extension {
         vm.jwArray = jwArray
         vm.runtime.registerSerializer( //this basically copies variable serialization
             "jwArray",
-            v => v.array.map(w => {
+            v => JSON.stringify(v.array.map(w => {
                 if (typeof w == "object" && w != null && w.customId) {
                     return {
                         customType: true,
@@ -130,8 +130,8 @@ class Extension {
                     };
                 }
                 return w
-            }), 
-            v => new jwArray.Type(v.map(w => {
+            })), 
+            v => new jwArray.Type(JSON.parse(v).map(w => {
                 if (typeof w == "object" && w != null && w.customType) {
                     return vm.runtime.serializers[w.typeId].deserialize(w.serialized)
                 }
