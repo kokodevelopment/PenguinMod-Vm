@@ -80,6 +80,12 @@ class Extension {
     constructor() {
         vm.jwTargets = Target
 
+        this.runtime.registerSerializer(
+            "jwTargets", 
+            v => v.targetId, 
+            v => new Target.Type(v)
+        );
+
         if (!vm.jwArray) vm.extensionManager.loadExtensionIdSync('jwArray')
         jwArray = vm.jwArray
     }

@@ -52,6 +52,7 @@ class ArrayType {
         try {
             switch (typeof x) {
                 case "object":
+                    if (x === null) return "null"
                     if (typeof x.jwArrayHandler == "function") {
                         return x.jwArrayHandler()
                     }
@@ -118,6 +119,27 @@ const jwArray = {
 class Extension {
     constructor() {
         vm.jwArray = jwArray
+
+        //this basically copies variable serialization
+        this.runtime.registerSerializer(
+            "jwArray",
+            v => v.array.map(w => {
+                if (typeof w == "object" && w != null && w.customId) {
+                    return {
+                        customType: true,
+                        typeId: w.customId,
+                        serialized: vm.runtime.serializers[w.customId].serialize(w)
+                    };
+                }
+                return w
+            }), 
+            v => new jwArray.Type(v.map(w => {
+                if (typeof w == "object" && w != null && w.customType) {
+                    return vm.runtime.serializers[w.typeId].deserialize(w.serialized)
+                }
+                return w
+            }))
+        );
 
         //patch square shape
         if (ScratchBlocks !== undefined) {
