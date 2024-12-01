@@ -70,9 +70,18 @@ const Target = {
     }
 }
 
+let jwArray = {
+    Type: class {},
+    Block: {},
+    Argument: {}
+}
+
 class Extension {
     constructor() {
         vm.jwTargets = Target
+
+        if (!vm.jwArray) vm.extensionManager.loadExtensionIdSync('jwArray')
+        jwArray = vm.jwArray
     }
 
     getInfo() {

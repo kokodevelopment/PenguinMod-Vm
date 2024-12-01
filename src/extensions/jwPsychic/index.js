@@ -12,10 +12,28 @@ let Vector = {
     Argument: {}
 }
 
+let jwArray = {
+    Type: class {},
+    Block: {},
+    Argument: {}
+}
+
+let Target = {
+    Type: class {},
+    Block: {},
+    Argument: {}
+}
+
 class Extension {
     constructor() {
         if (!vm.jwVector) vm.extensionManager.loadExtensionIdSync('jwVector')
         Vector = vm.jwVector
+
+        if (!vm.jwArray) vm.extensionManager.loadExtensionIdSync('jwArray')
+        jwArray = vm.jwArray
+
+        if (!vm.jwTargets) vm.extensionManager.loadExtensionIdSync('jwTargets')
+        Target = vm.jwTargets
 
         this.engine = Matter.Engine.create()
         /** @type {Array.<Matter.Body>} */
