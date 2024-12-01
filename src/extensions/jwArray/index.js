@@ -184,6 +184,7 @@ class Extension {
                             menu: "list"
                         }
                     },
+                    hideFromPalette: true, //doesn't work for some reason
                     ...jwArray.Block
                 },
                 "---",
@@ -219,7 +220,8 @@ class Extension {
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
-                            defaultValue: "foo"
+                            defaultValue: "foo",
+                            exemptFromNormalization: true
                         }
                     },
                     ...jwArray.Block
