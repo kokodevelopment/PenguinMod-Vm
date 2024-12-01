@@ -375,9 +375,10 @@ class Extension {
 
     getCollides({}, util) {
         let body = this.bodies[util.target.id]
+        if (!body) return new jwArray.Type()
+
         let collisions = Matter.Query.collides(body, Object.values(this.bodies).filter(v => v !== body))
-        
-        return collisions.map(v => new Target.Type(v.bodyA.parent.label))
+        return new jwArray.Type(collisions.map(v => new Target.Type(v.bodyA.parent.label)))
     }
 }
 
