@@ -1239,14 +1239,14 @@ class JSGenerator {
         }
         case 'control.repeatForSeconds': {
             const duration = this.localVariables.next();
-            this.source += `thread.timer = timer();\n`;
+            this.source += `thread.timer2 = timer();\n`;
             this.source += `var ${duration} = Math.max(0, 1000 * ${this.descendInput(node.times).asNumber()});\n`;
             this.requestRedraw();
-            this.source += `while (thread.timer.timeElapsed() < ${duration}) {\n`;
+            this.source += `while (thread.timer2.timeElapsed() < ${duration}) {\n`;
             this.descendStack(node.do, new Frame(true, 'control.repeatForSeconds'));
             this.yieldLoop();
             this.source += `}\n`;
-            this.source += 'thread.timer = null;\n';
+            this.source += 'thread.timer2 = null;\n';
             break;
         }
         case 'control.stopAll':
