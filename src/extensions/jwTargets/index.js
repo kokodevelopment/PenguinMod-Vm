@@ -22,6 +22,12 @@ class TargetType {
         this.targetId = targetId
     }
 
+    static toTarget(x) {
+        if (x instanceof TargetType) return x
+        if (typeof x == "string") return new TargetType(x)
+        return new TargetType("")
+    }
+
     jwArrayHandler() {
         return 'Target'
     }
@@ -33,7 +39,7 @@ class TargetType {
 
     toReporterContent() {
         try {
-            let target = vm.runtime.getTargetById(this.targetId)
+            let target = this.target
             let name = target.sprite.name
             let isClone = !target.isOriginal
             let costumeURI = target.getCostumes()[target.currentCostume].asset.encodeDataURI()
@@ -55,6 +61,10 @@ class TargetType {
         } catch {
             return span("Unknown")
         }
+    }
+
+    get target() {
+        return vm.runtime.getTargetById(this.targetId)
     }
 }
 
@@ -107,6 +117,15 @@ class Extension {
                 },
                 '---',
                 {
+                    opcode: 'clones',
+                    text: 'clones of [TARGET]',
+                    arguments: {
+                        TARGET: Target.Argument
+                    },
+                    ...jwArray.Block
+                },
+                '---',
+                {
                     blockType: BlockType.XML,
                     xml: `<block type="control_run_as_sprite" />`
                 }
@@ -120,6 +139,14 @@ class Extension {
 
     stage() {
         return new Target.Type(vm.runtime._stageTarget.id)
+    }
+
+    clones({TARGET}) {
+        TARGET = Target.Type.toTarget(TARGET)
+        if (TARGET.target) {
+            return jwArray.Type(TARGET.target.sprite.clones.filter(v => !v.isOriginal))
+        }
+        return jwArray.Type()
     }
 }
 

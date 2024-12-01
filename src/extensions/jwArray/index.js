@@ -190,7 +190,7 @@ class Extension {
                 "---",
                 {
                     opcode: 'get',
-                    text: 'get [ARRAY] at [INDEX]',
+                    text: 'get [INDEX] in [ARRAY]',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         ARRAY: jwArray.Argument,
@@ -211,7 +211,7 @@ class Extension {
                 "---",
                 {
                     opcode: 'set',
-                    text: 'set [ARRAY] at [INDEX] to [VALUE]',
+                    text: 'set [INDEX] in [ARRAY] to [VALUE]',
                     arguments: {
                         ARRAY: jwArray.Argument,
                         INDEX: {
