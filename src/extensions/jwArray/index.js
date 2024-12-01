@@ -205,7 +205,7 @@ class Extension {
                     ...jwArray.Block
                 }
             ],
-            lists: {
+            menus: {
                 list: {
                     acceptReporters: false,
                     items: "getLists",
@@ -231,7 +231,7 @@ class Extension {
     blankLength({LENGTH}) {
         LENGTH = clampIndex(Cast.toNumber(LENGTH))
 
-        return new jwArray.Type(Array(LENGTH))
+        return new jwArray.Type(Array(LENGTH).fill(undefined))
     }
 
     fromList({LIST}) {
