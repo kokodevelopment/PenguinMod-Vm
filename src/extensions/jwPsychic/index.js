@@ -166,6 +166,13 @@ class Extension {
                     text: 'angular velocity',
                     blockType: BlockType.REPORTER,
                     filter: [TargetType.SPRITE]
+                },
+                "---",
+                {
+                    opcode: 'getCollides',
+                    text: 'targets colliding',
+                    filter: [TargetType.SPRITE],
+                    ...jwArray.Block
                 }
             ],
             menus: {
@@ -304,8 +311,7 @@ class Extension {
                 throw "Invalid physics option"
         }
 
-        console.debug(body.bounds)
-
+        body.label = target.id
         this.bodies[target.id] = body
         Matter.Composite.add(this.engine.world, body)
 
@@ -365,6 +371,13 @@ class Extension {
         let body = this.bodies[util.target.id]
         if (!body) return 0
         return body.angularVelocity
+    }
+
+    getCollides({}, util) {
+        let body = this.bodies[util.target.id]
+        let collisions = Matter.Query.collides(body, Object.values(this.bodies).filter(v => v !== body))
+        
+        return collisions.map(v => new Target.Type(v.bodyA.parent.label))
     }
 }
 
