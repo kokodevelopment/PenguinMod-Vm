@@ -1139,6 +1139,7 @@ class RenderedTarget extends Target {
         newClone.draggable = this.draggable;
         newClone.visible = this.visible;
         newClone.size = this.size;
+        newClone.stretch = this.stretch;
         newClone.currentCostume = this.currentCostume;
         newClone.rotationStyle = this.rotationStyle;
         newClone.effects = Clone.simple(this.effects);
