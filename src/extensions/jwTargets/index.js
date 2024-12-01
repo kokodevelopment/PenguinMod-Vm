@@ -144,9 +144,9 @@ class Extension {
     clones({TARGET}) {
         TARGET = Target.Type.toTarget(TARGET)
         if (TARGET.target) {
-            return jwArray.Type(TARGET.target.sprite.clones.filter(v => !v.isOriginal))
+            return new jwArray.Type(TARGET.target.sprite.clones.filter(v => !v.isOriginal))
         }
-        return jwArray.Type()
+        return new jwArray.Type()
     }
 }
 
