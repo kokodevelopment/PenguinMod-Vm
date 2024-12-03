@@ -458,10 +458,20 @@ class Extension {
             console.debug(collisions)
             switch (OPTION) {
                 case 'feet':
-                    collisions = collisions.filter(v => v.supports[0].y > body.bounds.max.y-3)
+                    collisions = collisions.filter(v => {
+                        for (let support of v.supports) {
+                            if (support == null) continue
+                            if (support.y > body.bounds.max.y-4) return true
+                        }
+                    })
                     break
                 case 'head':
-                    collisions = collisions.filter(v => v.supports[0].y < body.bounds.min.y+3)
+                    collisions = collisions.filter(v => {
+                        for (let support of v.supports) {
+                            if (support == null) continue
+                            if (support.y < body.bounds.min.y+4) return true
+                        }
+                    })
                     break
             }
             console.debug(collisions)
