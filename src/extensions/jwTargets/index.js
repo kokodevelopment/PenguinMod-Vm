@@ -210,7 +210,7 @@ class Extension {
     fromName({SPRITE}, util) {
         SPRITE = Cast.toString(SPRITE)
         if (SPRITE == "this") return this.this({}, util)
-        let target = vm.runtime.getSpriteTargetFromName(SPRITE)
+        let target = vm.runtime.getSpriteTargetByName(SPRITE)
         return new Target.Type(target ? target.id : "")
     }
 

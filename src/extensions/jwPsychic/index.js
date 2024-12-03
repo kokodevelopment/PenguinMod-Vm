@@ -194,6 +194,24 @@ class Extension {
                 },
                 "---",
                 {
+                    opcode: 'setStatic',
+                    text: 'set static to [BOOLEAN]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        BOOLEAN: {
+                            type: ArgumentType.BOOLEAN
+                        }
+                    },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getStatic',
+                    text: 'density',
+                    blockType: BlockType.BOOLEAN,
+                    filter: [TargetType.SPRITE]
+                },
+                "---",
+                {
                     opcode: 'setFric',
                     text: 'set friction to [NUMBER]',
                     blockType: BlockType.COMMAND,
@@ -464,6 +482,18 @@ class Extension {
         let body = this.bodies[util.target.id]
         if (!body) return
         Matter.Body.setDensity(Cast.toNumber(NUMBER))
+    }
+
+    getStatic({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return false
+        return body.isStatic
+    }
+
+    setStatic({BOOLEAN}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        Matter.Body.setStatic(body, BOOLEAN)
     }
 
     setFric({NUMBER}, util) {
