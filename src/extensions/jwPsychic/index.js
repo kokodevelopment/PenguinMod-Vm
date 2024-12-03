@@ -344,6 +344,7 @@ class Extension {
 
         console.debug(size)
 
+        /** @type {Matter.Body?} */
         let body = null
         switch (OPTION) {
             case 'precise':
@@ -360,6 +361,7 @@ class Extension {
         }
 
         body.label = target.id
+
         this.bodies[target.id] = body
         Matter.Composite.add(this.engine.world, body)
 
@@ -449,7 +451,7 @@ class Extension {
         let body = this.bodies[util.target.id]
         if (!body) return new jwArray.Type()
 
-        let collisions = Matter.Query.collides(body, Object.values(this.bodies).filter(v => v !== body))
+        let collisions = Matter.Query.collides(body, this.bodies)
 
         if (OPTION !== 'body') {
             collisions = collisions.filter(v => v.supports[0].x > body.bounds.min.x && v.supports[0].x < body.bounds.max.x)
@@ -462,6 +464,8 @@ class Extension {
                     break
             }
         }
+
+        collisions.filter(v => v.bodyA !== body)
 
         return new jwArray.Type(collisions.map(v => new Target.Type(v.bodyA.parent.label)))
     }
