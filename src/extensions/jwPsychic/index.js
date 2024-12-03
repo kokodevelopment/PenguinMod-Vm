@@ -458,12 +458,14 @@ class Extension {
             console.debug(collisions)
             switch (OPTION) {
                 case 'feet':
+                    if (collisions[0]) collisions.debug(v.supports[0].y, body.bounds.max.y-1)
                     collisions = collisions.filter(v => v.supports[0].y > body.bounds.max.y-1)
                     break
                 case 'head':
                     collisions = collisions.filter(v => v.supports[0].y < body.bounds.min.y+1)
                     break
             }
+            console.debug(collisions)
         }
 
         let bodies = collisions.map(v => body == v.bodyA ? v.bodyB : v.bodyA)
