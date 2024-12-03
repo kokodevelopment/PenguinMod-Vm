@@ -143,6 +143,16 @@ class Extension {
                     filter: [TargetType.SPRITE],
                     ...jwArray.Block
                 },
+                {
+                    opcode: 'arrayHasTarget',
+                    text: '[ARRAY] has clone of [TARGET]',
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        ARRAY: jwArray.Argument,
+                        TARGET: Target.Argument
+                    },
+                    filter: [TargetType.SPRITE]
+                },
                 '---',
                 {
                     blockType: BlockType.XML,
@@ -199,6 +209,18 @@ class Extension {
             return new jwArray.Type(TARGET.target.sprite.clones.filter(v => !v.isOriginal).map(v => new Target.Type(v.id)))
         }
         return new jwArray.Type()
+    }
+
+    arrayHasTarget({ARRAY, TARGET}) {
+        ARRAY = jwArray.Type.toArray(ARRAY)
+        TARGET = Target.Type.toTarget(TARGET)
+        if (!TARGET.target) return false
+
+        return ARRAY.array.find(v => {
+            let target = Target.Type.toTarget(v)
+            if (!target.target) return false
+            return target.target.sprite == TARGET.target.sprite
+        })
     }
 }
 

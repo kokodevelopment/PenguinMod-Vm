@@ -201,6 +201,18 @@ class Extension {
                     }
                 },
                 {
+                    opcode: 'has',
+                    text: '[ARRAY] has [VALUE]',
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        ARRAY: jwArray.Argument,
+                        VALUE: {
+                            type: ArgumentType.STRING,
+                            exemptFromNormalization: true
+                        }
+                    }
+                },
+                {
                     opcode: 'length',
                     text: 'length of [ARRAY]',
                     blockType: BlockType.REPORTER,
@@ -277,6 +289,12 @@ class Extension {
         ARRAY = jwArray.Type.toArray(ARRAY)
 
         return ARRAY.array[Cast.toNumber(INDEX)-1] || ""
+    }
+
+    has({ARRAY, VALUE}) {
+        ARRAY = jwArray.Type.toArray(ARRAY)
+
+        return ARRAY.array.includes(VALUE)
     }
 
     length({ARRAY}) {
