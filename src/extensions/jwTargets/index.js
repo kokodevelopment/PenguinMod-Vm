@@ -109,16 +109,18 @@ class Extension {
                 {
                     opcode: 'this',
                     text: 'this target',
+                    hideFromPalette: true,
                     ...Target.Block
                 },
                 {
                     opcode: 'stage',
                     text: 'stage target',
+                    hideFromPalette: true,
                     ...Target.Block
                 },
                 {
                     opcode: 'fromName',
-                    text: '[SPRITE]',
+                    text: '[SPRITE] target',
                     arguments: {
                         SPRITE: {
                             menu: "sprite"
@@ -134,7 +136,8 @@ class Extension {
                     arguments: {
                         TARGET: Target.Argument,
                         MENU: {
-                            menu: "targetProperty"
+                            menu: "targetProperty",
+                            defaultValue: "this"
                         }
                     }
                 },
@@ -189,11 +192,11 @@ class Extension {
     }
 
     getSpriteMenu() {
-        let sprites = []
+        let sprites = ["this"]
         for (let target of vm.runtime.targets) {
             if (!sprites.includes(target.sprite.name)) sprites.push(target.sprite.name)
         }
-        return sprites.length > 0 ? sprites : [""]
+        return sprites
     }
 
     this({}, util) {
@@ -204,8 +207,10 @@ class Extension {
         return new Target.Type(vm.runtime._stageTarget.id)
     }
 
-    fromName({SPRITE}) {
-        let target = vm.runtime.getSpriteTargetFromName(Cast.toString(SPRITE))
+    fromName({SPRITE}, util) {
+        SPRITE = Cast.toString(SPRITE)
+        if (SPRITE == "this") return this.this({}, util)
+        let target = vm.runtime.getSpriteTargetFromName(SPRITE)
         return new Target.Type(target ? target.id : "")
     }
 
