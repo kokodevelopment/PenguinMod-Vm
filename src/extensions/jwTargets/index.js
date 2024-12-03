@@ -168,6 +168,8 @@ class Extension {
         TARGET = Target.Type.toTarget(TARGET)
         MENU = Cast.toString(MENU)
 
+        if (!TARGET.target) return ""
+
         switch(MENU) {
             case "x": return TARGET.target.x
             case "y": return TARGET.target.y
