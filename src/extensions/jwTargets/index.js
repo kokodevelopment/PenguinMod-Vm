@@ -117,6 +117,18 @@ class Extension {
                 },
                 '---',
                 {
+                    opcode: 'get',
+                    text: '[MENU] [TARGET]',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        TARGET: Target.Argument,
+                        MENU: {
+                            menu: "targetProperty"
+                        }
+                    }
+                },
+                '---',
+                {
                     opcode: 'clones',
                     text: 'clones of [TARGET]',
                     arguments: {
@@ -129,7 +141,18 @@ class Extension {
                     blockType: BlockType.XML,
                     xml: `<block type="control_run_as_sprite" />`
                 }
-            ]
+            ],
+            menus: {
+                targetProperty: {
+                    acceptReporters: true,
+                    items: [
+                        "x",
+                        "y",
+                        "direction",
+                        "size"
+                    ]
+                }
+            }
         };
     }
 
@@ -139,6 +162,20 @@ class Extension {
 
     stage() {
         return new Target.Type(vm.runtime._stageTarget.id)
+    }
+
+    get({TARGET, MENU}) {
+        TARGET = Target.Type.toTarget(TARGET)
+        MENU = Cast.toString(MENU)
+
+        switch(MENU) {
+            case "x": return TARGET.target.x
+            case "y": return TARGET.target.y
+            case "direction": return TARGET.target.direction
+            case "size": return TARGET.target.size
+        }
+
+        return ""
     }
 
     clones({TARGET}) {
