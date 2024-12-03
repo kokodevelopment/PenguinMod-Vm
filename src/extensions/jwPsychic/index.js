@@ -206,7 +206,7 @@ class Extension {
                 },
                 {
                     opcode: 'getStatic',
-                    text: 'density',
+                    text: 'static',
                     blockType: BlockType.BOOLEAN,
                     filter: [TargetType.SPRITE]
                 },
