@@ -207,7 +207,13 @@ class Extension {
                 "---",
                 {
                     opcode: 'getCollides',
-                    text: 'targets colliding',
+                    text: 'targets colliding with [OPTION]',
+                    arguments: {
+                        OPTION: {
+                            type: ArgumentType.STRING,
+                            menu: 'touchingOption'
+                        }
+                    },
                     filter: [TargetType.SPRITE],
                     ...jwArray.Block
                 }
@@ -222,6 +228,11 @@ class Extension {
                     'all',
                     'floor',
                     'none'
+                ],
+                touchingOption: [
+                    'body',
+                    'feet',
+                    'head'
                 ]
             }
         };
@@ -434,11 +445,24 @@ class Extension {
         return body.frictionAir
     }
 
-    getCollides({}, util) {
+    getCollides({OPTION}, util) {
         let body = this.bodies[util.target.id]
         if (!body) return new jwArray.Type()
 
         let collisions = Matter.Query.collides(body, Object.values(this.bodies).filter(v => v !== body))
+
+        if (OPTION !== 'body') {
+            collisions = collisions.filter(v => v.supports[0].x > body.bounds.min.x && v.supports[0].x < body.bounds.max.x)
+            switch (OPTION) {
+                case 'feet':
+                    collisions = collisions.filter(v => v.supports[0].y > body.bounds.max.y)
+                    break
+                case 'head':
+                    collisions = collisions.filter(v => v.supports[0].y < body.bounds.min.y)
+                    break
+            }
+        }
+
         return new jwArray.Type(collisions.map(v => new Target.Type(v.bodyA.parent.label)))
     }
 }

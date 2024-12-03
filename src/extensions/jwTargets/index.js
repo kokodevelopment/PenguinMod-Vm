@@ -149,7 +149,8 @@ class Extension {
                         "x",
                         "y",
                         "direction",
-                        "size"
+                        "size",
+                        "name"
                     ]
                 }
             }
@@ -175,6 +176,7 @@ class Extension {
             case "y": return TARGET.target.y
             case "direction": return TARGET.target.direction
             case "size": return TARGET.target.size
+            case "name": return TARGET.target.sprite.name
         }
 
         return ""
