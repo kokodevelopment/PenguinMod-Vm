@@ -458,10 +458,10 @@ class Extension {
             console.debug(collisions)
             switch (OPTION) {
                 case 'feet':
-                    collisions = collisions.filter(v => v.supports[0].y > body.bounds.max.y-2)
+                    collisions = collisions.filter(v => v.supports[0].y > body.bounds.max.y-3)
                     break
                 case 'head':
-                    collisions = collisions.filter(v => v.supports[0].y < body.bounds.min.y+2)
+                    collisions = collisions.filter(v => v.supports[0].y < body.bounds.min.y+3)
                     break
             }
             console.debug(collisions)
