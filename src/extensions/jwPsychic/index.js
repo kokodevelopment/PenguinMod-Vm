@@ -452,6 +452,7 @@ class Extension {
         if (!body) return new jwArray.Type()
 
         let collisions = Matter.Query.collides(body, this.bodies)
+        console.debug(collisions)
 
         if (OPTION !== 'body') {
             collisions = collisions.filter(v => v.supports[0].x > body.bounds.min.x && v.supports[0].x < body.bounds.max.x)
@@ -466,7 +467,8 @@ class Extension {
         }
 
         let bodies = collisions.map(v => body == v.bodyA ? v.bodyB : v.bodyA)
-        return new jwArray.Type(bodies.map(v => new Target.Type(v.parent.label)))
+        console.debug(bodies)
+        return new jwArray.Type(bodies.map(v => new Target.Type(v.label)))
     }
 }
 

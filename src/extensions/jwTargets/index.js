@@ -129,11 +129,17 @@ class Extension {
                 },
                 '---',
                 {
+                    opcode: 'all',
+                    text: 'all targets',
+                    ...jwArray.Block
+                },
+                {
                     opcode: 'clones',
                     text: 'clones of [TARGET]',
                     arguments: {
                         TARGET: Target.Argument
                     },
+                    filter: [TargetType.SPRITE],
                     ...jwArray.Block
                 },
                 '---',
@@ -180,6 +186,10 @@ class Extension {
         }
 
         return ""
+    }
+
+    all() {
+        return new jwArray.Type(vm.runtime.targets.map(v => new Target.Type(v.id)))
     }
 
     clones({TARGET}) {
