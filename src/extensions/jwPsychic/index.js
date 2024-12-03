@@ -465,9 +465,8 @@ class Extension {
             }
         }
 
-        collisions.filter(v => v.bodyA !== body)
-
-        return new jwArray.Type(collisions.map(v => new Target.Type(v.bodyA.parent.label)))
+        let bodies = collisions.map(v => body == v.bodyA ? v.bodyB : v.bodyA)
+        return new jwArray.Type(bodies.map(v => new Target.Type(v.parent.label)))
     }
 }
 
