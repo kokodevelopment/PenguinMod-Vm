@@ -1,6 +1,7 @@
 const BlockType = require('../../extension-support/block-type')
 const BlockShape = require('../../extension-support/block-shape')
 const ArgumentType = require('../../extension-support/argument-type')
+const TargetType = require('../../extension-support/target-type')
 const Cast = require('../../util/cast')
 
 function span(text) {
@@ -13,7 +14,7 @@ function span(text) {
     return el
 }
 
-class TargetType {
+class jwTargetType {
     customId = "jwTargets"
 
     targetId = ""
@@ -23,9 +24,9 @@ class TargetType {
     }
 
     static toTarget(x) {
-        if (x instanceof TargetType) return x
-        if (typeof x == "string") return new TargetType(x)
-        return new TargetType("")
+        if (x instanceof jwTargetType) return x
+        if (typeof x == "string") return new jwTargetType(x)
+        return new jwTargetType("")
     }
 
     jwArrayHandler() {
@@ -69,7 +70,7 @@ class TargetType {
 }
 
 const Target = {
-    Type: TargetType,
+    Type: jwTargetType,
     Block: {
         blockType: BlockType.REPORTER,
         forceOutputType: "Target",
