@@ -169,11 +169,30 @@ class Extension {
                 },
                 "---",
                 {
-                    opcode: 'getFric',
-                    text: 'friction',
+                    opcode: 'getMass',
+                    text: 'mass',
                     blockType: BlockType.REPORTER,
                     filter: [TargetType.SPRITE]
                 },
+                {
+                    opcode: 'setDensity',
+                    text: 'set density to [NUMBER]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NUMBER: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0.001
+                        }
+                    },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getDensity',
+                    text: 'density',
+                    blockType: BlockType.REPORTER,
+                    filter: [TargetType.SPRITE]
+                },
+                "---",
                 {
                     opcode: 'setFric',
                     text: 'set friction to [NUMBER]',
@@ -187,8 +206,8 @@ class Extension {
                     filter: [TargetType.SPRITE]
                 },
                 {
-                    opcode: 'getAirFric',
-                    text: 'air resistance',
+                    opcode: 'getFric',
+                    text: 'friction',
                     blockType: BlockType.REPORTER,
                     filter: [TargetType.SPRITE]
                 },
@@ -202,6 +221,12 @@ class Extension {
                             defaultValue: 0.01
                         }
                     },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getAirFric',
+                    text: 'air resistance',
+                    blockType: BlockType.REPORTER,
                     filter: [TargetType.SPRITE]
                 },
                 "---",
@@ -421,6 +446,24 @@ class Extension {
         let body = this.bodies[util.target.id]
         if (!body) return 0
         return body.angularVelocity
+    }
+
+    getMass({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return 0
+        return body.mass
+    }
+
+    getDensity({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return 0.001
+        return body.density
+    }
+
+    setDensity({NUMBER}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        Matter.Body.setDensity(Cast.toNumber(NUMBER))
     }
 
     setFric({NUMBER}, util) {
