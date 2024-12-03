@@ -36,7 +36,7 @@ class Extension {
         Target = vm.jwTargets
 
         this.engine = Matter.Engine.create()
-        /** @type {Array.<Matter.Body>} */
+        /** @type {Object<string, Matter.Body>} */
         this.bodies = {}
         /** @type {Matter.Composite?} */
         this.bounds = null
@@ -165,6 +165,43 @@ class Extension {
                     opcode: 'getAngVel',
                     text: 'angular velocity',
                     blockType: BlockType.REPORTER,
+                    filter: [TargetType.SPRITE]
+                },
+                "---",
+                {
+                    opcode: 'getFric',
+                    text: 'friction',
+                    blockType: BlockType.REPORTER,
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'setFric',
+                    text: 'set friction to [NUMBER]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NUMBER: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0.1
+                        }
+                    },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getAirFric',
+                    text: 'air resistance',
+                    blockType: BlockType.REPORTER,
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'setAirFric',
+                    text: 'set air resistance to [NUMBER]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NUMBER: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0.01
+                        }
+                    },
                     filter: [TargetType.SPRITE]
                 },
                 "---",
@@ -373,12 +410,35 @@ class Extension {
         return body.angularVelocity
     }
 
+    setFric({NUMBER}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        body.friction = Cast.toNumber(NUMBER)
+    }
+
+    getFric({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return 0.1
+        return body.friction
+    }
+
+    setAirFric({NUMBER}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        body.frictionAir = Cast.toNumber(NUMBER)
+    }
+
+    getAirFric({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return 0.01
+        return body.frictionAir
+    }
+
     getCollides({}, util) {
         let body = this.bodies[util.target.id]
         if (!body) return new jwArray.Type()
 
         let collisions = Matter.Query.collides(body, Object.values(this.bodies).filter(v => v !== body))
-        console.debug(collisions)
         return new jwArray.Type(collisions.map(v => new Target.Type(v.bodyA.parent.label)))
     }
 }
