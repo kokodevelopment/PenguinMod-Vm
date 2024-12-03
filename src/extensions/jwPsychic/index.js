@@ -454,14 +454,14 @@ class Extension {
         let collisions = Matter.Query.collides(body, Object.values(this.bodies))
 
         if (OPTION !== 'body') {
-            collisions = collisions.filter(v => v.supports[0].x > body.bounds.min.x && v.supports[0].x < body.bounds.max.x)
+            collisions = collisions.filter(v => v.supports[0].x > body.bounds.min.x+1 && v.supports[0].x < body.bounds.max.x-1)
             console.debug(collisions)
             switch (OPTION) {
                 case 'feet':
-                    collisions = collisions.filter(v => v.supports[0].y > body.bounds.max.y)
+                    collisions = collisions.filter(v => v.supports[0].y > body.bounds.max.y-1)
                     break
                 case 'head':
-                    collisions = collisions.filter(v => v.supports[0].y < body.bounds.min.y)
+                    collisions = collisions.filter(v => v.supports[0].y < body.bounds.min.y+1)
                     break
             }
         }
