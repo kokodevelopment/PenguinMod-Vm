@@ -225,6 +225,19 @@ class Extension {
                         }
                     },
                     ...jwArray.Block
+                },
+                {
+                    opcode: 'append',
+                    text: 'append [VALUE] to [ARRAY]',
+                    arguments: {
+                        ARRAY: jwArray.Argument,
+                        VALUE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "foo",
+                            exemptFromNormalization: true
+                        }
+                    },
+                    ...jwArray.Block
                 }
             ],
             menus: {
@@ -276,6 +289,13 @@ class Extension {
         ARRAY = jwArray.Type.toArray(ARRAY)
 
         ARRAY.array[clampIndex(Cast.toNumber(INDEX))-1] = VALUE
+        return ARRAY
+    }
+
+    append({ARRAY, VALUE}) {
+        ARRAY = jwArray.Type.toArray(ARRAY)
+
+        ARRAY.array.push(VALUE)
         return ARRAY
     }
 }
