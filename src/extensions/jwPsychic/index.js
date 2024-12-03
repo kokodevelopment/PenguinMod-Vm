@@ -455,6 +455,7 @@ class Extension {
 
         if (OPTION !== 'body') {
             collisions = collisions.filter(v => v.supports[0].x > body.bounds.min.x && v.supports[0].x < body.bounds.max.x)
+            console.debug(collisions)
             switch (OPTION) {
                 case 'feet':
                     collisions = collisions.filter(v => v.supports[0].y > body.bounds.max.y)
@@ -466,6 +467,7 @@ class Extension {
         }
 
         let bodies = collisions.map(v => body == v.bodyA ? v.bodyB : v.bodyA)
+        bodies.filter(v => v !== body)
         return new jwArray.Type(bodies.map(v => new Target.Type(v.label)))
     }
 }
