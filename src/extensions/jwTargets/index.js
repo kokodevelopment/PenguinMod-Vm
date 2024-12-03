@@ -116,6 +116,16 @@ class Extension {
                     text: 'stage target',
                     ...Target.Block
                 },
+                {
+                    opcode: 'fromName',
+                    text: '[SPRITE]',
+                    arguments: {
+                        SPRITE: {
+                            menu: "sprite"
+                        }
+                    },
+                    ...Target.Block
+                },
                 '---',
                 {
                     opcode: 'get',
@@ -160,6 +170,10 @@ class Extension {
                 }
             ],
             menus: {
+                sprite: {
+                    acceptReporters: true,
+                    items: 'getSpriteMenu'
+                },
                 targetProperty: {
                     acceptReporters: true,
                     items: [
@@ -174,12 +188,25 @@ class Extension {
         };
     }
 
+    getSpriteMenu() {
+        let sprites = []
+        for (let target of vm.runtime.targets) {
+            if (!sprites.includes(target.sprite.name)) sprites.push(target.sprite.name)
+        }
+        return sprites.length > 0 ? sprites : [""]
+    }
+
     this({}, util) {
         return new Target.Type(util.target.id)
     }
 
     stage() {
         return new Target.Type(vm.runtime._stageTarget.id)
+    }
+
+    fromName({SPRITE}) {
+        let target = vm.runtime.getSpriteTargetFromName(Cast.toString(SPRITE))
+        return new Target.Type(target ? target.id : "")
     }
 
     get({TARGET, MENU}) {
