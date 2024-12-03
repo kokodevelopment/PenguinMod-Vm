@@ -220,7 +220,7 @@ class Extension {
             let target = Target.Type.toTarget(v)
             if (!target.target) return false
             return target.target.sprite == TARGET.target.sprite
-        })
+        }) !== undefined
     }
 }
 
