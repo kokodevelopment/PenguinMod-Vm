@@ -516,16 +516,16 @@ class Extension {
     getRotatable({}, util) {
         let body = this.bodies[util.target.id]
         if (!body) return true
-        return body.inertia === Infinity
+        return body.inertia !== Infinity
     }
 
     setRotatable({BOOLEAN}, util) {
         let body = this.bodies[util.target.id]
         if (!body) return
         if (BOOLEAN) {
-            Matter.Body.setInertia(body, Infinity)
-        } else {
             Matter.Body.setVertices(body, body.vertices)
+        } else {
+            Matter.Body.setInertia(body, Infinity)
         }
     }
 
