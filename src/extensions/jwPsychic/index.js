@@ -195,7 +195,7 @@ class Extension {
                 "---",
                 {
                     opcode: 'setStatic',
-                    text: 'set static to [BOOLEAN]',
+                    text: 'set fixed to [BOOLEAN]',
                     blockType: BlockType.COMMAND,
                     arguments: {
                         BOOLEAN: {
@@ -206,7 +206,24 @@ class Extension {
                 },
                 {
                     opcode: 'getStatic',
-                    text: 'static',
+                    text: 'fixed',
+                    blockType: BlockType.BOOLEAN,
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'setRotatable',
+                    text: 'set rotatable to [BOOLEAN]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        BOOLEAN: {
+                            type: ArgumentType.BOOLEAN
+                        }
+                    },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getRotatable',
+                    text: 'rotatable',
                     blockType: BlockType.BOOLEAN,
                     filter: [TargetType.SPRITE]
                 },
@@ -493,7 +510,23 @@ class Extension {
     setStatic({BOOLEAN}, util) {
         let body = this.bodies[util.target.id]
         if (!body) return
-        Matter.Body.setStatic(body, BOOLEAN)
+        body.isStatic = BOOLEAN
+    }
+
+    getRotatable({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return false
+        return body.inertia === Infinity
+    }
+
+    setRotatable({BOOLEAN}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        if (BOOLEAN) {
+            Matter.Body.setInertia(body, Infinity)
+        } else {
+            Matter.Body.setVertices(body, body.vertices)
+        }
     }
 
     setFric({NUMBER}, util) {
