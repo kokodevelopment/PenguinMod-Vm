@@ -515,7 +515,7 @@ class Extension {
 
     getRotatable({}, util) {
         let body = this.bodies[util.target.id]
-        if (!body) return false
+        if (!body) return true
         return body.inertia === Infinity
     }
 
