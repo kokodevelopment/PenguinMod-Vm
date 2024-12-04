@@ -397,9 +397,10 @@ class Extension {
 
     enablePhysics({OPTION}, util) {
         let target = util.target
+        let costume = target.getCostumes()[target.currentCostume]
         let size = {
-            x: target.getCostumes()[target.currentCostume].size[0] * (target.size / 100) * (target.stretch[0] / 100),
-            y: target.getCostumes()[target.currentCostume].size[1] * (target.size / 100) * (target.stretch[1] / 100)
+            x: costume.size[0] * (target.size / 100) * (target.stretch[0] / 100) / costume.bitmapResolution,
+            y: costume.size[1] * (target.size / 100) * (target.stretch[1] / 100) / costume.bitmapResolution
         }
 
         console.debug(size)
