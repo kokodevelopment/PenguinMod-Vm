@@ -452,7 +452,22 @@ class VirtualMachine extends EventEmitter {
             input = JSON.stringify(input);
         }
 
-        const validationPromise = new Promise((resolve, reject) => {
+        const validationPromise = new Promise(async (resolve, reject) => {
+            const arr = new Uint8Array(input);
+            const tag = [...arr.slice(0, 7)]
+                .map(char => String.fromCharCode(char))
+                .join('');
+            console.log(tag);
+            if (tag === 'Scratch') return reject();
+            if (typeof input === 'string') {
+                input.projectVersion = !input.meta ? 2 : 3;
+                return resolve([JSON.parse(input), null]);
+            }
+            const zip = await JSZip.loadAsync(input);
+            const json = JSON.parse(await zip.file('project.json').async('string'));
+            json.projectVersion = !json.meta ? 2 : 3;
+            return resolve([json, zip]);
+            /*
             const validate = require('scratch-parser');
             // The second argument of false below indicates to the validator that the
             // input should be parsed/validated as an entire project (and not a single sprite)
@@ -462,6 +477,7 @@ class VirtualMachine extends EventEmitter {
                 }
                 resolve(res);
             });
+            */
         })
             .catch(error => {
                 const {SB1File, ValidationError} = require('scratch-sb1-converter');
@@ -493,6 +509,7 @@ class VirtualMachine extends EventEmitter {
             .then(validatedInput => this.deserializeProject(validatedInput[0], validatedInput[1]))
             .then(() => this.runtime.emitProjectLoaded())
             .catch(error => {
+                console.error(error);
                 // Intentionally rejecting here (want errors to be handled by caller)
                 if (error.hasOwnProperty('validationError')) {
                     return Promise.reject(JSON.stringify(error, null, 4));
