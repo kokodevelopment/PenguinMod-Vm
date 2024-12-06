@@ -50,6 +50,7 @@ class Extension {
         return {
             id: "jwPsychic",
             name: "Psychic",
+            color1: "#b16bed",
             blocks: [
                 {
                     opcode: 'tick',
