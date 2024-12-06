@@ -453,20 +453,24 @@ class VirtualMachine extends EventEmitter {
         }
 
         const validationPromise = new Promise(async (resolve, reject) => {
-            const arr = new Uint8Array(input);
-            const tag = [...arr.slice(0, 7)]
-                .map(char => String.fromCharCode(char))
-                .join('');
-            console.log(tag);
-            if (tag === 'Scratch') return reject();
-            if (typeof input === 'string') {
-                input.projectVersion = !input.meta ? 2 : 3;
-                return resolve([JSON.parse(input), null]);
+            try {
+                const arr = new Uint8Array(input);
+                const tag = [...arr.slice(0, 7)]
+                    .map(char => String.fromCharCode(char))
+                    .join('');
+                console.log(tag);
+                if (tag === 'Scratch') return reject();
+                if (typeof input === 'string') {
+                    input.projectVersion = !input.meta ? 2 : 3;
+                    return resolve([JSON.parse(input), null]);
+                }
+                const zip = await JSZip.loadAsync(input);
+                const json = JSON.parse(await zip.file('project.json').async('string'));
+                json.projectVersion = !json.meta ? 2 : 3;
+                return resolve([json, zip]);
+            } catch (err) {
+                reject(err.toString());
             }
-            const zip = await JSZip.loadAsync(input);
-            const json = JSON.parse(await zip.file('project.json').async('string'));
-            json.projectVersion = !json.meta ? 2 : 3;
-            return resolve([json, zip]);
             /*
             const validate = require('scratch-parser');
             // The second argument of false below indicates to the validator that the
