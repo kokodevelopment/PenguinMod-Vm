@@ -465,7 +465,9 @@ class VirtualMachine extends EventEmitter {
                     return resolve([JSON.parse(input), null]);
                 }
                 const zip = await JSZip.loadAsync(input);
-                const json = JSON.parse(await zip.file('project.json').async('string'));
+                const proj = await zip.file('project.json');
+                if (!proj) return reject('No project.json file!!!!!!!!!!!');
+                const json = JSON.parse(proj.async('string'));
                 json.projectVersion = !json.meta ? 2 : 3;
                 return resolve([json, zip]);
             } catch (err) {
