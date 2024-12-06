@@ -148,6 +148,15 @@ class Extension {
                     ...jwArray.Block
                 },
                 {
+                    opcode: 'touching',
+                    text: 'targets touching [TARGET]',
+                    arguments: {
+                        TARGET: Target.Argument
+                    },
+                    filter: [TargetType.SPRITE],
+                    ...jwArray.Block
+                },
+                {
                     opcode: 'clones',
                     text: 'clones of [TARGET]',
                     arguments: {
@@ -233,6 +242,13 @@ class Extension {
 
     all() {
         return new jwArray.Type(vm.runtime.targets.map(v => new Target.Type(v.id)))
+    }
+
+    touching({TARGET}) {
+        let targets = vm.runtime.targets
+        targets.filter(v => v !== TARGET && !v.isStage)
+        targets.filter(v => TARGET.isTouchingTarget(v))
+        return new jwArray.Type(targets.map(v => new Target.Type(v.id)))
     }
 
     clones({TARGET}) {
