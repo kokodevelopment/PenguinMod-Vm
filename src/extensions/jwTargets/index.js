@@ -242,9 +242,9 @@ class Extension {
         };
     }
 
-    getSpriteMenu({}, util) {
+    getSpriteMenu({}) {
         let sprites = ["this", "stage"]
-        for (let target of vm.runtime.targets.filter(v => v !== vm.runtime._stageTarget && v !== util.target)) {
+        for (let target of vm.runtime.targets.filter(v => v !== vm.runtime._stageTarget)) {
             if (!sprites.includes(target.sprite.name)) sprites.push(target.sprite.name)
         }
         return sprites
@@ -261,7 +261,7 @@ class Extension {
     fromName({SPRITE}, util) {
         SPRITE = Cast.toString(SPRITE)
         if (SPRITE == "this") return this.this({}, util)
-        if (SPRITE == "stage") return 
+        if (SPRITE == "stage") return this.stage()
         let target = vm.runtime.getSpriteTargetByName(SPRITE)
         return new Target.Type(target ? target.id : "")
     }
