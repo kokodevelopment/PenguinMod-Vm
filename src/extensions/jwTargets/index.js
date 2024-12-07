@@ -141,6 +141,32 @@ class Extension {
                         }
                     }
                 },
+                {
+                    opcode: 'getVar',
+                    text: 'var [NAME] of [TARGET]',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        TARGET: Target.Argument,
+                        NAME: {
+                            type: ArgumentType.STRING
+                        }
+                    }
+                },
+                {
+                    opcode: 'setVar',
+                    text: 'var [NAME] of [TARGET] to [VALUE]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        TARGET: Target.Argument,
+                        NAME: {
+                            type: ArgumentType.STRING
+                        },
+                        VALUE: {
+                            type: ArgumentType.STRING,
+                            exemptFromNormalization: true
+                        }
+                    }
+                },
                 '---',
                 {
                     opcode: 'all',
@@ -238,6 +264,28 @@ class Extension {
         }
 
         return ""
+    }
+
+    getVar({TARGET, NAME}) {
+        TARGET = Target.Type.toTarget(TARGET)
+        NAME = Cast.toString(NAME)
+        if (!TARGET.target) return ""
+
+        let variable = Object.values(TARGET.target.variables).find(v => v.name == NAME)
+        if (!variable) return ""
+
+        return variable.value
+    }
+
+    setVar({TARGET, NAME, VALUE}) {
+        TARGET = Target.Type.toTarget(TARGET)
+        NAME = Cast.toString(NAME)
+        if (!TARGET.target) return
+
+        let variable = Object.values(TARGET.target.variables).find(v => v.name == NAME)
+        if (!variable) return
+
+        variable.value = VALUE
     }
 
     all() {
