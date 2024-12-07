@@ -128,6 +128,14 @@ class Extension {
                     },
                     ...Target.Block
                 },
+                {
+                    opcode: 'cloneOrigin',
+                    text: 'origin of [TARGET]',
+                    arguments: {
+                        TARGET: Target.Argument
+                    },
+                    ...Target.Block
+                },
                 '---',
                 {
                     opcode: 'get',
@@ -139,6 +147,14 @@ class Extension {
                             menu: "targetProperty",
                             defaultValue: "this"
                         }
+                    }
+                },
+                {
+                    opcode: 'isClone',
+                    text: 'is [TARGET] a clone',
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        TARGET: Target.Argument
                     }
                 },
                 {
@@ -154,7 +170,7 @@ class Extension {
                 },
                 {
                     opcode: 'setVar',
-                    text: 'var [NAME] of [TARGET] to [VALUE]',
+                    text: 'set var [NAME] of [TARGET] to [VALUE]',
                     blockType: BlockType.COMMAND,
                     arguments: {
                         TARGET: Target.Argument,
@@ -226,9 +242,9 @@ class Extension {
         };
     }
 
-    getSpriteMenu() {
-        let sprites = ["this"]
-        for (let target of vm.runtime.targets) {
+    getSpriteMenu({}, util) {
+        let sprites = ["this", "stage"]
+        for (let target of vm.runtime.targets.filter(v => v !== vm.runtime._stageTarget && v !== util.target)) {
             if (!sprites.includes(target.sprite.name)) sprites.push(target.sprite.name)
         }
         return sprites
@@ -245,8 +261,16 @@ class Extension {
     fromName({SPRITE}, util) {
         SPRITE = Cast.toString(SPRITE)
         if (SPRITE == "this") return this.this({}, util)
+        if (SPRITE == "stage") return 
         let target = vm.runtime.getSpriteTargetByName(SPRITE)
         return new Target.Type(target ? target.id : "")
+    }
+
+    cloneOrigin({TARGET}, util) {
+        TARGET = Target.Type.toTarget(TARGET)
+        if (!TARGET.target) return ""
+
+        return this.fromName({SPRITE: TARGET.target.sprite.name}, util)
     }
 
     get({TARGET, MENU}) {
@@ -264,6 +288,13 @@ class Extension {
         }
 
         return ""
+    }
+
+    isClone({TARGET}) {
+        TARGET = Target.Type.toTarget(TARGET)
+        if (!TARGET.target) return false
+
+        return !TARGET.target.isOriginal
     }
 
     getVar({TARGET, NAME}) {
