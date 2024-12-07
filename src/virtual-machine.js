@@ -37,6 +37,7 @@ const PM_LIBRARY_API = "https://library.penguinmod.com/";
 const IRGenerator = require('./compiler/irgen');
 const JSGenerator = require('./compiler/jsgen');
 const jsexecute = require('./compiler/jsexecute');
+const { SyntheticModule } = require('vm');
 
 const CORE_EXTENSIONS = [
     // 'motion',
@@ -441,17 +442,6 @@ class VirtualMachine extends EventEmitter {
      * @return {!Promise} Promise that resolves after targets are installed.
      */
     loadProject (input) {
-        if (typeof input === 'object' && !(input instanceof ArrayBuffer) &&
-          !ArrayBuffer.isView(input)) {
-            // If the input is an object and not any ArrayBuffer
-            // or an ArrayBuffer view (this includes all typed arrays and DataViews)
-            // turn the object into a JSON string, because we suspect
-            // this is a project.json as an object
-            // validate expects a string or buffer as input
-            // TODO not sure if we need to check that it also isn't a data view
-            input = JSON.stringify(input);
-        }
-
         return new Promise(async (resolve, reject) => {
             try {
                 const arr = new Uint8Array(input);
@@ -466,9 +456,12 @@ class VirtualMachine extends EventEmitter {
                     return resolve([json, sb1.zip]);
                 }
 
-                if (typeof input === 'string') {
+                if (typeof input === 'string') 
+                    input = JSON.parse(input);
+                // generic objects return [object Object] on stringify
+                if (input.toString() === '[object Object]') {
                     input.projectVersion = !input.meta ? 2 : 3;
-                    return resolve([JSON.parse(input), null]);
+                    return resolve([input, null]);
                 }
                 const zip = await JSZip.loadAsync(input);
                 const proj = zip.file('project.json');
@@ -826,7 +819,7 @@ class VirtualMachine extends EventEmitter {
         const validationPromise = new Promise((resolve, reject) => {
             const validate = require('scratch-parser');
             // The second argument of true below indicates to the parser/validator
-            // that the given input should be treated as a single sprite and not
+            //  the given input should be treated as a single sprite and not
             // an entire project
             validate(input, true, (error, res) => {
                 if (error) return reject(error);
