@@ -456,7 +456,7 @@ class VirtualMachine extends EventEmitter {
                     return resolve([json, sb1.zip]);
                 }
 
-                // if it isnt a zip, maby its the roject.json in ArrayBuffer form
+                // if it isnt a zip, maby its the project.json in ArrayBuffer form
                 if (tag.slice(0, 2) !== 'PK') {
                     const decoder = new TextDecoder('UTF-8');
                     input = decoder.decode(input);
