@@ -20,6 +20,14 @@ function toRad(deg) {
 function toDeg(rad) {
     return rad * (180 / Math.PI);
 }
+function normalize(vec) {
+    const length = Math.sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+    return {
+        x: vec.x / length,
+        y: vec.y / length,
+        z: vec.z / length
+    }
+}
 function toDegRounding(rad) {
     const result = toDeg(rad);
     if (!String(result).includes('.')) return result;
@@ -880,11 +888,11 @@ class Jg3DBlocks {
             y: Cast.toNumber(args.Y),
             z: Cast.toNumber(args.Z),
         };
-        const direction = {
+        const direction = normalize({
             x: Cast.toNumber(toRad(args.DX)),
             y: Cast.toNumber(toRad(args.dy)),
             z: Cast.toNumber(toRad(args.dz)),
-        };
+        });
         ray.set(new Three.Vector3(origin.x, origin.y, origin.z), new Three.Vector3(direction.x, direction.y, direction.z));
         const intersects = ray.intersectObjects(this.scene.children, true);
         if (intersects.length === 0) return '';
@@ -909,11 +917,11 @@ class Jg3DBlocks {
             y: Cast.toNumber(args.Y),
             z: Cast.toNumber(args.Z),
         };
-        const direction = {
+        const direction = normalize({
             x: Cast.toNumber(toRad(args.dx)),
             y: Cast.toNumber(toRad(args.dy)),
             z: Cast.toNumber(toRad(args.dz)),
-        };
+        });
         ray.set(new Three.Vector3(origin.x, origin.y, origin.z), new Three.Vector3(direction.x, direction.y, direction.z));
         const intersects = ray.intersectObjects(this.scene.children, true);
         if (intersects.length === 0) return '[]';
@@ -938,11 +946,11 @@ class Jg3DBlocks {
             Cast.toNumber(args.Y),
             Cast.toNumber(args.Z),
         );
-        const direction = new Three.Vector3(
+        const direction = normalize(new Three.Vector3(
             Cast.toNumber(toRad(args.dx)),
             Cast.toNumber(toRad(args.dy)),
             Cast.toNumber(toRad(args.dz)),
-        );
+        ));
         const ray = new Three.Raycaster(origin, direction, 0, args.DIS);
         const intersects = ray.intersectObjects(this.scene.children, true);
         if (intersects.length === 0) return '';
@@ -956,11 +964,11 @@ class Jg3DBlocks {
             Cast.toNumber(args.Y),
             Cast.toNumber(args.Z),
         );
-        const direction = new Three.Vector3(
+        const direction = normalize(new Three.Vector3(
             Cast.toNumber(toRad(args.dx)),
             Cast.toNumber(toRad(args.dy)),
             Cast.toNumber(toRad(args.dz)),
-        );
+        ));
         const ray = new Three.Raycaster(origin, direction, 0, args.DIS);
         const intersects = ray.intersectObjects(this.scene.children, true);
         if (intersects.length === 0) return '[]';
