@@ -3,7 +3,7 @@ const BlockShape = require('../../extension-support/block-shape')
 const ArgumentType = require('../../extension-support/argument-type')
 const Cast = require('../../util/cast')
 
-let arrayLimit = 2 ** 32 - 1
+let arrayLimit = 2 ** 32
 
 /**
 * @param {number} x
@@ -16,6 +16,10 @@ function formatNumber(x) {
        x = Math.floor(x * 1000) / 1000
        return x.toFixed(Math.min(3, (String(x).split('.')[1] || '').length))
    }
+}
+
+function clampIndex(x) {
+    return Math.min(Math.max(x, 1), arrayLimit)
 }
 
 function span(text) {
@@ -37,14 +41,22 @@ class ArrayType {
         this.array = array
     }
 
+    static toArray(x) {
+        if (x instanceof ArrayType) return x
+        if (x instanceof Array) return new ArrayType(x)
+        if (x === "" || x === null || x === undefined) return new ArrayType()
+        return new ArrayType([x])
+    }
+
     static display(x) {
         try {
             switch (typeof x) {
                 case "object":
+                    if (x === null) return "null"
                     if (typeof x.jwArrayHandler == "function") {
                         return x.jwArrayHandler()
                     }
-                    return "Object"
+                    return Cast.toString(x)
                 case "undefined":
                     return "null"
                 case "number":
@@ -84,6 +96,10 @@ class ArrayType {
 
         return root
     }
+
+    get length() {
+        return this.array.length
+    }
 }
 
 const jwArray = {
@@ -103,6 +119,39 @@ const jwArray = {
 class Extension {
     constructor() {
         vm.jwArray = jwArray
+        vm.runtime.registerSerializer( //this basically copies variable serialization
+            "jwArray",
+            v => v.array.map(w => {
+                if (typeof w == "object" && w != null && w.customId) {
+                    return {
+                        customType: true,
+                        typeId: w.customId,
+                        serialized: vm.runtime.serializers[w.customId].serialize(w)
+                    };
+                }
+                return w
+            }), 
+            v => new jwArray.Type(v.map(w => {
+                if (typeof w == "object" && w != null && w.customType) {
+                    return vm.runtime.serializers[w.typeId].deserialize(w.serialized)
+                }
+                return w
+            }))
+        );
+
+        //patch square shape
+        if (ScratchBlocks !== undefined) {
+            ScratchBlocks.BlockSvg.INPUT_SHAPE_SQUARE =
+                ScratchBlocks.BlockSvg.TOP_LEFT_CORNER_START +
+                ScratchBlocks.BlockSvg.TOP_LEFT_CORNER +
+                ' h ' + (4 * ScratchBlocks.BlockSvg.GRID_UNIT - 2 * ScratchBlocks.BlockSvg.CORNER_RADIUS) +
+                ScratchBlocks.BlockSvg.TOP_RIGHT_CORNER +
+                ' v ' + (8 * ScratchBlocks.BlockSvg.GRID_UNIT - 2 * ScratchBlocks.BlockSvg.CORNER_RADIUS) +
+                ScratchBlocks.BlockSvg.BOTTOM_RIGHT_CORNER +
+                ' h ' + (-4 * ScratchBlocks.BlockSvg.GRID_UNIT + 2 * ScratchBlocks.BlockSvg.CORNER_RADIUS) +
+                ScratchBlocks.BlockSvg.BOTTOM_LEFT_CORNER +
+                ' z';
+        }
     }
 
     getInfo() {
@@ -127,10 +176,21 @@ class Extension {
                     },
                     ...jwArray.Block
                 },
+                {
+                    opcode: 'fromList',
+                    text: 'array from list [LIST]',
+                    arguments: {
+                        LIST: {
+                            menu: "list"
+                        }
+                    },
+                    hideFromPalette: true, //doesn't work for some reason
+                    ...jwArray.Block
+                },
                 "---",
                 {
                     opcode: 'get',
-                    text: 'get [ARRAY] at [INDEX]',
+                    text: 'get [INDEX] in [ARRAY]',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         ARRAY: jwArray.Argument,
@@ -140,10 +200,30 @@ class Extension {
                         }
                     }
                 },
+                {
+                    opcode: 'has',
+                    text: '[ARRAY] has [VALUE]',
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        ARRAY: jwArray.Argument,
+                        VALUE: {
+                            type: ArgumentType.STRING,
+                            exemptFromNormalization: true
+                        }
+                    }
+                },
+                {
+                    opcode: 'length',
+                    text: 'length of [ARRAY]',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        ARRAY: jwArray.Argument
+                    }
+                },
                 "---",
                 {
                     opcode: 'set',
-                    text: 'set [ARRAY] at [INDEX] to [VALUE]',
+                    text: 'set [INDEX] in [ARRAY] to [VALUE]',
                     arguments: {
                         ARRAY: jwArray.Argument,
                         INDEX: {
@@ -152,13 +232,43 @@ class Extension {
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
-                            defaultValue: "foo"
+                            defaultValue: "foo",
+                            exemptFromNormalization: true
+                        }
+                    },
+                    ...jwArray.Block
+                },
+                {
+                    opcode: 'append',
+                    text: 'append [VALUE] to [ARRAY]',
+                    arguments: {
+                        ARRAY: jwArray.Argument,
+                        VALUE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "foo",
+                            exemptFromNormalization: true
                         }
                     },
                     ...jwArray.Block
                 }
-            ]
+            ],
+            menus: {
+                list: {
+                    acceptReporters: false,
+                    items: "getLists",
+                },
+            }
         };
+    }
+    
+    getLists() {
+        const globalLists = Object.values(vm.runtime.getTargetForStage().variables)
+            .filter((x) => x.type == "list");
+        const localLists = Object.values(vm.editingTarget.variables)
+            .filter((x) => x.type == "list");
+        const uniqueLists = [...new Set([...globalLists, ...localLists])];
+        if (uniqueLists.length === 0) return [{ text: "", value: "" }];
+        return uniqueLists.map((v) => ({ text: v.name, value: new jwArray.Type(v.value) }));
     }
 
     blank() {
@@ -166,18 +276,44 @@ class Extension {
     }
 
     blankLength({LENGTH}) {
-        LENGTH = Cast.toNumber(LENGTH)
-        LENGTH = Math.min(Math.max(LENGTH, 1), arrayLimit)
+        LENGTH = clampIndex(Cast.toNumber(LENGTH))
 
-        return new jwArray.Type(Array(LENGTH))
+        return new jwArray.Type(Array(LENGTH).fill(undefined))
+    }
+
+    fromList({LIST}) {
+        return jwArray.Type.toArray(LIST)
     }
 
     get({ARRAY, INDEX}) {
-        return ARRAY.array[Cast.toNumber(INDEX)]
+        ARRAY = jwArray.Type.toArray(ARRAY)
+
+        return ARRAY.array[Cast.toNumber(INDEX)-1] || ""
+    }
+
+    has({ARRAY, VALUE}) {
+        ARRAY = jwArray.Type.toArray(ARRAY)
+
+        return ARRAY.array.includes(VALUE)
+    }
+
+    length({ARRAY}) {
+        ARRAY = jwArray.Type.toArray(ARRAY)
+
+        return ARRAY.length
     }
 
     set({ARRAY, INDEX, VALUE}) {
-        ARRAY.array[Cast.toNumber(INDEX)] = VALUE
+        ARRAY = jwArray.Type.toArray(ARRAY)
+
+        ARRAY.array[clampIndex(Cast.toNumber(INDEX))-1] = VALUE
+        return ARRAY
+    }
+
+    append({ARRAY, VALUE}) {
+        ARRAY = jwArray.Type.toArray(ARRAY)
+
+        ARRAY.array.push(VALUE)
         return ARRAY
     }
 }

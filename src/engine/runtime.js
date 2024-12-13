@@ -1692,7 +1692,7 @@ class Runtime extends EventEmitter {
                 blockJSON.checkboxInFlyout = true;
             }
         }
-        if (blockInfo.blockType === BlockType.LOOP || ('branchIndicator' in blockInfo || 'branchIconURI' in blockInfo)) {
+        if (blockInfo.blockType === BlockType.LOOP && ('branchIndicator' in blockInfo || 'branchIconURI' in blockInfo)) {
             // Add icon to the bottom right of a loop block
             blockJSON[`lastDummyAlign${outLineNum}`] = 'RIGHT';
             blockJSON[`message${outLineNum}`] = '%1';

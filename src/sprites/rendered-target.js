@@ -922,7 +922,7 @@ class RenderedTarget extends Target {
     /**
      * Return whether touching any of a named sprite's clones.
      * @param {string} spriteName Name of the sprite.
-     * @return {boolean} True iff touching a clone of the sprite.
+     * @return {boolean} True if touching a clone of the sprite.
      */
     isTouchingSprite (spriteName) {
         spriteName = Cast.toString(spriteName);
@@ -938,6 +938,22 @@ class RenderedTarget extends Target {
         return this.renderer.isTouchingDrawables(
             this.drawableID, drawableCandidates);
     }
+
+    /**
+     * Return whether touching a target.
+     * @param {string} targetId ID of the target
+     * @return {boolean} True if touching the target
+     */
+    isTouchingTarget (targetId) {
+        targetId = Cast.toString(targetId);
+        const target = this.runtime.getSpriteTargetByName(targetId);
+        if (!target || !this.renderer || target.dragging) {
+            return false;
+        }
+        return this.renderer.isTouchingDrawables(
+            this.drawableID, [target.drawableID]);
+    }
+
     /**
      * Return whether touching any of a named sprite's unoriginal clones.
      * @param {string} spriteName Name of the sprite.
@@ -1139,6 +1155,7 @@ class RenderedTarget extends Target {
         newClone.draggable = this.draggable;
         newClone.visible = this.visible;
         newClone.size = this.size;
+        newClone.stretch = this.stretch;
         newClone.currentCostume = this.currentCostume;
         newClone.rotationStyle = this.rotationStyle;
         newClone.effects = Clone.simple(this.effects);

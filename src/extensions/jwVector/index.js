@@ -36,6 +36,7 @@ class VectorType {
 
     static toVector(x) {
         if (x instanceof VectorType) return x
+        if (x instanceof Array && x.length == 2) return new VectorType(x[0], x[1])
         if (String(x).split(',')) return new VectorType(Cast.toNumber(String(x).split(',')[0]), Cast.toNumber(String(x).split(',')[1]))
         return new VectorType(0, 0)
     }
@@ -108,6 +109,11 @@ const Vector = {
 class Extension {
     constructor() {
         vm.jwVector = Vector
+        vm.runtime.registerSerializer(
+            "jwVector", 
+            v => [v.x, v.y], 
+            v => new Vector.Type(v[0], v[1])
+        );
     }
 
     getInfo() {

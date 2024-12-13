@@ -37,6 +37,7 @@ const PM_LIBRARY_API = "https://library.penguinmod.com/";
 const IRGenerator = require('./compiler/irgen');
 const JSGenerator = require('./compiler/jsgen');
 const jsexecute = require('./compiler/jsexecute');
+const { SyntheticModule } = require('vm');
 
 const CORE_EXTENSIONS = [
     // 'motion',
@@ -441,58 +442,46 @@ class VirtualMachine extends EventEmitter {
      * @return {!Promise} Promise that resolves after targets are installed.
      */
     loadProject (input) {
-        if (typeof input === 'object' && !(input instanceof ArrayBuffer) &&
-          !ArrayBuffer.isView(input)) {
-            // If the input is an object and not any ArrayBuffer
-            // or an ArrayBuffer view (this includes all typed arrays and DataViews)
-            // turn the object into a JSON string, because we suspect
-            // this is a project.json as an object
-            // validate expects a string or buffer as input
-            // TODO not sure if we need to check that it also isn't a data view
-            input = JSON.stringify(input);
-        }
-
-        const validationPromise = new Promise((resolve, reject) => {
-            const validate = require('scratch-parser');
-            // The second argument of false below indicates to the validator that the
-            // input should be parsed/validated as an entire project (and not a single sprite)
-            validate(input, false, (error, res) => {
-                if (error) {
-                    return reject(error);
-                }
-                resolve(res);
-            });
-        })
-            .catch(error => {
-                const {SB1File, ValidationError} = require('scratch-sb1-converter');
-
-                try {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const arr = new Uint8Array(input);
+                const tag = [...arr.slice(0, 7)]
+                    .map(char => String.fromCharCode(char))
+                    .join('');
+                if (tag === 'Scratch') {
+                    const { SB1File } = require('scratch-sb1-converter');
                     const sb1 = new SB1File(input);
                     const json = sb1.json;
                     json.projectVersion = 2;
-                    return Promise.resolve([json, sb1.zip]);
-                } catch (sb1Error) {
-                    if (
-                        sb1Error instanceof ValidationError ||
-                        `${sb1Error}`.includes('Non-ascii character in FixedAsciiString')
-                    ) {
-                        // The input does not validate as a Scratch 1 file.
-                    } else {
-                        // The project appears to be a Scratch 1 file but it
-                        // could not be successfully translated into a Scratch 2
-                        // project.
-                        return Promise.reject(sb1Error);
-                    }
+                    return resolve([json, sb1.zip]);
                 }
-                // Throw original error since the input does not appear to be
-                // an SB1File.
-                return Promise.reject(error);
-            });
 
-        return validationPromise
+                // if it isnt a zip, maby its the project.json in ArrayBuffer form
+                if (tag.slice(0, 2) !== 'PK') {
+                    const decoder = new TextDecoder('UTF-8');
+                    input = decoder.decode(input);
+                }
+                if (typeof input === 'string') 
+                    input = JSON.parse(input);
+                // generic objects return [object Object] on stringify
+                if (input.toString() === '[object Object]') {
+                    input.projectVersion = !input.meta ? 2 : 3;
+                    return resolve([input, null]);
+                }
+                const zip = await JSZip.loadAsync(input);
+                const proj = zip.file('project.json');
+                if (!proj) return reject('No project.json file inside the given project');
+                const json = JSON.parse(await proj.async('string'));
+                json.projectVersion = !json.meta ? 2 : 3;
+                return resolve([json, zip]);
+            } catch (err) {
+                reject(err.toString());
+            }
+        })
             .then(validatedInput => this.deserializeProject(validatedInput[0], validatedInput[1]))
             .then(() => this.runtime.emitProjectLoaded())
             .catch(error => {
+                console.error(error);
                 // Intentionally rejecting here (want errors to be handled by caller)
                 if (error.hasOwnProperty('validationError')) {
                     return Promise.reject(JSON.stringify(error, null, 4));
@@ -835,7 +824,7 @@ class VirtualMachine extends EventEmitter {
         const validationPromise = new Promise((resolve, reject) => {
             const validate = require('scratch-parser');
             // The second argument of true below indicates to the parser/validator
-            // that the given input should be treated as a single sprite and not
+            //  the given input should be treated as a single sprite and not
             // an entire project
             validate(input, true, (error, res) => {
                 if (error) return reject(error);

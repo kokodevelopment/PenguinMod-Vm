@@ -12,13 +12,31 @@ let Vector = {
     Argument: {}
 }
 
+let jwArray = {
+    Type: class {},
+    Block: {},
+    Argument: {}
+}
+
+let Target = {
+    Type: class {},
+    Block: {},
+    Argument: {}
+}
+
 class Extension {
     constructor() {
         if (!vm.jwVector) vm.extensionManager.loadExtensionIdSync('jwVector')
         Vector = vm.jwVector
 
+        if (!vm.jwArray) vm.extensionManager.loadExtensionIdSync('jwArray')
+        jwArray = vm.jwArray
+
+        if (!vm.jwTargets) vm.extensionManager.loadExtensionIdSync('jwTargets')
+        Target = vm.jwTargets
+
         this.engine = Matter.Engine.create()
-        /** @type {Array.<Matter.Body>} */
+        /** @type {Object<string, Matter.Body>} */
         this.bodies = {}
         /** @type {Matter.Composite?} */
         this.bounds = null
@@ -32,6 +50,8 @@ class Extension {
         return {
             id: "jwPsychic",
             name: "Psychic",
+            color1: "#b16bed",
+            menuIconURI: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM6Yng9Imh0dHBzOi8vYm94eS1zdmcuY29tIiB3aWR0aD0iMjBweCIgaGVpZ2h0PSIyMHB4Ij48ZGVmcz48Yng6ZXhwb3J0PjxieDpmaWxlIGZvcm1hdD0ic3ZnIi8+PC9ieDpleHBvcnQ+PC9kZWZzPjxlbGxpcHNlIHN0eWxlPSJzdHJva2Utd2lkdGg6IDJweDsgcGFpbnQtb3JkZXI6IHN0cm9rZTsgZmlsbDogcmdiKDE3NywgMTA3LCAyMzcpOyBzdHJva2U6IHJnYigxNTksIDk2LCAyMTMpOyIgY3g9IjEwIiBjeT0iMTAiIHJ4PSI5IiByeT0iOSIvPjxyZWN0IHg9IjQuNjM0IiB5PSIxMC4yMjgiIHdpZHRoPSI0Ljc3IiBoZWlnaHQ9IjQuNzciIHN0eWxlPSJmaWxsOiByZ2IoMjU1LCAyNTUsIDI1NSk7Ii8+PHJlY3QgeD0iMTAuNTk2IiB5PSIxMC4yMjgiIHdpZHRoPSI0Ljc3IiBoZWlnaHQ9IjQuNzciIHN0eWxlPSJmaWxsOiByZ2IoMjU1LCAyNTUsIDI1NSk7Ii8+PHJlY3QgeD0iNy42MTUiIHdpZHRoPSI0Ljc3IiBoZWlnaHQ9IjQuNzciIHN0eWxlPSJmaWxsOiByZ2IoMjU1LCAyNTUsIDI1NSk7IiB5PSI0LjI2NyIvPjwvc3ZnPg==",
             blocks: [
                 {
                     opcode: 'tick',
@@ -148,6 +168,116 @@ class Extension {
                     text: 'angular velocity',
                     blockType: BlockType.REPORTER,
                     filter: [TargetType.SPRITE]
+                },
+                "---",
+                {
+                    opcode: 'getMass',
+                    text: 'mass',
+                    blockType: BlockType.REPORTER,
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'setDensity',
+                    text: 'set density to [NUMBER]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NUMBER: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0.001
+                        }
+                    },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getDensity',
+                    text: 'density',
+                    blockType: BlockType.REPORTER,
+                    filter: [TargetType.SPRITE]
+                },
+                "---",
+                {
+                    opcode: 'setStatic',
+                    text: 'set fixed to [BOOLEAN]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        BOOLEAN: {
+                            type: ArgumentType.BOOLEAN
+                        }
+                    },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getStatic',
+                    text: 'fixed',
+                    blockType: BlockType.BOOLEAN,
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'setRotatable',
+                    text: 'set rotatable to [BOOLEAN]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        BOOLEAN: {
+                            type: ArgumentType.BOOLEAN
+                        }
+                    },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getRotatable',
+                    text: 'rotatable',
+                    blockType: BlockType.BOOLEAN,
+                    filter: [TargetType.SPRITE]
+                },
+                "---",
+                {
+                    opcode: 'setFric',
+                    text: 'set friction to [NUMBER]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NUMBER: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0.1
+                        }
+                    },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getFric',
+                    text: 'friction',
+                    blockType: BlockType.REPORTER,
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'setAirFric',
+                    text: 'set air resistance to [NUMBER]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NUMBER: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0.01
+                        }
+                    },
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getAirFric',
+                    text: 'air resistance',
+                    blockType: BlockType.REPORTER,
+                    filter: [TargetType.SPRITE]
+                },
+                "---",
+                {
+                    opcode: 'getCollides',
+                    text: 'targets colliding with [OPTION]',
+                    arguments: {
+                        OPTION: {
+                            type: ArgumentType.STRING,
+                            menu: 'touchingOption'
+                        }
+                    },
+                    filter: [TargetType.SPRITE],
+                    ...jwArray.Block
                 }
             ],
             menus: {
@@ -160,6 +290,11 @@ class Extension {
                     'all',
                     'floor',
                     'none'
+                ],
+                touchingOption: [
+                    'body',
+                    'feet',
+                    'head'
                 ]
             }
         };
@@ -264,13 +399,15 @@ class Extension {
 
     enablePhysics({OPTION}, util) {
         let target = util.target
+        let costume = target.getCostumes()[target.currentCostume]
         let size = {
-            x: target.getCostumes()[target.currentCostume].size[0] * (target.size / 100) * (target.stretch[0] / 100),
-            y: target.getCostumes()[target.currentCostume].size[1] * (target.size / 100) * (target.stretch[1] / 100)
+            x: costume.size[0] * (target.size / 100) * (target.stretch[0] / 100) / costume.bitmapResolution,
+            y: costume.size[1] * (target.size / 100) * (target.stretch[1] / 100) / costume.bitmapResolution
         }
 
         console.debug(size)
 
+        /** @type {Matter.Body?} */
         let body = null
         switch (OPTION) {
             case 'precise':
@@ -286,7 +423,7 @@ class Extension {
                 throw "Invalid physics option"
         }
 
-        console.debug(body.bounds)
+        body.label = target.id
 
         this.bodies[target.id] = body
         Matter.Composite.add(this.engine.world, body)
@@ -347,6 +484,111 @@ class Extension {
         let body = this.bodies[util.target.id]
         if (!body) return 0
         return body.angularVelocity
+    }
+
+    getMass({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return 0
+        return body.mass
+    }
+
+    getDensity({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return 0.001
+        return body.density
+    }
+
+    setDensity({NUMBER}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        Matter.Body.setDensity(Cast.toNumber(NUMBER))
+    }
+
+    getStatic({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return false
+        return body.isStatic
+    }
+
+    setStatic({BOOLEAN}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        body.isStatic = BOOLEAN
+    }
+
+    getRotatable({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return true
+        return body.inertia !== Infinity
+    }
+
+    setRotatable({BOOLEAN}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        if (BOOLEAN) {
+            Matter.Body.setVertices(body, body.vertices)
+        } else {
+            Matter.Body.setInertia(body, Infinity)
+        }
+    }
+
+    setFric({NUMBER}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        body.friction = Cast.toNumber(NUMBER)
+    }
+
+    getFric({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return 0.1
+        return body.friction
+    }
+
+    setAirFric({NUMBER}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return
+        body.frictionAir = Cast.toNumber(NUMBER)
+    }
+
+    getAirFric({}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return 0.01
+        return body.frictionAir
+    }
+
+    getCollides({OPTION}, util) {
+        let body = this.bodies[util.target.id]
+        if (!body) return new jwArray.Type()
+
+        let collisions = Matter.Query.collides(body, Object.values(this.bodies).filter(v => v.label !== util.target.id))
+
+        if (OPTION !== 'body') {
+            collisions = collisions.filter(v => v.supports[0].x > body.bounds.min.x+1 && v.supports[0].x < body.bounds.max.x-1)
+            console.debug(collisions)
+            switch (OPTION) {
+                case 'feet':
+                    collisions = collisions.filter(v => {
+                        for (let support of v.supports) {
+                            if (support == null) continue
+                            if (support.y > body.bounds.max.y-4) return true
+                        }
+                    })
+                    break
+                case 'head':
+                    collisions = collisions.filter(v => {
+                        for (let support of v.supports) {
+                            if (support == null) continue
+                            if (support.y < body.bounds.min.y+4) return true
+                        }
+                    })
+                    break
+            }
+            console.debug(collisions)
+        }
+
+        let bodies = collisions.map(v => body == v.bodyA ? v.bodyB : v.bodyA)
+        bodies.filter(v => v.label !== util.target.id)
+        return new jwArray.Type(bodies.map(v => new Target.Type(v.label)))
     }
 }
 
