@@ -22,11 +22,7 @@ function toDeg(rad) {
 }
 function normalize(vec) {
     const length = Math.sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-    return {
-        x: vec.x / length,
-        y: vec.y / length,
-        z: vec.z / length
-    }
+    return new Three.Vector3(vec.x / length, vec.y / length, vec.z / length);
 }
 function toDegRounding(rad) {
     const result = toDeg(rad);
@@ -537,6 +533,7 @@ class Jg3DBlocks {
                                 this.savedMeshes[url] = object;
                             }
                             object.name = name;
+                            console.log(object);
                             this.existingSceneObjects.push(name);
                             object.isPenguinMod = true;
                             object.isMeshObj = true;
@@ -872,11 +869,10 @@ class Jg3DBlocks {
     }
 
     raycastResultToReadable(result) {
-        const newResult = Clone.simple(result);
-        for (const result of newResult) {
-            // for each collision
-            result.object = result.object.object.name;
-        }
+        const newResult = Clone.simple(result).map((intersection) => {
+            console.log(intersection.object.object.name);
+            return intersection.object.object.name;
+        })
         return newResult;
     }
 
@@ -889,9 +885,9 @@ class Jg3DBlocks {
             z: Cast.toNumber(args.Z),
         };
         const direction = normalize({
-            x: Cast.toNumber(toRad(args.DX)),
-            y: Cast.toNumber(toRad(args.dy)),
-            z: Cast.toNumber(toRad(args.dz)),
+            x: toRad(Cast.toNumber(args.DX)),
+            y: toRad(Cast.toNumber(args.DY)),
+            z: toRad(Cast.toNumber(args.DZ)),
         });
         ray.set(new Three.Vector3(origin.x, origin.y, origin.z), new Three.Vector3(direction.x, direction.y, direction.z));
         const intersects = ray.intersectObjects(this.scene.children, true);
@@ -918,9 +914,9 @@ class Jg3DBlocks {
             z: Cast.toNumber(args.Z),
         };
         const direction = normalize({
-            x: Cast.toNumber(toRad(args.dx)),
-            y: Cast.toNumber(toRad(args.dy)),
-            z: Cast.toNumber(toRad(args.dz)),
+            x: toRad(Cast.toNumber(args.DX)),
+            y: toRad(Cast.toNumber(args.DY)),
+            z: toRad(Cast.toNumber(args.DZ)),
         });
         ray.set(new Three.Vector3(origin.x, origin.y, origin.z), new Three.Vector3(direction.x, direction.y, direction.z));
         const intersects = ray.intersectObjects(this.scene.children, true);
@@ -947,9 +943,9 @@ class Jg3DBlocks {
             Cast.toNumber(args.Z),
         );
         const direction = normalize(new Three.Vector3(
-            Cast.toNumber(toRad(args.dx)),
-            Cast.toNumber(toRad(args.dy)),
-            Cast.toNumber(toRad(args.dz)),
+            toRad(Cast.toNumber(args.DX)),
+            toRad(Cast.toNumber(args.DY)),
+            toRad(Cast.toNumber(args.DZ)),
         ));
         const ray = new Three.Raycaster(origin, direction, 0, args.DIS);
         const intersects = ray.intersectObjects(this.scene.children, true);
@@ -965,15 +961,23 @@ class Jg3DBlocks {
             Cast.toNumber(args.Z),
         );
         const direction = normalize(new Three.Vector3(
-            Cast.toNumber(toRad(args.dx)),
-            Cast.toNumber(toRad(args.dy)),
-            Cast.toNumber(toRad(args.dz)),
+            toRad(Cast.toNumber(args.DX)),
+            toRad(Cast.toNumber(args.DY)),
+            toRad(Cast.toNumber(args.DZ)),
         ));
         const ray = new Three.Raycaster(origin, direction, 0, args.DIS);
         const intersects = ray.intersectObjects(this.scene.children, true);
         if (intersects.length === 0) return '[]';
         const result = this.raycastResultToReadable(intersects);
         return JSON.stringify(result);
+    }
+    getObjectParent(args) {
+        if (!this.scene) return '';
+        const name = Cast.toString(args.NAME);
+        const object = this.scene.getObjectByName(name);
+        if (!object) return '';
+        if (!object.parent) return '';
+        return object.parent.name;
     }
 }
 
