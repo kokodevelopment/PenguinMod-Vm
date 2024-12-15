@@ -465,14 +465,14 @@ class VirtualMachine extends EventEmitter {
                     input = JSON.parse(input);
                 // generic objects return [object Object] on stringify
                 if (input.toString() === '[object Object]') {
-                    input.projectVersion = !input.meta ? 2 : 3;
+                    input.projectVersion = input.info ? 2 : 3;
                     return resolve([input, null]);
                 }
                 const zip = await JSZip.loadAsync(input);
                 const proj = zip.file('project.json');
                 if (!proj) return reject('No project.json file inside the given project');
                 const json = JSON.parse(await proj.async('string'));
-                json.projectVersion = !json.meta ? 2 : 3;
+                json.projectVersion = json.info ? 2 : 3;
                 return resolve([json, zip]);
             } catch (err) {
                 reject(err.toString());
@@ -678,7 +678,7 @@ class VirtualMachine extends EventEmitter {
      * @param {?JSZip} zip Optional zipped project containing assets to be loaded.
      * @returns {Promise} Promise that resolves after the project has loaded
      */
-    deserializeProject (projectJSON, zip) {
+    deserializeProject (projectJSON, zip) 
         // Clear the current runtime
         this.clear();
 
