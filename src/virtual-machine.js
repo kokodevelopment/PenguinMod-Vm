@@ -436,6 +436,9 @@ class VirtualMachine extends EventEmitter {
         return this.runtime.getPeripheralIsConnected(extensionId);
     }
 
+    isSB2(json) {
+        return Array.isArray(json.children) && !Array.isArray(json.targets);
+    }
     /**
      * Load a Scratch project from a .sb, .sb2, .sb3 or json string.
      * @param {string | object} input A json string, object, or ArrayBuffer representing the project to load.
@@ -465,14 +468,15 @@ class VirtualMachine extends EventEmitter {
                     input = JSON.parse(input);
                 // generic objects return [object Object] on stringify
                 if (input.toString() === '[object Object]') {
-                    input.projectVersion = input.info ? 2 : 3;
+                    input.projectVersion = this.isSB2(input) ? 2 : 3;
                     return resolve([input, null]);
                 }
                 const zip = await JSZip.loadAsync(input);
                 const proj = zip.file('project.json');
                 if (!proj) return reject('No project.json file inside the given project');
                 const json = JSON.parse(await proj.async('string'));
-                json.projectVersion = json.info ? 2 : 3;
+                delete json.meta;
+                json.projectVersion = this.isSB2(json) ? 2 : 3;
                 return resolve([json, zip]);
             } catch (err) {
                 reject(err.toString());
