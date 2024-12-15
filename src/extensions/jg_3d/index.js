@@ -921,8 +921,8 @@ class Jg3DBlocks {
         ray.set(new Three.Vector3(origin.x, origin.y, origin.z), new Three.Vector3(direction.x, direction.y, direction.z));
         const intersects = ray.intersectObjects(this.scene.children, true);
         if (intersects.length === 0) return '[]';
-        const result = this.raycastResultToReadable(intersects);
-        return JSON.stringify(result);
+        //const result = this.raycastResultToReadable(intersects);
+        return JSON.stringify(intersects);
     }
     rayCollisionCameraArray() {
         if (!this.scene) return '[]';
@@ -931,8 +931,8 @@ class Jg3DBlocks {
         ray.setFromCamera(new Three.Vector2(), this.camera);
         const intersects = ray.intersectObjects(this.scene.children, true);
         if (intersects.length === 0) return '[]';
-        const result = this.raycastResultToReadable(intersects);
-        return JSON.stringify(result);
+        //const result = this.raycastResultToReadable(intersects);
+        return JSON.stringify(intersects);
     }
 
     rayCollisionDistance(args) {
