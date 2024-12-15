@@ -678,7 +678,7 @@ class VirtualMachine extends EventEmitter {
      * @param {?JSZip} zip Optional zipped project containing assets to be loaded.
      * @returns {Promise} Promise that resolves after the project has loaded
      */
-    deserializeProject (projectJSON, zip) 
+    deserializeProject (projectJSON, zip) {
         // Clear the current runtime
         this.clear();
 
