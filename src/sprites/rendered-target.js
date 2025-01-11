@@ -946,7 +946,7 @@ class RenderedTarget extends Target {
      */
     isTouchingTarget (targetId) {
         targetId = Cast.toString(targetId);
-        const target = this.runtime.getSpriteTargetByName(targetId);
+        const target = this.runtime.getTargetById(targetId);
         if (!target || !this.renderer || target.dragging) {
             return false;
         }
