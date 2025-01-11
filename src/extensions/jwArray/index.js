@@ -381,7 +381,7 @@ class Extension {
             if (index > entry.length - 1) return;
             util.thread.stackFrames[0].jwArray = entry[index];
         } else {
-            const parse = this.tryParse(args.OBJ);
+            const parse = this.tryParse(ARRAY);
             const entry = Object.entries(parse);
             if (entry.length === 0) return;
             util.stackFrame.entry = entry;
