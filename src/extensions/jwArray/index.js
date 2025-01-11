@@ -5,6 +5,8 @@ const Cast = require('../../util/cast')
 
 let arrayLimit = 2 ** 32
 
+// credit to sharpool because i stole the for each code from his extension haha im soo evil
+
 /**
 * @param {number} x
 * @returns {string}
@@ -139,7 +141,7 @@ class Extension {
             }))
         );
 
-        const regenReporters = ["jwArray_forEachI", "jwArray_forEachv"];
+        const regenReporters = ["jwArray_forEachI", "jwArray_forEachV"];
         if (ScratchBlocks !== undefined) {
             ScratchBlocks.BlockSvg.INPUT_SHAPE_SQUARE =
                 ScratchBlocks.BlockSvg.TOP_LEFT_CORNER_START +
@@ -152,7 +154,6 @@ class Extension {
                 ScratchBlocks.BlockSvg.BOTTOM_LEFT_CORNER +
                 ' z';
             
-            //stolen from sharkpool OOps!
             const ogCheck = ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter;
             ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
                 const result = ogCheck(block);
@@ -359,6 +360,36 @@ class Extension {
 
         ARRAY.array.push(VALUE)
         return ARRAY
+    }
+
+    forEachI({}, util) {
+        let arr = util.thread.stackFrames[0].jwArray
+        return arr ? Cast.toNumber(arr[0]) + 1 : 0
+    }
+
+    forEachV({}, util) {
+        let arr = util.thread.stackFrames[0].jwArray
+        return arr ? arr[1] : ""
+    }
+
+    forEach({ARRAY}, util) {
+        ARRAY = jwArray.Type.toArray(ARRAY)
+
+        if (util.stackFrame.execute) {
+            util.stackFrame.index++;
+            const { index, entry } = util.stackFrame;
+            if (index > entry.length - 1) return;
+            util.thread.stackFrames[0].jwArray = entry[index];
+        } else {
+            const parse = this.tryParse(args.OBJ);
+            const entry = Object.entries(parse);
+            if (entry.length === 0) return;
+            util.stackFrame.entry = entry;
+            util.stackFrame.execute = true;
+            util.stackFrame.index = 0;
+            util.thread.stackFrames[0].jwArray = entry[0];
+        }
+        util.startBranch(1, true);
     }
 }
 
