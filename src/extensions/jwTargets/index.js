@@ -324,9 +324,12 @@ class Extension {
     }
 
     touching({TARGET}) {
+        TARGET = Target.Type.toTarget(TARGET)
+        if (!TARGET.target) return new jwArray.Type
+
         let targets = vm.runtime.targets
         targets.filter(v => v !== TARGET && !v.isStage)
-        targets.filter(v => TARGET.isTouchingTarget(v))
+        targets.filter(v => TARGET.target.isTouchingTarget(v))
         return new jwArray.Type(targets.map(v => new Target.Type(v.id)))
     }
 
