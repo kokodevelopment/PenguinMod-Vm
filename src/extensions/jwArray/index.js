@@ -142,7 +142,7 @@ class Extension {
         );
 
         const regenReporters = ["jwArray_forEachI", "jwArray_forEachV"];
-        if (ScratchBlocks !== undefined) {
+        if (window.ScratchBlocks !== undefined) {
             ScratchBlocks.BlockSvg.INPUT_SHAPE_SQUARE =
                 ScratchBlocks.BlockSvg.TOP_LEFT_CORNER_START +
                 ScratchBlocks.BlockSvg.TOP_LEFT_CORNER +
