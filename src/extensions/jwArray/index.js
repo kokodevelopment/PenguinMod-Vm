@@ -378,12 +378,10 @@ class Extension {
         if (util.stackFrame.execute) {
             util.stackFrame.index++;
             const { index, entry } = util.stackFrame;
-            console.debug(index, entry)
             if (index > entry.length - 1) return;
             util.thread.stackFrames[0].jwArray = entry[index];
         } else {
-            const entry = Object.entries(ARRAY);
-            console.debug(0, entry)
+            const entry = Object.entries(ARRAY.array);
             if (entry.length === 0) return;
             util.stackFrame.entry = entry;
             util.stackFrame.execute = true;
