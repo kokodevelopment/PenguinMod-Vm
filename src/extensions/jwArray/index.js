@@ -139,18 +139,7 @@ class Extension {
             }))
         );
 
-        //stolen from sharkpool OOps!
         const regenReporters = ["jwArray_forEachI", "jwArray_forEachv"];
-        if (Scratch.gui) Scratch.gui.getBlockly().then(SB => {
-            const ogCheck = SB.scratchBlocksUtils.isShadowArgumentReporter;
-            SB.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
-                const result = ogCheck(block);
-                if (result) return true;
-                return block.isShadow() && regenReporters.includes(block.type);
-            };
-        });
-
-        //patch square shape
         if (ScratchBlocks !== undefined) {
             ScratchBlocks.BlockSvg.INPUT_SHAPE_SQUARE =
                 ScratchBlocks.BlockSvg.TOP_LEFT_CORNER_START +
@@ -162,6 +151,14 @@ class Extension {
                 ' h ' + (-4 * ScratchBlocks.BlockSvg.GRID_UNIT + 2 * ScratchBlocks.BlockSvg.CORNER_RADIUS) +
                 ScratchBlocks.BlockSvg.BOTTOM_LEFT_CORNER +
                 ' z';
+            
+            //stolen from sharkpool OOps!
+            const ogCheck = ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter;
+            ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
+                const result = ogCheck(block);
+                if (result) return true;
+                return block.isShadow() && regenReporters.includes(block.type);
+            };
         }
     }
 
