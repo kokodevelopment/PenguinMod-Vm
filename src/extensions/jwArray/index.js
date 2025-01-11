@@ -192,6 +192,7 @@ class Extension {
                     opcode: 'get',
                     text: 'get [INDEX] in [ARRAY]',
                     blockType: BlockType.REPORTER,
+                    allowDropAnywhere: true,
                     arguments: {
                         ARRAY: jwArray.Argument,
                         INDEX: {
@@ -250,6 +251,41 @@ class Extension {
                         }
                     },
                     ...jwArray.Block
+                },
+                "---",
+                {
+                    opcode: 'forEachI',
+                    text: 'index'
+                    blockType: BlockType.REPORTER,
+                    hideFromPalette: true,
+                    allowDropAnywhere: true
+                },
+                {
+                    opcode: 'forEachV',
+                    text: 'value'
+                    blockType: BlockType.REPORTER,
+                    hideFromPalette: true,
+                    allowDropAnywhere: true
+                },
+                {
+                    opcode: 'forEach',
+                    text: 'for [I] [V] of [ARRAY]',
+                    blockType: BlockType.COMMAND,
+                    hideFromPalette: true,
+                    arguments: {
+                        ARRAY: jwArray.Argument,
+                        I: {},
+                        V: {}
+                    }
+                },
+                {
+                    blockType: BlockType.XML,
+                    xml: `
+                        <block type="jwArray_forEach">
+                            <value name="I"><shadow type="jwArray_forEachI"></shadow></value>
+                            <value name="V"><shadow type="jwArray_forEachV"></shadow></value>
+                        </block>
+                    `
                 }
             ],
             menus: {
