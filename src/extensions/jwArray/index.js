@@ -255,14 +255,14 @@ class Extension {
                 "---",
                 {
                     opcode: 'forEachI',
-                    text: 'index'
+                    text: 'index',
                     blockType: BlockType.REPORTER,
                     hideFromPalette: true,
                     allowDropAnywhere: true
                 },
                 {
                     opcode: 'forEachV',
-                    text: 'value'
+                    text: 'value',
                     blockType: BlockType.REPORTER,
                     hideFromPalette: true,
                     allowDropAnywhere: true
