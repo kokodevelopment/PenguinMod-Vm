@@ -1940,7 +1940,7 @@ class Runtime extends EventEmitter {
                 }
             } else {
                 valueName = placeholder;
-                shadowType = argInfo.shadow || ((argTypeInfo.shadow && argTypeInfo.shadow.type) || null);
+                shadowType = (argTypeInfo.shadow && argTypeInfo.shadow.type) || null;
                 fieldName = (argTypeInfo.shadow && argTypeInfo.shadow.fieldName) || null;
             }
             // TODO: Allow fillIn to work with non-shadow.

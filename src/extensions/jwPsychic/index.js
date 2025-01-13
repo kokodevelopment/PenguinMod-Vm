@@ -201,8 +201,7 @@ class Extension {
                     blockType: BlockType.COMMAND,
                     arguments: {
                         BOOLEAN: {
-                            type: ArgumentType.BOOLEAN,
-                            shadow: 'operator_falseBoolean'
+                            type: ArgumentType.BOOLEAN
                         }
                     },
                     filter: [TargetType.SPRITE]
