@@ -274,10 +274,10 @@ class Extension {
                     arguments: {
                         ARRAY: jwArray.Argument,
                         I: {
-                            fillIn: 'jwArray_forEachI'
+                            fillIn: 'forEachI'
                         },
                         V: {
-                            fillIn: 'jwArray_forEachV'
+                            fillIn: 'forEachV'
                         }
                     }
                 }
