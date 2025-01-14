@@ -140,27 +140,6 @@ class Extension {
                 return w
             }))
         );
-
-        const regenReporters = ["jwArray_forEachI", "jwArray_forEachV"];
-        if (window.ScratchBlocks !== undefined) {
-            ScratchBlocks.BlockSvg.INPUT_SHAPE_SQUARE =
-                ScratchBlocks.BlockSvg.TOP_LEFT_CORNER_START +
-                ScratchBlocks.BlockSvg.TOP_LEFT_CORNER +
-                ' h ' + (4 * ScratchBlocks.BlockSvg.GRID_UNIT - 2 * ScratchBlocks.BlockSvg.CORNER_RADIUS) +
-                ScratchBlocks.BlockSvg.TOP_RIGHT_CORNER +
-                ' v ' + (8 * ScratchBlocks.BlockSvg.GRID_UNIT - 2 * ScratchBlocks.BlockSvg.CORNER_RADIUS) +
-                ScratchBlocks.BlockSvg.BOTTOM_RIGHT_CORNER +
-                ' h ' + (-4 * ScratchBlocks.BlockSvg.GRID_UNIT + 2 * ScratchBlocks.BlockSvg.CORNER_RADIUS) +
-                ScratchBlocks.BlockSvg.BOTTOM_LEFT_CORNER +
-                ' z';
-            
-            const ogCheck = ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter;
-            ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
-                const result = ogCheck(block);
-                if (result) return true;
-                return block.isShadow() && regenReporters.includes(block.type);
-            };
-        }
     }
 
     getInfo() {
@@ -168,6 +147,7 @@ class Extension {
             id: "jwArray",
             name: "Arrays",
             color1: "#ff513d",
+            menuIconURI: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM6Yng9Imh0dHBzOi8vYm94eS1zdmcuY29tIj4KICA8Y2lyY2xlIHN0eWxlPSJzdHJva2Utd2lkdGg6IDJweDsgcGFpbnQtb3JkZXI6IHN0cm9rZTsgZmlsbDogcmdiKDI1NSwgODEsIDYxKTsgc3Ryb2tlOiByZ2IoMjA1LCA1OSwgNDQpOyIgY3g9IjEwIiBjeT0iMTAiIHI9IjkiPjwvY2lyY2xlPgogIDxwYXRoIGQ9Ik0gOC4wNzMgNC4yMiBMIDYuMTQ3IDQuMjIgQyA1LjA4MyA0LjIyIDQuMjIgNS4wODMgNC4yMiA2LjE0NyBMIDQuMjIgMTMuODUzIEMgNC4yMiAxNC45MTkgNS4wODMgMTUuNzggNi4xNDcgMTUuNzggTCA4LjA3MyAxNS43OCBMIDguMDczIDEzLjg1MyBMIDYuMTQ3IDEzLjg1MyBMIDYuMTQ3IDYuMTQ3IEwgOC4wNzMgNi4xNDcgTCA4LjA3MyA0LjIyIFogTSAxMS45MjcgMTMuODUzIEwgMTMuODUzIDEzLjg1MyBMIDEzLjg1MyA2LjE0NyBMIDExLjkyNyA2LjE0NyBMIDExLjkyNyA0LjIyIEwgMTMuODUzIDQuMjIgQyAxNC45MTcgNC4yMiAxNS43OCA1LjA4MyAxNS43OCA2LjE0NyBMIDE1Ljc4IDEzLjg1MyBDIDE1Ljc4IDE0LjkxOSAxNC45MTcgMTUuNzggMTMuODUzIDE1Ljc4IEwgMTEuOTI3IDE1Ljc4IEwgMTEuOTI3IDEzLjg1MyBaIiBmaWxsPSIjZmZmIiBzdHlsZT0iIj48L3BhdGg+Cjwvc3ZnPg==",
             blocks: [
                 {
                     opcode: 'blank',
@@ -261,40 +241,45 @@ class Extension {
                     },
                     ...jwArray.Block
                 },
+                {
+                    opcode: 'concat',
+                    text: 'merge [ONE] with [TWO]',
+                    arguments: {
+                        ONE: jwArray.Argument,
+                        TWO: jwArray.Argument
+                    },
+                    ...jwArray.Block
+                },
                 "---",
                 {
                     opcode: 'forEachI',
                     text: 'index',
                     blockType: BlockType.REPORTER,
                     hideFromPalette: true,
-                    allowDropAnywhere: true
+                    allowDropAnywhere: true,
+                    canDragDuplicate: true
                 },
                 {
                     opcode: 'forEachV',
                     text: 'value',
                     blockType: BlockType.REPORTER,
                     hideFromPalette: true,
-                    allowDropAnywhere: true
+                    allowDropAnywhere: true,
+                    canDragDuplicate: true
                 },
                 {
                     opcode: 'forEach',
                     text: 'for [I] [V] of [ARRAY]',
                     blockType: BlockType.LOOP,
-                    hideFromPalette: true,
                     arguments: {
                         ARRAY: jwArray.Argument,
-                        I: {},
-                        V: {}
+                        I: {
+                            fillIn: 'jwArray_forEachI'
+                        },
+                        V: {
+                            fillIn: 'jwArray_forEachV'
+                        }
                     }
-                },
-                {
-                    blockType: BlockType.XML,
-                    xml: `
-                        <block type="jwArray_forEach">
-                            <value name="I"><shadow type="jwArray_forEachI"></shadow></value>
-                            <value name="V"><shadow type="jwArray_forEachV"></shadow></value>
-                        </block>
-                    `
                 }
             ],
             menus: {
@@ -360,6 +345,13 @@ class Extension {
 
         ARRAY.array.push(VALUE)
         return ARRAY
+    }
+
+    concat({ONE, TWO}) {
+        ONE = jwArray.Type.toArray(ONE)
+        TWO = jwArray.Type.toArray(TWO)
+
+        return new jwArray.Type(ONE.array.concat(TWO.array))
     }
 
     forEachI({}, util) {
