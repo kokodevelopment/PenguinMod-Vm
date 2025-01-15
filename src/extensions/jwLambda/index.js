@@ -122,6 +122,7 @@ class Extension {
     newLambda({}, util) {
         return new Lambda.Type((arg) => {
             util.thread.stackFrames[0].jwLambda = arg;
+            console.debug("Yes hello i am working")
             util.startBranch(1, false)
         })
     }
