@@ -60,10 +60,15 @@ const interpolate = (runtime, time) => {
         }
 
         // Don't waste time interpolating sprites that are hidden.
-        if (!target.visible || target.effects.ghost === 100) {
+        if (
+            !target.visible ||
+            /* special thanks to CST and Cubester for this new check */
+            (target.effects.ghost === 100 && interpolationData.ghost === 100)
+        ) {
             continue;
         }
 
+        runtime.emit(runtime.constructor.BEFORE_INTERPOLATE, target);
         let camData = { ...runtime.getCamera(target.cameraBound) };
         camData.scale = 1 + ((camData.scale - 1) / 100);
         const drawableID = target.drawableID;
@@ -145,6 +150,7 @@ const interpolate = (runtime, time) => {
                 renderer.updateDrawableDirectionScale(drawableID, direction, scale);
             }
         }
+        runtime.emit(runtime.constructor.AFTER_INTERPOLATE, target);
     }
 };
 
