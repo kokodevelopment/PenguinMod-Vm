@@ -40,6 +40,7 @@ class Scratch3OperatorsBlocks {
             operator_random: this.random,
             operator_join: this.join,
             operator_join3: this.join3,
+            operator_join4: this.join4,
             operator_letter_of: this.letterOf,
             operator_length: this.length,
             operator_contains: this.contains,
@@ -61,6 +62,7 @@ class Scratch3OperatorsBlocks {
             operator_advMath: this.advMath,
             operator_advMathExpanded: this.advMathExpanded,
             operator_constrainnumber: this.constrainnumber,
+            
             operator_trueBoolean: this.true,
             operator_falseBoolean: this.false,
             operator_randomBoolean: this.randomBoolean,
@@ -345,6 +347,10 @@ class Scratch3OperatorsBlocks {
 
     join3 (args) {
         return Cast.toString(args.STRING1) + Cast.toString(args.STRING2) + Cast.toString(args.STRING3);
+    }
+
+    join4 (args) {
+        return Cast.toString(args.STRING1) + Cast.toString(args.STRING2) + Cast.toString(args.STRING3) + Cast.toString(args.STRING3);
     }
 
     letterOf (args) {
