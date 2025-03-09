@@ -137,7 +137,6 @@ const outputBlocks = [
     'operator_ltorequal',
     'operator_notequal',
     'operator_join3',
-    'operator_join4',
     'operator_replaceFirst',
     'operator_lastIndexOfTextInText',
     'operator_countAppearTimes',
