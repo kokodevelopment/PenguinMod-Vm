@@ -40,7 +40,6 @@ class Scratch3OperatorsBlocks {
             operator_random: this.random,
             operator_join: this.join,
             operator_join3: this.join3,
-            operator_join4: this.join4,
             operator_letter_of: this.letterOf,
             operator_length: this.length,
             operator_contains: this.contains,
