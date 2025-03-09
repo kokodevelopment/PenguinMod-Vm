@@ -80,6 +80,25 @@ class JgRuntimeBlocks {
                     }
                 },
                 {
+                    opcode: 'addCostumeUrlForceMime',
+                    text: 'add [costtype] costume [name] from [URL]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        costtype: {
+                            type: ArgumentType.STRING,
+                            menu: "costumeMimeType"
+                        },
+                        URL: {
+                            type: ArgumentType.STRING,
+                            defaultValue: `https://corsproxy.io/?${encodeURIComponent('https://penguinmod.com/navicon.png')}`
+                        },
+                        name: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'penguinmod'
+                        }
+                    }
+                },
+                {
                     opcode: 'addSoundUrl',
                     text: 'add sound [NAME] from [URL]',
                     blockType: BlockType.COMMAND,
@@ -688,6 +707,7 @@ class JgRuntimeBlocks {
                     items: ["animated text resolution"]
                 },
                 onoff: ["on", "off"],
+                costumeMimeType: ["png", "bmp", "jpg", "jpeg", "jfif", "webp", "gif", "vector"],
                 cappableSettings: ["uncapped", "capped", "fixed"]
             }
         };
@@ -705,17 +725,19 @@ class JgRuntimeBlocks {
         const targetId = util.target.id;
         return new Promise(resolve => {
             fetch(args.URL, { method: 'GET' }).then(x => x.blob().then(blob => {
+                const costumeHasForcedMime = !!args.costtype;
+                const costumeForcedMimeBitmap = args.costtype !== "vector";
                 if (!(
                     (this._typeIsBitmap(blob.type)) || (blob.type === 'image/svg+xml')
-                )) {
+                ) && !costumeHasForcedMime) {
                     resolve();
                     throw new Error(`Invalid mime type: "${blob.type}"`);
                 }
-                const assetType = this._typeIsBitmap(blob.type) ? this.runtime.storage.AssetType.ImageBitmap : this.runtime.storage.AssetType.ImageVector;
-                const dataType = blob.type === 'image/svg+xml' ? 'svg' : blob.type.split('/')[1];
+                const assetType = (costumeHasForcedMime ? costumeForcedMimeBitmap : this._typeIsBitmap(blob.type)) ? this.runtime.storage.AssetType.ImageBitmap : this.runtime.storage.AssetType.ImageVector;
+                const dataType = costumeHasForcedMime ? (costumeForcedMimeBitmap ? args.costtype : 'svg') : (blob.type === 'image/svg+xml' ? 'svg' : blob.type.split('/')[1]);
                 blob.arrayBuffer().then(buffer => {
-                    const data = dataType === 'image/svg+xml'
-                        ? buffer : new Uint8Array(buffer);
+                    const data = costumeHasForcedMime ? (!costumeForcedMimeBitmap ? buffer : new Uint8Array(buffer)) : (dataType === 'image/svg+xml'
+                        ? buffer : new Uint8Array(buffer));
                     const asset = this.runtime.storage.createAsset(assetType, dataType, data, null, true);
                     const name = `${asset.assetId}.${asset.dataFormat}`;
                     const spriteJson = { asset: asset, md5ext: name, name: args.name };
@@ -729,6 +751,9 @@ class JgRuntimeBlocks {
                 });
             }));
         });
+    }
+    addCostumeUrlForceMime(args, util) {
+        this.addCostumeUrl(args, util);
     }
     deleteCostume(args, util) {
         const index = Math.round(Cast.toNumber(args.COSTUME)) - 1;

@@ -214,7 +214,7 @@ class Scratch3SensingBlocks {
     getDirectionToFrom (args) {
         const dx = args.x2 - args.x1;
         const dy = args.y2 - args.y1;
-        const direction = 90 - MathUtil.radToDeg(Math.atan2(dy, dx));
+        const direction = MathUtil.wrapClamp(90 - MathUtil.radToDeg(Math.atan2(dy, dx)), -179, 180);
         return direction;
     }
 

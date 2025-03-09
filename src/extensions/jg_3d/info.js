@@ -362,6 +362,9 @@ module.exports = {
         createReporterBlock("getObjectColor", "hex color of object named [NAME]", {
             NAME: infoArgument("Object1"),
         }),
+        createReporterBlock("getObjectParent", "parent of object named [NAME]", {
+            NAME: infoArgument("Object1"),
+        }),
         seperator,
         createBooleanBlock("objectTouchingObject", "object [NAME1] touching object [NAME2]?", {
             NAME1: infoArgument("Object1"),
@@ -399,6 +402,24 @@ module.exports = {
             DX: infoArgument(0),
             DY: infoArgument(0),
             DZ: infoArgument(0),
+        }, Icons.Raycast, true),
+        createReporterBlock("rayCollisionDistance", "first object in raycast from x: [X] y: [Y] z: [Z] with direction x: [DX] y: [DY] z: [DZ] with a max distance of [DIS]", {
+            X: infoArgument(0),
+            Y: infoArgument(0),
+            Z: infoArgument(0),
+            DX: infoArgument(0),
+            DY: infoArgument(0),
+            DZ: infoArgument(0),
+            DIS: infoArgument(10)
+        }, Icons.Raycast, true),
+        createReporterBlock("rayCollisionArrayDistance", "raycast result from x: [X] y: [Y] z: [Z] with direction x: [DX] y: [DY] z: [DZ] with a max distance of [DIS]", {
+            X: infoArgument(0),
+            Y: infoArgument(0),
+            Z: infoArgument(0),
+            DX: infoArgument(0),
+            DY: infoArgument(0),
+            DZ: infoArgument(0),
+            DIS: infoArgument(10)
         }, Icons.Raycast, true),
         createReporterBlock("rayCollisionCamera", "first object from raycast in camera center", {
         }, Icons.Raycast, true),
