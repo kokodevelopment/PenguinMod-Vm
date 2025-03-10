@@ -1198,7 +1198,7 @@ class Runtime extends EventEmitter {
         // Used for extension's compiled blocks.
         // Importing the generators here avoids circular dependency issues
         const { IRGenerator } = require('../compiler/irgen');
-        const { JSGenerator } = require('../compiler/jsgen');
+        const JSGenerator = require('../compiler/jsgen');
     
         IRGenerator.setExtensionIr(extensionId, information.ir);
         JSGenerator.setExtensionJs(extensionId, information.js);
